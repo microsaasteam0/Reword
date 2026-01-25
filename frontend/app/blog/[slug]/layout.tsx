@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { getPostBySlug } from '@/lib/blogData'
+import { getPostBySlug } from '@/lib/blog-data'
 
 interface Props {
     params: { slug: string }
