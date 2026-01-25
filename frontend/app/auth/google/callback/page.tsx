@@ -79,7 +79,8 @@ export default function GoogleCallbackPage() {
         console.log('🆔 Request ID:', requestId)
 
         // Send the authorization code to your backend
-        const authResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/google/callback`, {
+        const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
+        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, {
           code,
           state: state || 'dev-mode',
           request_id: requestId
