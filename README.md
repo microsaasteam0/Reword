@@ -1,8 +1,8 @@
-# SnippetStream
+# Reword
 
 **Transform long-form content into engaging social media posts for X/Twitter, LinkedIn, and Instagram.**
 
-SnippetStream is a modern web application that takes your long-form content (Markdown, text, or URLs) and repurposes it into platform-optimized social media posts using AI.
+Reword (formerly SnippetStream) is a modern web application that takes your long-form content (Markdown, text, or URLs) and repurposes it into platform-optimized social media posts using AI.
 
 ## 🚀 Features
 
@@ -17,13 +17,13 @@ SnippetStream is a modern web application that takes your long-form content (Mar
 
 ## 🛠️ Tech Stack
 
-### Frontend
+### Frontend (`/frontend`)
 - **Next.js 14** - React framework with App Router
 - **Tailwind CSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript
 - **React Context** - State management for auth and preferences
 
-### Backend
+### Backend (`/backend`)
 - **FastAPI** - High-performance Python web framework
 - **PostgreSQL** - Production database with SQLAlchemy ORM
 - **Dodo Payments** - Payment processing with webhook support
@@ -31,9 +31,9 @@ SnippetStream is a modern web application that takes your long-form content (Mar
 - **JWT** - Token-based authentication
 
 ### Deployment
-- **Vercel** - Backend API deployment (https://snippetstreamapi.vercel.app)
-- **Vercel/Netlify** - Frontend deployment
-- **GitHub** - Source code management
+- **Backend**: Deployed on Railway (https://snippetstream-api22-production.up.railway.app)
+- **Frontend**: Deployed on Vercel/Netlify
+- **GitHub**: Source code management (Monorepo)
 
 ## 📋 Setup Instructions
 
@@ -46,51 +46,25 @@ SnippetStream is a modern web application that takes your long-form content (Mar
 
 ### Local Development
 
-1. **Clone the repositories**
+1. **Clone the repository**
 ```bash
-# Frontend
-git clone https://github.com/yourusername/snippetstream-frontend.git
-cd snippetstream-frontend
-
-# Backend (separate repo)
-git clone https://github.com/Mohitsharma1214/snippetstream-api.git
-cd snippetstream-api
+git clone https://github.com/microsaasteam0/Reword.git
+cd Reword
 ```
 
 2. **Backend Setup**
 ```bash
-cd snippetstream-api
+cd backend
 pip install -r requirements.txt
-cp .env.sample .env
-# Edit .env with your credentials
-python start-backend.py
+# Ensure .env is set in the root directory
+python main.py
 ```
 
 3. **Frontend Setup**
 ```bash
-cd snippetstream-frontend
+cd frontend
 npm install
-cp .env.local.example .env.local
-# Edit .env.local with API URL
 npm run dev
-```
-
-### Production Deployment
-
-#### Backend (Vercel)
-The backend is deployed at: **https://snippetstreamapi.vercel.app**
-
-```bash
-cd snippetstream-api
-vercel --prod
-```
-
-#### Frontend
-```bash
-cd snippetstream-frontend
-# Set NEXT_PUBLIC_API_URL=https://snippetstreamapi.vercel.app
-npm run build
-vercel --prod
 ```
 
 ## 🔗 API Endpoints
@@ -105,11 +79,6 @@ vercel --prod
 - `GET /api/v1/content/history` - Get user's content history
 - `POST /api/v1/content/save` - Save generated content
 
-### Templates
-- `GET /api/v1/templates/public` - Get public templates
-- `POST /api/v1/templates/custom` - Create custom template
-- `GET /api/v1/templates/custom` - Get user's custom templates
-
 ### Payments
 - `POST /api/v1/payment/create-checkout` - Create payment checkout
 - `POST /api/v1/payment/check-status` - Check payment status
@@ -117,50 +86,30 @@ vercel --prod
 
 ## 🔧 Environment Variables
 
-### Backend (.env)
+The project uses a unified `.env` file in the root directory for both frontend and backend configuration.
+
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost/snippetstream
+# BACKEND CONFIGURATION
+DATABASE_URL=postgresql://...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+SECRET_KEY=...
+BACKEND_URL=https://snippetstream-api22-production.up.railway.app/
+FRONTEND_URL=http://localhost:3000
 
-# JWT Authentication
-JWT_SECRET_KEY=your-secret-key-here
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-# Dodo Payments
-DODO_API_KEY=your-dodo-api-key
-DODO_WEBHOOK_SECRET=your-webhook-secret
-
-# OpenAI
-OPENAI_API_KEY=your-openai-api-key
+# FRONTEND CONFIGURATION
+NEXT_PUBLIC_API_URL=https://snippetstream-api22-production.up.railway.app
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=...
 ```
-
-### Frontend (.env.local)
-```env
-# API Configuration
-NEXT_PUBLIC_API_URL=https://snippetstreamapi.vercel.app
-
-# Google OAuth
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
-```
-
-## 🎯 Use Cases
-
-- **Content Creators**: Repurpose blog posts into social content
-- **Marketers**: Transform newsletters into multi-platform campaigns  
-- **Businesses**: Convert long-form content into social media strategies
-- **Agencies**: Manage multiple client content transformations
 
 ## 🚀 Deployment Architecture
 
 ```
 Frontend (Vercel/Netlify)
     ↓ HTTPS API calls
-Backend API (Vercel)
+Backend API (Railway)
     ↓ Database queries
-PostgreSQL (Neon/Railway)
+PostgreSQL (Neon)
     ↓ Webhook notifications
 Dodo Payments
 ```
@@ -168,43 +117,23 @@ Dodo Payments
 ## 📝 Project Structure
 
 ```
-snippetstream-frontend/
-├── app/
-│   ├── auth/
-│   ├── pricing/
-│   ├── features/
-│   └── page.tsx
-├── components/
-│   ├── AuthModal.tsx
-│   ├── PaymentModal.tsx
-│   ├── DashboardModal.tsx
+Reword/
+├── frontend/          # Next.js Application
+│   ├── app/
+│   ├── components/
+│   ├── contexts/
 │   └── ...
-├── contexts/
-│   ├── AuthContext.tsx
-│   └── ThemeContext.tsx
-└── lib/
-
-snippetstream-api/
-├── routes/
-│   ├── auth_routes.py
-│   ├── payment_routes_new.py
-│   └── content_routes.py
-├── api/
-│   └── index.py (Vercel entry point)
-├── models.py
-├── database.py
-└── main.py
+│
+├── backend/           # FastAPI Application
+│   ├── routes/
+│   ├── api/
+│   ├── models.py
+│   ├── main.py
+│   └── ...
+│
+├── .env               # Unified Configuration
+└── README.md
 ```
-
-## 🔮 Recent Updates
-
-- ✅ Deployed backend API to Vercel
-- ✅ Implemented webhook-based payment processing
-- ✅ Added comprehensive user authentication
-- ✅ Created subscription management system
-- ✅ Built content library and template system
-- ✅ Added profile management with avatar upload
-- ✅ Implemented light/dark theme support
 
 ## 🤝 Contributing
 
@@ -219,4 +148,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Ready to transform your content? Start repurposing and watch your long-form content become social media gold! ✨**
+**Ready to transform your content? Start repurposing with Reword! ✨**
