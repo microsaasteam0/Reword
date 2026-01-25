@@ -11,6 +11,7 @@ import { useSubscription } from '../contexts/SubscriptionContext'
 import { usePaymentProcessing } from '../contexts/PaymentProcessingContext'
 import { requestCache } from '@/lib/cache-util'
 import axios from 'axios'
+import { API_URL } from '@/lib/api-config'
 import toast from 'react-hot-toast'
 
 interface UsageStats {
@@ -67,7 +68,7 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
         cacheKey,
         async () => {
           console.log('🔄 Making fresh usage-stats API call')
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`)
+          const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`)
           return response.data
         },
         30 * 60 * 1000 // 30 minute cache - long-lived until content generation
@@ -188,7 +189,7 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
 
   const resendVerification = async () => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/resend-verification`)
+      const response = await axios.post(`${API_URL}/api/v1/auth/resend-verification`)
       if (response.data.success) {
         toast.success('Verification email sent! Please check your inbox.')
       }

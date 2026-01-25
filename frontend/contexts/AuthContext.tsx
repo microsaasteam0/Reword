@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_URL } from '@/lib/api-config'
 import toast from 'react-hot-toast'
 
 interface User {
@@ -67,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Preload usage stats
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`, {
+      const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`, {
         timeout: 5000
       })
 
@@ -99,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Preload content history (available for all users)
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/history`, {
+      const response = await axios.get(`${API_URL}/api/v1/content/history`, {
         timeout: 5000
       })
 
@@ -154,7 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             if (!lastVerified || (now - parseInt(lastVerified)) > oneHour) {
               console.log('🔄 Verifying token (last verified over 1 hour ago)...')
-              const meResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
+              const meResponse = await axios.get(`${API_URL}/api/v1/auth/me`, {
                 timeout: 5000 // 5 second timeout
               })
               sessionStorage.setItem('token_last_verified', now.toString())
@@ -227,7 +228,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       formData.append('password', password)
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`,
+        `${API_URL}/api/v1/auth/login`,
         formData,
         {
           headers: {
@@ -275,7 +276,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('🔄 Starting Google Auth with token:', googleToken?.substring(0, 50) + '...')
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/google`,
+        `${API_URL}/api/v1/auth/google`,
         {
           token: googleToken,
         }
@@ -331,7 +332,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true)
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`,
+        `${API_URL}/api/v1/auth/register`,
         {
           email,
           username,
@@ -384,7 +385,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!refreshTokenValue) return false
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`,
+        `${API_URL}/api/v1/auth/refresh`,
         {
           refresh_token: refreshTokenValue,
         }
