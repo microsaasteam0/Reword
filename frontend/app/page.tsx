@@ -25,6 +25,7 @@ import DashboardModal from '../components/DashboardModal'
 import SubscriptionWarning from '../components/SubscriptionWarning'
 import Footer from '../components/Footer'
 import { requestCache } from '@/lib/cache-util'
+import { API_URL } from '@/lib/api-config'
 
 interface SocialMediaResponse {
   twitter_thread: string[]
@@ -272,7 +273,7 @@ export default function Home() {
           cacheKey,
           async () => {
             console.log('🔄 MainPage: Making fresh usage-stats API call')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`)
+            const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`)
             return response.data
           },
           30 * 60 * 1000 // 30 minute cache
@@ -296,7 +297,7 @@ export default function Home() {
       // For unauthenticated users or during initial boot, try a quick single call 
       // but don't persist it in a way that blocks our authenticated reload
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`)
+        const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`)
         setUsageStats(response.data)
       } catch (e) {
         // Just leave as null or set basic defaults
@@ -370,7 +371,7 @@ export default function Home() {
       console.log('🔍 Checking for pending payments...')
 
       // Get payment history to check for pending payments
-      const historyResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/history`)
+      const historyResponse = await axios.get(`${API_URL}/api/v1/payment/history`)
 
       if (historyResponse.data && historyResponse.data.payments) {
         const pendingPayments = historyResponse.data.payments.filter(
@@ -384,7 +385,7 @@ export default function Home() {
           const latestPending = pendingPayments[0]
           console.log('🔄 Verifying pending payment:', latestPending.payment_id)
 
-          const verifyResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/check-status`)
+          const verifyResponse = await axios.post(`${API_URL}/api/v1/payment/check-status`)
 
           if (verifyResponse.data.success && verifyResponse.data.is_premium) {
             console.log('✅ Pending payment verified successfully!')
@@ -443,7 +444,7 @@ export default function Home() {
       console.log('👤 User ID from URL:', userId)
 
       // Call the status check endpoint (webhooks handle actual verification)
-      const verifyResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/check-status`)
+      const verifyResponse = await axios.post(`${API_URL}/api/v1/payment/check-status`)
 
       console.log('✅ Payment verification response:', verifyResponse.data)
 
@@ -706,7 +707,7 @@ export default function Home() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/repurpose`,
+        `${API_URL}/api/v1/repurpose`,
         activeTab === 'url' ? { url } : { content },
         {
           timeout: 120000 // 2-minute timeout

@@ -8,6 +8,7 @@ import AuthModal from './AuthModal'
 import DowngradeModal from './DowngradeModal'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { API_URL } from '@/lib/api-config'
 
 interface PricingPageProps {
   onSignUp: (plan: string) => void
@@ -74,7 +75,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
       // Set flag to indicate this is a manual cancellation
       sessionStorage.setItem('manual_cancellation', 'true')
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/cancel`)
+      const response = await axios.post(`${API_URL}/api/v1/payment/cancel`)
 
       if (response.data.success) {
         // Update user state

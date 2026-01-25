@@ -5,6 +5,7 @@ import { X, Crown, Check, Loader2, ExternalLink } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
+import { API_URL } from '@/lib/api-config'
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -37,28 +38,28 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
   const handleCheckout = async () => {
     setLoading(true)
-    
+
     try {
       console.log('🔄 Creating Dodo Payments checkout session...')
-      
+
       const requestData = {
         plan_id: selectedPlan,
         billing_cycle: billingCycle
       }
-      
+
       console.log('📤 Sending checkout request:', requestData)
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/create-checkout`, 
+        `${API_URL}/api/v1/payment/create-checkout`,
         requestData
       )
-      
+
       console.log('📥 Checkout response:', response.data)
 
       if (response.data && response.data.success) {
         console.log('✅ Checkout session created!')
         console.log('🔗 Redirecting to:', response.data.checkout_url)
-        
+
         // Redirect to Dodo Payments checkout
         window.location.href = response.data.checkout_url
       } else {
@@ -68,10 +69,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     } catch (error: any) {
       console.error('❌ Checkout error:', error)
       console.error('❌ Error response:', error.response)
-      
+
       // Safely extract error message
       let message = 'Failed to create checkout session. Please try again.'
-      
+
       if (error.response?.data) {
         console.log('Error response data:', error.response.data)
         if (typeof error.response.data === 'string') {
@@ -84,9 +85,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       } else if (error.message) {
         message = String(error.message)
       }
-      
+
       console.log('Final error message:', message)
-      
+
       // Ensure message is always a string
       const safeMessage = typeof message === 'string' ? message : 'Failed to create checkout session. Please try again.'
       toast.error(safeMessage)
@@ -100,7 +101,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        
+
         {/* Header */}
         <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
           <div className="flex items-center justify-between">
@@ -130,7 +131,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 <div className="text-sm text-gray-600 dark:text-gray-400">/{billingCycle}</div>
               </div>
             </div>
-            
+
             {savings > 0 && (
               <div className="text-sm text-green-700 dark:text-green-400 font-medium">
                 Save {savings}% with yearly billing
@@ -155,7 +156,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 </>
               )}
             </button>
-            
+
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                 Secure payment powered by Dodo Payments

@@ -169,8 +169,8 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl w-full max-w-5xl h-full sm:max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-0 sm:p-2 md:p-4">
+      <div className="bg-white dark:bg-gray-900 border-0 sm:border border-gray-200 dark:border-gray-700 rounded-none sm:rounded-xl md:rounded-2xl w-full h-full sm:h-[90vh] sm:max-h-[900px] max-w-5xl overflow-hidden flex flex-col shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center min-w-0 flex-1">
