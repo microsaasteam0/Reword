@@ -11,7 +11,7 @@ import CustomTemplateManager from './CustomTemplateManager'
 import LoadingSpinner from './LoadingSpinner'
 import Pagination from './Pagination'
 import ImageEditor from './ImageEditor'
-import { requestCache } from '../lib/requestCache'
+import { requestCache } from '@/lib/requestCache'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -94,12 +94,12 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Helper function to validate image URL
   const isValidImageUrl = (url: string): boolean => {
     if (!url || url.trim() === '') return false
-    
+
     // Check for base64 images
     if (url.startsWith('data:image/')) {
       return true
     }
-    
+
     // Check for regular URLs
     try {
       const urlObj = new URL(url)
@@ -118,15 +118,15 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         toast.error('Please select an image file')
         return
       }
-      
+
       // Validate file size (max 5MB for editing)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('Image size must be less than 5MB')
         return
       }
-      
+
       setSelectedFile(file)
-      
+
       // Create preview URL and show editor
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -148,14 +148,14 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           toast.error('Cropped image is too large. Please crop a smaller area or reduce quality.')
           return
         }
-        
+
         const reader = new FileReader()
         reader.onload = (e) => {
           const croppedImageUrl = e.target?.result as string
           setEditedProfilePicture(croppedImageUrl)
           setShowImageEditor(false)
           setShowProfilePictureModal(false)
-          
+
           // Auto-save the cropped image
           handleImageUpload(croppedImageUrl)
         }
@@ -170,11 +170,11 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     if (imageData) {
       return imageData
     }
-    
+
     if (!selectedFile) {
       throw new Error('No image selected')
     }
-    
+
     // For now, we'll convert to base64 and store it directly
     // In production, you should upload to a cloud service like AWS S3, Cloudinary, etc.
     return new Promise((resolve, reject) => {
@@ -205,28 +205,28 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       console.log('🔄 Starting image upload process...')
       console.log('📁 File size:', selectedFile.size, 'bytes')
       console.log('� File type:', selectedFile.type)
-      
+
       const imageUrl = await uploadImage(imageData)
       console.log('✅ Image converted to base64, length:', imageUrl.length)
-      
+
       setEditedProfilePicture(imageUrl)
-      
+
       // Immediately save the profile with the new image
       console.log('🔄 Saving profile with new image...')
       console.log('📝 Current username:', editedUsername)
       console.log('� CuUrrent full name:', editedFullName)
-      
+
       const profileData = {
         username: editedUsername.trim(),
         full_name: editedFullName.trim() || null,
         profile_picture: imageUrl
       }
-      
+
       console.log('📤 Sending profile data (image truncated for log):', {
         ...profileData,
         profile_picture: imageUrl.substring(0, 50) + '...'
       })
-      
+
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, profileData, {
         timeout: 30000, // 30 second timeout for large images
         headers: {
@@ -240,18 +240,18 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         // Update user context with new data
         console.log('🔄 Updating user context...')
         console.log('📸 New profile picture from response:', response.data.profile_picture?.substring(0, 50) + '...')
-        
+
         const updatedUserData = {
           username: response.data.username,
           full_name: response.data.full_name,
           profile_picture: response.data.profile_picture
         }
-        
+
         console.log('👤 Updating user with:', {
           ...updatedUserData,
           profile_picture: updatedUserData.profile_picture?.substring(0, 50) + '...'
         })
-        
+
         updateUser(updatedUserData)
 
         // Also update the local editing state to reflect the change immediately
@@ -260,12 +260,12 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         setShowProfilePictureModal(false)
         setSelectedFile(null)
         setPreviewUrl('')
-        
+
         // Force a small delay to ensure state updates
         setTimeout(() => {
           toast.success('Profile picture updated successfully!')
           console.log('✅ Profile picture update complete!')
-          
+
           // Force a re-render by updating a dummy state
           setIsEditingProfile(false)
           setTimeout(() => setIsEditingProfile(true), 100)
@@ -276,7 +276,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       console.error('❌ Error response:', error.response?.data)
       console.error('❌ Error status:', error.response?.status)
       console.error('❌ Error message:', error.message)
-      
+
       if (error.message.includes('Image too large')) {
         toast.error(error.message)
       } else if (error.response?.status === 400) {
@@ -315,12 +315,12 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       console.log('👤 Current user object:', user)
       console.log('🖼️ User profile picture:', user.profile_picture)
       loadInitialDataFast()
-      
+
       // Initialize profile editing state
       setEditedUsername(user.username || '')
       setEditedFullName(user.full_name || '')
       setEditedProfilePicture(user.profile_picture || '')
-      
+
       // Immediately check cache and load section data in parallel
       if (user.is_premium) {
         console.log('🚀 Immediately loading saved content for premium user')
@@ -332,7 +332,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         }
         loadSectionData('content')
       }
-      
+
       console.log('🚀 Immediately loading content history for user')
       const historyCacheKey = `dashboard-content-history-${user.id}`
       const cachedHistory = requestCache.getCached(historyCacheKey)
@@ -348,7 +348,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   useEffect(() => {
     if (user && !isOpen) {
       console.log('🚀 Preloading dashboard data in background')
-      
+
       // Preload usage stats
       const statsCacheKey = `dashboard-usage-stats-${user.id}`
       if (!requestCache.getCached(statsCacheKey)) {
@@ -361,7 +361,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             return response.data
           },
           5 * 60 * 1000
-        ).catch(() => {}) // Silent fail for background loading
+        ).catch(() => { }) // Silent fail for background loading
       }
 
       // Preload content history for all users
@@ -376,7 +376,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             return response.data || []
           },
           30 * 60 * 1000
-        ).catch(() => {}) // Silent fail for background loading
+        ).catch(() => { }) // Silent fail for background loading
       }
 
       // Preload saved content for premium users
@@ -392,7 +392,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
               return response.data || []
             },
             30 * 60 * 1000
-          ).catch(() => {}) // Silent fail for background loading
+          ).catch(() => { }) // Silent fail for background loading
         }
       }
     }
@@ -441,11 +441,11 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Load section-specific data when user navigates to that section
   const loadSectionData = async (section: string) => {
     console.log(`🔄 Loading section data for: ${section}`)
-    
+
     if (section === 'content') {
       const cacheKey = `dashboard-saved-content-${user?.id}`
       const cachedContent = requestCache.getCached(cacheKey)
-      
+
       // Only show loading if we don't have cached data
       if (!cachedContent || !Array.isArray(cachedContent) || cachedContent.length === 0) {
         setIsLoadingContent(true)
@@ -454,10 +454,10 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         console.log('✅ Using cached saved content:', cachedContent.length, 'items')
         setSavedContent(cachedContent)
       }
-      
+
       try {
         console.log(`🔍 Loading saved content with cache key: ${cacheKey}`)
-        
+
         const content = await requestCache.get(
           cacheKey,
           async () => {
@@ -491,7 +491,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     } else if (section === 'history') {
       const cacheKey = `dashboard-content-history-${user?.id}`
       const cachedHistory = requestCache.getCached(cacheKey)
-      
+
       // Only show loading if we don't have cached data
       if (!cachedHistory || !Array.isArray(cachedHistory) || cachedHistory.length === 0) {
         setIsLoadingHistory(true)
@@ -500,10 +500,10 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         console.log('✅ Using cached content history:', cachedHistory.length, 'items')
         setContentHistory(cachedHistory)
       }
-      
+
       try {
         console.log(`🔍 Loading content history with cache key: ${cacheKey}`)
-        
+
         const history = await requestCache.get(
           cacheKey,
           async () => {
@@ -541,7 +541,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   useEffect(() => {
     if (isOpen && user && activeSection !== 'overview') {
       console.log(`🔄 Section changed to: ${activeSection}, checking if data needs loading`)
-      
+
       // Only load if we don't already have data for this section
       if (activeSection === 'content' && user.is_premium && savedContent.length === 0) {
         console.log('🔄 Loading saved content for empty state')
@@ -558,14 +558,14 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Force refresh data after content generation
   const refreshAfterGeneration = async () => {
     console.log('🔄 Dashboard: Refreshing data after content generation')
-    
+
     // Invalidate caches
     const contentCacheKey = `dashboard-saved-content-${user?.id}`
     const historyCacheKey = `dashboard-content-history-${user?.id}`
-    
+
     requestCache.invalidate(contentCacheKey)
     requestCache.invalidate(historyCacheKey)
-    
+
     // Refresh saved content if currently loaded
     if (savedContent.length > 0) {
       try {
@@ -585,7 +585,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         console.error('Error refreshing saved content:', error)
       }
     }
-    
+
     // Refresh history if currently loaded
     if (contentHistory.length > 0) {
       try {
@@ -605,7 +605,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         console.error('Error refreshing content history:', error)
       }
     }
-    
+
     // Also refresh usage stats
     loadInitialDataFast()
   }
@@ -614,13 +614,13 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   useEffect(() => {
     const handleContentSaved = (event: CustomEvent) => {
       console.log('🔄 Dashboard: Content saved event received')
-      
+
       // Only refresh saved content, not history (history tracks generations, not saves)
       if (user?.is_premium && isOpen && savedContent.length > 0) {
         // Refresh saved content
         const contentCacheKey = `dashboard-saved-content-${user?.id}`
         requestCache.invalidate(contentCacheKey)
-        
+
         // Reload saved content
         loadSectionData('content')
       } else if (user?.is_premium) {
@@ -632,7 +632,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
     const handleContentGenerated = (event: CustomEvent) => {
       console.log('🔄 Dashboard: Content generated event received')
-      
+
       // Refresh both saved content and history after generation
       if (user?.is_premium && isOpen) {
         refreshAfterGeneration()
@@ -694,7 +694,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       })
     } catch (error) {
       console.error('Error toggling favorite:', error)
-      
+
       // Revert the optimistic update on error
       setSavedContent(prev => prev.map(item =>
         item.id === contentId
@@ -716,7 +716,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     try {
       // Set flag to indicate this is a manual cancellation
       sessionStorage.setItem('manual_cancellation', 'true')
-      
+
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/cancel`)
 
       if (response.data.success) {
@@ -817,12 +817,12 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       switch (format) {
         case 'txt':
           exportData = `Title: ${content.title}\n` +
-                      `Type: ${content.content_type}\n` +
-                      `Created: ${new Date(content.created_at).toLocaleString()}\n` +
-                      `${content.updated_at ? `Updated: ${new Date(content.updated_at).toLocaleString()}\n` : ''}` +
-                      `Favorite: ${content.is_favorite ? 'Yes' : 'No'}\n` +
-                      `${content.tags ? `Tags: ${content.tags}\n` : ''}` +
-                      `\n--- Content ---\n\n${content.content}`
+            `Type: ${content.content_type}\n` +
+            `Created: ${new Date(content.created_at).toLocaleString()}\n` +
+            `${content.updated_at ? `Updated: ${new Date(content.updated_at).toLocaleString()}\n` : ''}` +
+            `Favorite: ${content.is_favorite ? 'Yes' : 'No'}\n` +
+            `${content.tags ? `Tags: ${content.tags}\n` : ''}` +
+            `\n--- Content ---\n\n${content.content}`
           filename = `${sanitizedTitle}_${timestamp}.txt`
           mimeType = 'text/plain'
           break
@@ -857,7 +857,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             ['Updated', content.updated_at ? new Date(content.updated_at).toLocaleString() : ''],
             ['Exported', new Date().toLocaleString()]
           ]
-          exportData = csvRows.map(row => 
+          exportData = csvRows.map(row =>
             row.map(cell => `"${cell}"`).join(',')
           ).join('\n')
           filename = `${sanitizedTitle}_${timestamp}.csv`
@@ -906,7 +906,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
       switch (format) {
         case 'txt':
-          exportData = savedContent.map((content, index) => 
+          exportData = savedContent.map((content, index) =>
             `=== Content ${index + 1} ===\n` +
             `Title: ${content.title}\n` +
             `Type: ${content.content_type}\n` +
@@ -955,7 +955,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
               content.updated_at ? new Date(content.updated_at).toLocaleString() : ''
             ])
           })
-          exportData = csvRows.map(row => 
+          exportData = csvRows.map(row =>
             row.map(cell => `"${cell}"`).join(',')
           ).join('\n')
           filename = `snippetstream_content_${timestamp}.csv`
@@ -1111,7 +1111,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                           }
                         }}
                       />
-                      <div 
+                      <div
                         className="mobile-user-initials w-full h-full flex items-center justify-center text-white font-bold text-sm"
                         style={{ display: 'none' }}
                       >
@@ -1119,7 +1119,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                       </div>
                     </>
                   ) : (
-                    <div 
+                    <div
                       className="mobile-user-initials w-full h-full flex items-center justify-center text-white font-bold text-sm"
                     >
                       {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -1159,7 +1159,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 </button>
               </div>
             </div>
-            
+
             {/* Mobile Tab Navigation */}
             <div className="grid grid-cols-5 gap-1">
               <button
@@ -1172,7 +1172,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 <BarChart3 className="w-4 h-4" />
                 Overview
               </button>
-              
+
               <button
                 onClick={() => {
                   setActiveSection('content')
@@ -1193,7 +1193,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 </div>
                 Saved
               </button>
-              
+
               <button
                 onClick={() => {
                   setActiveSection('history')
@@ -1214,7 +1214,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 </div>
                 History
               </button>
-              
+
               <button
                 onClick={() => setActiveSection('templates')}
                 className={`flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 relative ${activeSection === 'templates'
@@ -1228,7 +1228,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 </div>
                 Templates
               </button>
-              
+
               <button
                 onClick={() => setActiveSection('settings')}
                 className={`flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 ${activeSection === 'settings'
@@ -1279,7 +1279,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         }
                       }}
                     />
-                    <div 
+                    <div
                       className="sidebar-user-initials w-full h-full flex items-center justify-center text-white font-bold text-lg"
                       style={{ display: 'none' }}
                     >
@@ -1287,7 +1287,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                     </div>
                   </>
                 ) : (
-                  <div 
+                  <div
                     className="sidebar-user-initials w-full h-full flex items-center justify-center text-white font-bold text-lg"
                   >
                     {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -1485,9 +1485,9 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             </div>
 
             {/* Content */}
-            <div 
+            <div
               className="flex-1 overflow-y-auto p-4 sm:p-8 min-h-0 hide-scrollbar"
-              style={{ 
+              style={{
                 WebkitOverflowScrolling: 'touch',
                 scrollBehavior: 'smooth'
               }}
@@ -1669,10 +1669,10 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                                 <div className="flex items-center gap-2 mb-2">
                                   <span className="px-2 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-full text-xs">
                                     {item.content_type === 'auto-generated' ? 'Auto-saved' :
-                                     item.content_type === 'twitter' ? 'Twitter Thread' :
-                                     item.content_type === 'linkedin' ? 'LinkedIn Post' :
-                                     item.content_type === 'instagram' ? 'Instagram Carousel' :
-                                     item.content_type}
+                                      item.content_type === 'twitter' ? 'Twitter Thread' :
+                                        item.content_type === 'linkedin' ? 'LinkedIn Post' :
+                                          item.content_type === 'instagram' ? 'Instagram Carousel' :
+                                            item.content_type}
                                   </span>
                                   <span className="text-gray-400 text-sm">
                                     {new Date(item.created_at).toLocaleDateString()}
@@ -1690,7 +1690,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                                 >
                                   <Eye className="w-4 h-4" />
                                 </button>
-                                
+
                                 {/* Export Dropdown - Pro only */}
                                 {user?.is_premium && (
                                   <div className="relative group">
@@ -1951,7 +1951,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                                     }
                                   }}
                                 />
-                                <div 
+                                <div
                                   className="profile-initials w-full h-full flex items-center justify-center text-white font-bold text-xl sm:text-2xl"
                                   style={{ display: 'none' }}
                                 >
@@ -1959,7 +1959,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                                 </div>
                               </>
                             ) : (
-                              <div 
+                              <div
                                 className="profile-initials w-full h-full flex items-center justify-center text-white font-bold text-xl sm:text-2xl"
                               >
                                 {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -2052,8 +2052,8 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         <div>
                           <label className="text-sm font-medium text-gray-900 dark:text-white">Auto-save content</label>
                           <p className="text-xs text-gray-600 dark:text-gray-400">
-                            {user?.is_premium 
-                              ? 'Automatically save generated content' 
+                            {user?.is_premium
+                              ? 'Automatically save generated content'
                               : 'Upgrade to Pro to automatically save content'
                             }
                           </p>
@@ -2067,15 +2067,13 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                             setAutoSaveEnabled(!autoSaveEnabled)
                           }}
                           disabled={!user?.is_premium}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                            !user?.is_premium 
-                              ? 'bg-gray-400 cursor-not-allowed opacity-50' 
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${!user?.is_premium
+                              ? 'bg-gray-400 cursor-not-allowed opacity-50'
                               : autoSaveEnabled ? 'bg-blue-600' : 'bg-gray-600'
                             }`}
                         >
                           <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              user?.is_premium && autoSaveEnabled ? 'translate-x-6' : 'translate-x-1'
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${user?.is_premium && autoSaveEnabled ? 'translate-x-6' : 'translate-x-1'
                               }`}
                           />
                         </button>
@@ -2148,10 +2146,10 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
               <div className="flex items-center gap-2 mt-2">
                 <span className="px-2 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-full text-xs">
                   {viewingContent.content_type === 'auto-generated' ? 'Auto-saved' :
-                   viewingContent.content_type === 'twitter' ? 'Twitter Thread' :
-                   viewingContent.content_type === 'linkedin' ? 'LinkedIn Post' :
-                   viewingContent.content_type === 'instagram' ? 'Instagram Carousel' :
-                   viewingContent.content_type}
+                    viewingContent.content_type === 'twitter' ? 'Twitter Thread' :
+                      viewingContent.content_type === 'linkedin' ? 'LinkedIn Post' :
+                        viewingContent.content_type === 'instagram' ? 'Instagram Carousel' :
+                          viewingContent.content_type}
                 </span>
                 <span className="text-gray-600 dark:text-gray-400 text-sm">
                   {new Date(viewingContent.created_at).toLocaleDateString()}
@@ -2175,7 +2173,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                   <Copy className="w-3.5 h-3.5" />
                   Copy Content
                 </button>
-                
+
                 {/* Export Options - Pro only */}
                 {user?.is_premium && (
                   <>
@@ -2279,7 +2277,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="space-y-4">
               {/* File Upload Area */}
               <div>
@@ -2319,7 +2317,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                   </div>
                 )}
               </div>
-              
+
               {/* Current Preview */}
               <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl">
                 <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
@@ -2351,7 +2349,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                           }
                         }}
                       />
-                      <div 
+                      <div
                         className="current-initials w-full h-full flex items-center justify-center text-white font-bold text-lg"
                         style={{ display: 'none' }}
                       >
@@ -2359,7 +2357,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                       </div>
                     </>
                   ) : (
-                    <div 
+                    <div
                       className="current-initials w-full h-full flex items-center justify-center text-white font-bold text-lg"
                     >
                       {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -2373,7 +2371,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => {

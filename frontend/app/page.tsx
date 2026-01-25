@@ -24,7 +24,7 @@ import AuthenticatedNavbar from '../components/AuthenticatedNavbar'
 import DashboardModal from '../components/DashboardModal'
 import SubscriptionWarning from '../components/SubscriptionWarning'
 import Footer from '../components/Footer'
-import { requestCache } from '../lib/requestCache'
+import { requestCache } from '@/lib/requestCache'
 
 interface SocialMediaResponse {
   twitter_thread: string[]
