@@ -130,7 +130,7 @@ async def google_oauth_callback(
         
         # Exchange authorization code for tokens
         token_url = "https://oauth2.googleapis.com/token"
-        redirect_uri = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/auth/google/callback"
+        redirect_uri = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000').rstrip('/')}/auth/google/callback"
         
         print(f"🔍 Using redirect_uri: {redirect_uri}")
         
