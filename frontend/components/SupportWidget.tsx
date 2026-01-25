@@ -7,6 +7,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
 import { useAuth } from '../contexts/AuthContext'
+import { API_URL } from '@/lib/api-config'
 
 interface FAQ {
   question: string
@@ -72,7 +73,7 @@ const SupportWidget = () => {
       // Send to backend endpoint (we'll create this next)
       // For now, we'll simulate a success or use a simple mailto fallback if API fails
       try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/support/contact`, {
+        await axios.post(`${API_URL}/api/v1/support/contact`, {
           email,
           message,
           timestamp: new Date().toISOString(),
