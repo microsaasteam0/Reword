@@ -18,7 +18,7 @@ from pathlib import Path
 env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
-port = os.getenv("SNIPPETSTREAM_PORT", "8000")
+port = os.getenv("PORT", os.getenv("SNIPPETSTREAM_PORT", "8000"))
 
 # Background task management
 background_tasks = set()
