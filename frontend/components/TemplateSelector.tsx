@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, FileText, Search, Star, Calendar, TrendingUp, Eye, Copy } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { API_URL } from '@/lib/api-config'
 
 interface CustomTemplate {
   id: number
@@ -72,24 +73,24 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const loadTemplates = async () => {
     try {
       setIsLoading(true)
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/`
-      
+      let url = `${API_URL}/api/v1/templates/`
+
       const params = new URLSearchParams()
       if (selectedCategory !== 'all') {
         params.append('category', selectedCategory)
       }
-      
+
       // Handle source filtering
       if (selectedSource === 'own') {
         params.append('include_public', 'false')
       } else if (selectedSource === 'public') {
-        url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/templates`
+        url = `${API_URL}/api/v1/public/templates`
       }
-      
+
       if (params.toString()) {
         url += `?${params.toString()}`
       }
-      
+
       const response = await axios.get(url)
       setTemplates(response.data)
     } catch (error: any) {
@@ -104,10 +105,10 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     try {
       // Increment usage count
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${template.id}/use`)
-      
+
       // Update local state
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
+      setTemplates(prev => prev.map(t =>
+        t.id === template.id
           ? { ...t, usage_count: t.usage_count + 1 }
           : t
       ))
@@ -138,17 +139,17 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   }
 
   const filteredTemplates = templates.filter(template => {
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.tags?.toLowerCase().includes(searchQuery.toLowerCase())
-    
+
     const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory
-    
-    const matchesSource = selectedSource === 'all' || 
+
+    const matchesSource = selectedSource === 'all' ||
       (selectedSource === 'own' && template.is_own_template) ||
       (selectedSource === 'public' && !template.is_own_template)
-    
+
     return matchesSearch && matchesCategory && matchesSource
   })
 
@@ -254,7 +255,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 {searchQuery ? 'No templates found' : 'No templates yet'}
               </h4>
               <p className="text-gray-500 dark:text-gray-500 mb-4 sm:mb-6 text-sm sm:text-base px-4">
-                {searchQuery 
+                {searchQuery
                   ? `No templates match "${searchQuery}"`
                   : 'Create your first custom template to get started'
                 }
@@ -295,7 +296,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     <button
                       onClick={(e) => handleCopyContent(template.content, template.name, e)}
                       className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-white transition-colors opacity-0 group-hover:opacity-100"
@@ -353,7 +354,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                     <Eye className="w-3 h-3 mr-1" />
                     {expandedTemplate === template.id ? 'Hide' : 'Preview'} Content
                   </button>
-                  
+
                   {expandedTemplate === template.id && (
                     <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
                       <pre className="text-gray-700 dark:text-gray-300 text-xs whitespace-pre-wrap max-h-32 overflow-y-auto">

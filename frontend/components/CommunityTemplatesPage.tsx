@@ -6,6 +6,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import { requestCache } from '@/lib/cache-util'
+import { API_URL } from '@/lib/api-config'
 
 interface CommunityTemplate {
   id: number
@@ -100,7 +101,7 @@ const CommunityTemplatesPage: React.FC<CommunityTemplatesPageProps> = ({
       // Create cache key based on category and sort
       const cacheKey = `community-templates-${selectedCategory}-${sortBy}`
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/templates?${params.toString()}`
+      const url = `${API_URL}/api/v1/public/templates?${params.toString()}`
       console.log('🔄 Loading community templates from API:', url)
 
       const response = await requestCache.get(
