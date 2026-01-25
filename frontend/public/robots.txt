@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+Disallow: /verify-email
+Disallow: /*?token=
+
+# Sitemap
+Sitemap: https://reword.app/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Specific Bot Instructions
+User-agent: GPTBot
+Disallow: /api/
+Disallow: /auth/
+
+User-agent: ChatGPT-User
+Disallow: /api/
+Disallow: /auth/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
