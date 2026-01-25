@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllPosts, BlogPost } from '@/lib/blogData';
+import { getAllPosts, BlogPost } from '@/lib/blog-data';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 

@@ -9,7 +9,7 @@ import DashboardModal from './DashboardModal'
 import { useAuth } from '../contexts/AuthContext'
 import { useSubscription } from '../contexts/SubscriptionContext'
 import { usePaymentProcessing } from '../contexts/PaymentProcessingContext'
-import { requestCache } from '@/lib/requestCache'
+import { requestCache } from '@/lib/cache-util'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 

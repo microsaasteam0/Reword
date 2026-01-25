@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getPostBySlug, getAllPosts } from '@/lib/blogData';
+import { getPostBySlug, getAllPosts } from '@/lib/blog-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Navbar from '@/components/Navbar';

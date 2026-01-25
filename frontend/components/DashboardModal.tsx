@@ -11,7 +11,7 @@ import CustomTemplateManager from './CustomTemplateManager'
 import LoadingSpinner from './LoadingSpinner'
 import Pagination from './Pagination'
 import ImageEditor from './ImageEditor'
-import { requestCache } from '@/lib/requestCache'
+import { requestCache } from '@/lib/cache-util'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -2068,8 +2068,8 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                           }}
                           disabled={!user?.is_premium}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${!user?.is_premium
-                              ? 'bg-gray-400 cursor-not-allowed opacity-50'
-                              : autoSaveEnabled ? 'bg-blue-600' : 'bg-gray-600'
+                            ? 'bg-gray-400 cursor-not-allowed opacity-50'
+                            : autoSaveEnabled ? 'bg-blue-600' : 'bg-gray-600'
                             }`}
                         >
                           <span

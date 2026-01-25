@@ -5,7 +5,7 @@ import { ArrowLeft, Search, Globe, TrendingUp, Calendar, Eye, Copy, FileText, Cr
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
-import { requestCache } from '@/lib/requestCache'
+import { requestCache } from '@/lib/cache-util'
 
 interface CommunityTemplate {
   id: number
