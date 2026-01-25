@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { usePaymentProcessing } from '../contexts/PaymentProcessingContext'
+import { requestCache } from '@/lib/cache-util'
+import { API_URL } from '@/lib/api-config'
 import axios from 'axios'
 
 interface FeatureLimits {
@@ -58,7 +60,7 @@ export const useFeatureGate = () => {
       }
 
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/feature-limits`)
+        const response = await axios.get(`${API_URL}/api/v1/auth/feature-limits`)
         console.log('Feature limits API response:', response.data)
         setFeatureLimits(response.data)
       } catch (error) {
@@ -95,7 +97,7 @@ export const useFeatureGate = () => {
 
   const getUpgradePrompt = useCallback(async (feature: string): Promise<UpgradePrompt> => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/upgrade-prompt/${feature}`)
+      const response = await axios.get(`${API_URL}/api/v1/auth/upgrade-prompt/${feature}`)
       return response.data
     } catch (error) {
       console.error('Error fetching upgrade prompt:', error)

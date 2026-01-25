@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from './AuthContext'
+import { API_URL } from '@/lib/api-config'
 
 interface SubscriptionInfo {
   id: number
@@ -73,8 +74,8 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
       setIsLoading(true)
       console.log('🔍 Checking subscription status with real-time validation...')
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/check-status`)
-      
+      const response = await axios.post(`${API_URL}/api/v1/payment/check-status`)
+
       if (response.data) {
         const { success, is_premium, plan, message } = response.data
 
@@ -82,11 +83,11 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
         if (user.is_premium !== is_premium) {
           console.log(`🔄 Premium status changed: ${user.is_premium} → ${is_premium}`)
           updateUser({ is_premium })
-          
+
           if (!is_premium && user.is_premium) {
             // Check if this is a manual cancellation (don't show error for manual cancellations)
             const isManualCancellation = sessionStorage.getItem('manual_cancellation')
-            
+
             if (isManualCancellation) {
               console.log('🔄 Manual cancellation detected, skipping error notification')
               sessionStorage.removeItem('manual_cancellation')
@@ -94,7 +95,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
               // User was downgraded due to expiration
               toast.error('Your subscription has expired. You\'ve been downgraded to the free plan.')
             }
-            
+
             // Dispatch event for other components to react
             window.dispatchEvent(new CustomEvent('subscription-expired', {
               detail: { previousStatus: 'premium', currentStatus: 'free' }
@@ -104,15 +105,15 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
         // Parse subscription info from the message if available
         let subscriptionData: SubscriptionInfo | null = null
-        
+
         if (is_premium && success) {
           // Try to get detailed subscription info
           try {
-            const detailResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/history`)
-            const activePayment = detailResponse.data?.payments?.find((p: any) => 
+            const detailResponse = await axios.get(`${API_URL}/api/v1/payment/history`)
+            const activePayment = detailResponse.data?.payments?.find((p: any) =>
               p.status === 'completed' && p.plan_type !== 'free'
             )
-            
+
             if (activePayment) {
               subscriptionData = {
                 id: activePayment.id,
@@ -149,12 +150,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
         setSubscriptionInfo(subscriptionData)
         setLastCheck(now)
-        
+
         console.log('✅ Subscription status updated:', subscriptionData)
       }
     } catch (error: any) {
       console.error('❌ Error checking subscription status:', error)
-      
+
       // If we get a 401, the user might have been downgraded
       if (error.response?.status === 401 && user?.is_premium) {
         console.log('🔄 Got 401 while checking subscription, user might be downgraded')

@@ -12,6 +12,7 @@ import LoadingSpinner from './LoadingSpinner'
 import Pagination from './Pagination'
 import ImageEditor from './ImageEditor'
 import { requestCache } from '@/lib/cache-util'
+import { API_URL } from '@/lib/api-config'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -227,7 +228,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         profile_picture: imageUrl.substring(0, 50) + '...'
       })
 
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, profileData, {
+      const response = await axios.put(`${API_URL}/api/v1/auth/profile`, profileData, {
         timeout: 30000, // 30 second timeout for large images
         headers: {
           'Content-Type': 'application/json'
@@ -355,7 +356,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         requestCache.get(
           statsCacheKey,
           async () => {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`, {
+            const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`, {
               timeout: 5000
             })
             return response.data
@@ -370,7 +371,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         requestCache.get(
           historyCacheKey,
           async () => {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/history`, {
+            const response = await axios.get(`${API_URL}/api/v1/content/history`, {
               timeout: 5000
             })
             return response.data || []
@@ -386,7 +387,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           requestCache.get(
             contentCacheKey,
             async () => {
-              const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/saved`, {
+              const response = await axios.get(`${API_URL}/api/v1/content/saved`, {
                 timeout: 5000
               })
               return response.data || []
@@ -414,7 +415,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         cacheKey,
         async () => {
           console.log('🔄 DashboardModal: Making fresh usage-stats API call')
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/usage-stats`, {
+          const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`, {
             timeout: 5000 // Increased timeout
           })
           return response.data
@@ -462,7 +463,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           cacheKey,
           async () => {
             console.log('🔄 DashboardModal: Making fresh saved-content API call')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/saved`, {
+            const response = await axios.get(`${API_URL}/api/v1/content/saved`, {
               timeout: 10000 // Increased timeout
             })
             console.log('📦 Saved content API response:', response.data)
@@ -508,7 +509,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           cacheKey,
           async () => {
             console.log('🔄 DashboardModal: Making fresh content-history API call')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/history`, {
+            const response = await axios.get(`${API_URL}/api/v1/content/history`, {
               timeout: 10000 // Increased timeout
             })
             console.log('📦 Content history API response:', response.data)
@@ -573,7 +574,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           contentCacheKey,
           async () => {
             console.log('🔄 DashboardModal: Refreshing saved-content after generation')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/saved`, {
+            const response = await axios.get(`${API_URL}/api/v1/content/saved`, {
               timeout: 2000
             })
             return response.data || []
@@ -593,7 +594,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           historyCacheKey,
           async () => {
             console.log('🔄 DashboardModal: Refreshing content-history after generation')
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/history`, {
+            const response = await axios.get(`${API_URL}/api/v1/content/history`, {
               timeout: 2000
             })
             return response.data || []
@@ -657,7 +658,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
   const handleDeleteContent = async (contentId: number) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/saved/${contentId}`)
+      await axios.delete(`${API_URL}/api/v1/content/saved/${contentId}`)
       setSavedContent(prev => prev.filter(item => item.id !== contentId))
       setDeletingContent(null)
       toast.success('Content deleted successfully')
@@ -689,7 +690,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
     // Make API call in background
     try {
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/saved/${contentId}`, {
+      await axios.put(`${API_URL}/api/v1/content/saved/${contentId}`, {
         is_favorite: newFavoriteState
       })
     } catch (error) {
@@ -717,7 +718,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       // Set flag to indicate this is a manual cancellation
       sessionStorage.setItem('manual_cancellation', 'true')
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/payment/cancel`)
+      const response = await axios.post(`${API_URL}/api/v1/payment/cancel`)
 
       if (response.data.success) {
         // Update user state

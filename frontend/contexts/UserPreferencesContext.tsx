@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useAuth } from './AuthContext'
 import axios from 'axios'
+import { API_URL } from '@/lib/api-config'
 
 interface UserPreferencesContextType {
   autoSaveEnabled: boolean
@@ -14,9 +15,9 @@ interface UserPreferencesContextType {
 
 const UserPreferencesContext = createContext<UserPreferencesContextType>({
   autoSaveEnabled: true,
-  setAutoSaveEnabled: () => {},
+  setAutoSaveEnabled: () => { },
   emailNotificationsEnabled: true,
-  setEmailNotificationsEnabled: () => {},
+  setEmailNotificationsEnabled: () => { },
   isLoading: true
 })
 
@@ -48,11 +49,11 @@ export function UserPreferencesProvider({ children }: UserPreferencesProviderPro
 
   const loadUserPreferences = async () => {
     if (hasLoaded) return // Prevent duplicate calls
-    
+
     try {
       setIsLoading(true)
       setHasLoaded(true)
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/preferences`)
+      const response = await axios.get(`${API_URL}/api/v1/auth/preferences`)
       if (response.data) {
         setAutoSaveEnabledState(response.data.auto_save_enabled ?? true)
         setEmailNotificationsEnabledState(response.data.email_notifications_enabled ?? true)
