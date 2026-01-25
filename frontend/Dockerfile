@@ -8,22 +8,26 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy source code (excluding .env.local files)
+# Copy source code
 COPY . .
-RUN rm -f .env.local .env*.local
 
-# Set build-time environment variables for production
+# Accept build arguments (these come from Railway variables)
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
+# Make them available during build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://snippetstream-api.eastus.azurecontainer.io
 
-# Build the application with environment variables
+# Build the application
 RUN npm run build
 
-# Expose port
-EXPOSE 80
+# Expose standard Next.js port
+EXPOSE 3000
 
-# Set runtime environment variables
-ENV PORT=80
+# Set runtime settings
+ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Start the application
