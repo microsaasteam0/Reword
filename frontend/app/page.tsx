@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Sparkles, Twitter, Linkedin, Instagram, Link as LinkIcon, FileText, Loader2, Copy, Check, Star, Zap, Shield, Users, TrendingUp, Clock, ChevronRight, Play, ArrowRight, HelpCircle, CheckCircle, AlertCircle, User, LogIn, Settings, Crown, Lock, X, Plus } from 'lucide-react'
+import { Sparkles, Twitter, Linkedin, Instagram, Link as LinkIcon, FileText, Loader2, Copy, Check, Star, Zap, Shield, Users, TrendingUp, Clock, ChevronRight, Play, ArrowRight, HelpCircle, CheckCircle, AlertCircle, User, LogIn, Settings, Crown, Lock, X, Plus, MessageSquare, Globe, Mail } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { XDisplay, LinkedInDisplay, InstagramCarousel } from '../components/FormattedText'
