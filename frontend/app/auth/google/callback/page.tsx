@@ -29,13 +29,18 @@ export default function GoogleCallbackPage() {
 
       try {
         // Get the authorization code and state from URL
-        const code = searchParams.get('code')
-        const state = searchParams.get('state')
+        // Use both searchParams and direct window access as a fallback for reliability
+        let code = searchParams.get('code')
+        let state = searchParams.get('state')
         const error = searchParams.get('error')
 
-        // console.log('🔄 Google OAuth callback received with code:', code ? code.substring(0, 20) + '...' : 'Missing')
-        // console.log('🔍 State:', state)
-        // console.log('❌ Error:', error)
+        if (!code && typeof window !== 'undefined') {
+          const urlParams = new URLSearchParams(window.location.search)
+          code = urlParams.get('code')
+          state = state || urlParams.get('state')
+        }
+
+        console.log('🔄 Google OAuth processing:', { hasCode: !!code, hasState: !!state })
 
         // Mark as processed immediately to prevent duplicate calls
         hasProcessedRef.current = true
@@ -46,26 +51,17 @@ export default function GoogleCallbackPage() {
         }
 
         if (!code) {
-          throw new Error('No authorization code received from Google')
+          console.error('❌ Authorization code missing from URL')
+          throw new Error('No authorization code received from Google. Please try again.')
         }
 
-        // Check if we already have valid tokens (from a previous successful request)
+        // Check if we already have valid tokens
         const existingToken = localStorage.getItem('access_token')
         const existingUser = localStorage.getItem('user')
 
         if (existingToken && existingUser) {
-          // console.log('✅ Already have valid tokens, redirecting...')
           setStatus('success')
           setMessage('Already authenticated! Redirecting...')
-
-          // Set axios header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${existingToken}`
-
-          // Dispatch auth success event
-          window.dispatchEvent(new CustomEvent('auth-success', {
-            detail: { user: JSON.parse(existingUser) }
-          }))
-
           setTimeout(() => {
             window.location.replace('/')
           }, 500)
@@ -74,54 +70,43 @@ export default function GoogleCallbackPage() {
 
         setMessage('Authenticating with Reword...')
 
-        // Create a unique request ID to track this specific request
-        const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
-        // console.log('🆔 Request ID:', requestId)
-
-        // Send the authorization code to your backend (as JSON)
         const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
         const redirectUri = `${window.location.origin}/auth/google/callback`
 
+        // Construct a clean, strict payload
         const payload = {
-          code,
-          state: state || 'dev-mode',
-          request_id: requestId,
+          code: String(code),
+          state: String(state || 'dev-mode'),
           redirect_uri: redirectUri
         }
 
-        console.log('📤 Sending auth payload:', payload)
+        console.log('📤 Sending auth payload to:', `${apiUrl}/api/v1/auth/google/callback`, payload)
 
         const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, payload, {
           headers: {
             'Content-Type': 'application/json'
           },
-          timeout: 15000 // 15 second timeout
+          timeout: 15000
         })
 
         if (authResponse.data && authResponse.data.access_token) {
-          // console.log('✅ Authentication successful!')
-
-          // Store tokens directly in localStorage
+          // Store tokens
           localStorage.setItem('access_token', authResponse.data.access_token)
-          localStorage.setItem('refresh_token', authResponse.data.refresh_token)
+          localStorage.setItem('refresh_token', authResponse.data.refresh_token || '')
           localStorage.setItem('user', JSON.stringify(authResponse.data.user))
 
-          // Set axios default header immediately
+          // Set axios default header
           axios.defaults.headers.common['Authorization'] = `Bearer ${authResponse.data.access_token}`
 
-          // Dispatch a custom event to notify other components
           window.dispatchEvent(new CustomEvent('auth-success', {
             detail: { user: authResponse.data.user }
           }))
 
           setStatus('success')
           setMessage('Sign-in successful! Redirecting...')
+          toast.success('🎉 Welcome to Reword!')
 
-          toast.success('🎉 Successfully signed in with Google!')
-
-          // Redirect to home page after a short delay
           setTimeout(() => {
-            // Use replace to avoid back button issues
             window.location.replace('/')
           }, 1000)
         } else {
