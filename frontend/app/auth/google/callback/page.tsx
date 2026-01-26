@@ -71,21 +71,18 @@ export default function GoogleCallbackPage() {
         setMessage('Authenticating with Reword...')
 
         const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
-        const redirectUri = `${window.location.origin}/auth/google/callback`
 
-        // Construct a clean, strict payload
-        const payload = {
-          code: String(code),
-          state: String(state || 'dev-mode'),
-          redirect_uri: redirectUri
-        }
+        // Use FormData as required by the backend's Form(...) parameters
+        const formData = new FormData()
+        formData.append('code', String(code))
+        formData.append('state', String(state || 'dev-mode'))
 
-        console.log('📤 Sending auth payload to:', `${apiUrl}/api/v1/auth/google/callback`, payload)
+        console.log('📤 Sending auth payload (FormData):', {
+          code: String(code).substring(0, 10) + '...',
+          state: state || 'dev-mode'
+        })
 
-        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, payload, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
+        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, formData, {
           timeout: 15000
         })
 
