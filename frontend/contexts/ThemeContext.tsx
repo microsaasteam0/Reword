@@ -25,18 +25,15 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>('dark')
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setThemeState] = useState<Theme>('system')
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
   const [isInitialized, setIsInitialized] = useState(false)
 
   // Initialize theme from localStorage
   useEffect(() => {
     const savedTheme = localStorage.getItem('snippetstream-theme') as Theme
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
-      console.log('🎨 Loading saved theme:', savedTheme)
       setThemeState(savedTheme)
-    } else {
-      console.log('🎨 No saved theme, using default: dark')
     }
     setIsInitialized(true)
   }, [])
@@ -44,43 +41,35 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   // Update resolved theme based on theme setting
   useEffect(() => {
     if (!isInitialized) return
-    
+
     const updateResolvedTheme = () => {
       if (theme === 'system') {
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        const newResolvedTheme = systemPrefersDark ? 'dark' : 'light'
-        setResolvedTheme(newResolvedTheme)
+        setResolvedTheme(systemPrefersDark ? 'dark' : 'light')
       } else {
-        setResolvedTheme(theme)
+        setResolvedTheme(theme as 'light' | 'dark')
       }
     }
 
     updateResolvedTheme()
 
-    // Listen for system theme changes
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
       const handleChange = () => updateResolvedTheme()
-
       mediaQuery.addEventListener('change', handleChange)
       return () => mediaQuery.removeEventListener('change', handleChange)
     }
   }, [theme, isInitialized])
 
-  // Apply theme to document (only after initialization to prevent flash)
+  // Apply theme to document
   useEffect(() => {
     if (!isInitialized) return
-    
+
     const root = document.documentElement
-    
-    console.log('🎨 Applying theme:', resolvedTheme)
-    
-    // Remove existing theme classes
     root.classList.remove('light', 'dark')
-    
-    // Add current theme class
+    root.classList.add(resolvedTheme)
+
     if (resolvedTheme === 'dark') {
-      root.classList.add('dark')
       root.style.setProperty('--bg-color', '#111827')
       root.style.setProperty('--text-color', '#ffffff')
       root.style.colorScheme = 'dark'
@@ -89,13 +78,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       root.style.setProperty('--text-color', '#111827')
       root.style.colorScheme = 'light'
     }
-    
-    // Add theme-loaded class to enable transitions
+
     root.classList.add('theme-loaded')
-    
-    console.log('🎨 HTML classes:', root.className)
-    
-    // Update meta theme-color for mobile browsers
+
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#111827' : '#ffffff')
@@ -103,7 +88,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, [resolvedTheme, isInitialized])
 
   const setTheme = (newTheme: Theme) => {
-    console.log('🎨 Setting theme to:', newTheme)
     setThemeState(newTheme)
     localStorage.setItem('snippetstream-theme', newTheme)
   }

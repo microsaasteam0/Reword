@@ -212,15 +212,15 @@ export const UsageCounter: React.FC<UsageCounterProps> = ({ className = '', stat
   return (
     <div className={`dark:bg-gray-800/50 bg-white border dark:border-gray-700 border-gray-200 rounded-lg p-3 shadow-sm ${className}`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm dark:text-gray-300 text-gray-600 font-medium">Daily Generations</span>
+        <span className="text-sm dark:text-gray-300 text-gray-600 font-medium tracking-tight">Daily Generations</span>
         <span className={`text-sm font-bold ${isLow ? 'text-red-500' : 'text-blue-600'}`}>
-          {limit === Infinity ? 'Unlimited' : `${remaining}/${limit} left`}
+          {limit === Infinity ? 'Unlimited' : ` ${remaining}/${limit} left`}
         </span>
       </div>
 
-      <div className="w-full dark:bg-gray-700 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+      <div className="w-full dark:bg-gray-700 bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
         <div
-          className={`h-full rounded-full transition-all duration-1000 ease-out ${isLow ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-blue-500 to-indigo-600'
+          className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${isLow ? 'bg-gradient-to-r from-red-400 to-rose-600' : 'bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600'
             }`}
           style={{ width: `${limit === Infinity ? 100 : percentage}%` }}
         />

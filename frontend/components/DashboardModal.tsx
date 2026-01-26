@@ -1060,7 +1060,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     <>
       {/* Modal Backdrop */}
       <div
-        className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hide-scrollbar z-[999999]"
+        className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hide-scrollbar z-[1000]"
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -1068,7 +1068,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: 999999,
+          zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -2129,7 +2129,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 10000,
+            zIndex: 1100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2232,7 +2232,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 10000,
+            zIndex: 1100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2272,7 +2272,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 10001,
+            zIndex: 1100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2436,7 +2436,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 10000,
+            zIndex: 1100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
