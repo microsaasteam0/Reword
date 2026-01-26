@@ -218,7 +218,7 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
           </div>
         </div>
       )}
-      <nav className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[9999] w-full relative">
+      <nav className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-50 w-full">
         <div className="max-w-7xl mx-auto px-6 py-4 sm:py-5">
           <div className="flex items-center justify-between gap-1 sm:gap-4">
             {/* Logo */}

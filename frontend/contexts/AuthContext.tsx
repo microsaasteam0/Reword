@@ -262,7 +262,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return true
     } catch (error: any) {
       // console.error('Login error:', error)
-      const message = error.response?.data?.detail || 'Login failed'
+      let message = 'Login failed'
+      if (error.response?.data?.detail) {
+        if (typeof error.response.data.detail === 'string') {
+          message = error.response.data.detail
+        } else if (Array.isArray(error.response.data.detail)) {
+          message = error.response.data.detail[0]?.msg || message
+        } else if (typeof error.response.data.detail === 'object') {
+          message = error.response.data.detail.message || message
+        }
+      }
       toast.error(message)
       return false
     } finally {
@@ -311,10 +320,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return true
     } catch (error: any) {
       // console.error('❌ Google auth error:', error)
-      // console.error('❌ Error response:', error.response?.data)
-      // console.error('❌ Error status:', error.response?.status)
-
-      const message = error.response?.data?.detail || 'Google authentication failed'
+      let message = 'Google authentication failed'
+      if (error.response?.data?.detail) {
+        if (typeof error.response.data.detail === 'string') {
+          message = error.response.data.detail
+        } else if (Array.isArray(error.response.data.detail)) {
+          message = error.response.data.detail[0]?.msg || message
+        } else if (typeof error.response.data.detail === 'object') {
+          message = error.response.data.detail.message || message
+        }
+      }
       toast.error(message)
       return false
     } finally {
@@ -372,7 +387,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return true
     } catch (error: any) {
       // console.error('Registration error:', error)
-      const message = error.response?.data?.detail || 'Registration failed'
+      let message = 'Registration failed'
+      if (error.response?.data?.detail) {
+        if (typeof error.response.data.detail === 'string') {
+          message = error.response.data.detail
+        } else if (Array.isArray(error.response.data.detail)) {
+          message = error.response.data.detail[0]?.msg || message
+        } else if (typeof error.response.data.detail === 'object') {
+          message = error.response.data.detail.message || message
+        }
+      }
       toast.error(message)
       return false
     } finally {

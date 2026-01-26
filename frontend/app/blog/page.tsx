@@ -33,7 +33,7 @@ export default function BlogPage() {
                 <section className="relative pt-16 pb-20 px-6 overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-300">
                     {/* Background Effects */}
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20 dark:via-[#0F172A] dark:to-[#0F172A] pointer-events-none"></div>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-blue-400/5 dark:bg-blue-500/10 rounded-[100%] blur-3xl pointer-events-none"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] md:w-[1000px] h-[400px] bg-blue-400/5 dark:bg-blue-500/10 rounded-[100%] blur-3xl pointer-events-none"></div>
 
                     <div className="relative max-w-4xl mx-auto text-center z-10">
                         <div className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 bg-white dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-full text-xs font-semibold uppercase tracking-wider border border-blue-100 dark:border-blue-500/20 shadow-sm dark:shadow-blue-900/20 backdrop-blur-md">

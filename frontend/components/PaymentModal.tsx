@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X, Crown, Check, Loader2, ExternalLink } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
@@ -22,6 +23,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 }) => {
   const { updateUser } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const pricing = {
     pro: { monthly: 15, yearly: 144 },
@@ -111,10 +117,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
-    <div className="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-md z-[999999] flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-md z-[2000000] flex items-center justify-center p-4">
       <div className="relative bg-[#1E293B] dark:bg-[#020617] rounded-3xl border border-slate-700/50 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl overflow-hidden">
 
         {/* Background Effects */}
@@ -221,7 +227,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
