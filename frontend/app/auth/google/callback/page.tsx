@@ -82,18 +82,19 @@ export default function GoogleCallbackPage() {
         const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
         const redirectUri = `${window.location.origin}/auth/google/callback`
 
-        const payload = {
-          code,
-          state: state || 'dev-mode',
-          request_id: requestId,
-          redirect_uri: redirectUri
-        }
+        // Convert to URLSearchParams for x-www-form-urlencoded
+        // This is often more robust for OAuth callbacks across different backend configurations
+        const params = new URLSearchParams()
+        if (code) params.append('code', code)
+        if (state) params.append('state', state)
+        if (requestId) params.append('request_id', requestId)
+        if (redirectUri) params.append('redirect_uri', redirectUri)
 
-        console.log('📤 Sending auth payload:', payload)
+        console.log('📤 Sending auth payload (form-urlencoded):', params.toString())
 
-        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, payload, {
+        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, params, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
           timeout: 15000 // 15 second timeout
         })
