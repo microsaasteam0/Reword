@@ -72,7 +72,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
     try {
       setIsLoading(true)
-      console.log('🔍 Checking subscription status with real-time validation...')
+      // console.log('🔍 Checking subscription status with real-time validation...')
 
       const response = await axios.post(`${API_URL}/api/v1/payment/check-status`)
 
@@ -81,7 +81,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
 
         // Update user premium status if it changed
         if (user.is_premium !== is_premium) {
-          console.log(`🔄 Premium status changed: ${user.is_premium} → ${is_premium}`)
+          // console.log(`🔄 Premium status changed: ${user.is_premium} → ${is_premium}`)
           updateUser({ is_premium })
 
           if (!is_premium && user.is_premium) {
@@ -89,7 +89,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
             const isManualCancellation = sessionStorage.getItem('manual_cancellation')
 
             if (isManualCancellation) {
-              console.log('🔄 Manual cancellation detected, skipping error notification')
+              // console.log('🔄 Manual cancellation detected, skipping error notification')
               sessionStorage.removeItem('manual_cancellation')
             } else {
               // User was downgraded due to expiration
@@ -127,7 +127,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
               }
             }
           } catch (detailError) {
-            console.warn('Could not fetch detailed subscription info:', detailError)
+            // console.warn('Could not fetch detailed subscription info:', detailError)
           }
         }
 
@@ -151,14 +151,15 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
         setSubscriptionInfo(subscriptionData)
         setLastCheck(now)
 
-        console.log('✅ Subscription status updated:', subscriptionData)
+        // console.log('✅ Subscription status updated:', subscriptionData)
       }
     } catch (error: any) {
-      console.error('❌ Error checking subscription status:', error)
+      setLastCheck(now) // Update lastCheck to prevent infinite loops on error
+      // console.error('❌ Error checking subscription status:', error)
 
       // If we get a 401, the user might have been downgraded
       if (error.response?.status === 401 && user?.is_premium) {
-        console.log('🔄 Got 401 while checking subscription, user might be downgraded')
+        // console.log('🔄 Got 401 while checking subscription, user might be downgraded')
         updateUser({ is_premium: false })
         setSubscriptionInfo(null)
         toast.error('Your session has expired. Please log in again.')
@@ -187,7 +188,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
     if (!isAuthenticated || !user?.is_premium) return
 
     const interval = setInterval(() => {
-      console.log('🔄 Periodic subscription status check...')
+      // console.log('🔄 Periodic subscription status check...')
       checkSubscriptionStatus()
     }, 30 * 60 * 1000) // 30 minutes
 
@@ -197,12 +198,12 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
   // Listen for subscription-related events
   useEffect(() => {
     const handleSubscriptionUpdate = () => {
-      console.log('🔄 Subscription update event received, refreshing...')
+      // console.log('🔄 Subscription update event received, refreshing...')
       refreshSubscriptionInfo()
     }
 
     const handlePaymentSuccess = () => {
-      console.log('🎉 Payment success event received, refreshing subscription...')
+      // console.log('🎉 Payment success event received, refreshing subscription...')
       setTimeout(() => refreshSubscriptionInfo(), 2000) // Small delay for webhook processing
     }
 

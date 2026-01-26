@@ -57,13 +57,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Preload usage stats function
   const preloadUsageStats = async (userData: User) => {
     try {
-      console.log('🚀 Preloading usage stats for user:', userData.username)
+      // console.log('🚀 Preloading usage stats for user:', userData.username)
       const cacheKey = `usage-stats-${userData.id}`
 
       // Check if we already have cached data
       const existingCache = sessionStorage.getItem(`cache-${cacheKey}`)
       if (existingCache) {
-        console.log('📦 Usage stats already cached, skipping preload')
+        // console.log('📦 Usage stats already cached, skipping preload')
         return
       }
 
@@ -78,10 +78,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         timestamp: Date.now()
       }
       sessionStorage.setItem(`cache-${cacheKey}`, JSON.stringify(cacheData))
-      console.log('✅ Usage stats preloaded and cached')
+      // console.log('✅ Usage stats preloaded and cached')
 
     } catch (error) {
-      console.log('⚠️ Failed to preload usage stats:', error)
+      // console.log('⚠️ Failed to preload usage stats:', error)
       // Don't throw error, just log it
     }
   }
@@ -89,13 +89,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Preload content history function
   const preloadContentHistory = async (userData: User) => {
     try {
-      console.log('🚀 Preloading content history for user:', userData.username)
+      // console.log('🚀 Preloading content history for user:', userData.username)
       const cacheKey = `dashboard-content-history-${userData.id}`
 
       // Check if we already have cached data
       const existingCache = sessionStorage.getItem(`cache-${cacheKey}`)
       if (existingCache) {
-        console.log('📦 Content history already cached, skipping preload')
+        // console.log('📦 Content history already cached, skipping preload')
         return
       }
 
@@ -110,10 +110,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         timestamp: Date.now()
       }
       sessionStorage.setItem(`cache-${cacheKey}`, JSON.stringify(cacheData))
-      console.log('✅ Content history preloaded and cached')
+      // console.log('✅ Content history preloaded and cached')
 
     } catch (error) {
-      console.log('⚠️ Failed to preload content history:', error)
+      // console.log('⚠️ Failed to preload content history:', error)
       // Don't throw error, just log it
     }
   }
@@ -126,9 +126,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const storedRefreshToken = localStorage.getItem('refresh_token')
         const storedUser = localStorage.getItem('user')
 
-        console.log('🔍 Initializing auth state...')
-        console.log('📦 Stored token exists:', !!storedToken)
-        console.log('📦 Stored user exists:', !!storedUser)
+        // console.log('🔍 Initializing auth state...')
+        // console.log('📦 Stored token exists:', !!storedToken)
+        // console.log('📦 Stored user exists:', !!storedUser)
 
         if (storedToken && storedUser) {
           setToken(storedToken)
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Set default authorization header
           axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
 
-          console.log('✅ Auth state restored from localStorage')
+          // console.log('✅ Auth state restored from localStorage')
 
           // Preload usage stats immediately after auth restoration
           setTimeout(() => {
@@ -154,23 +154,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const oneHour = 60 * 60 * 1000 // Increased to 1 hour
 
             if (!lastVerified || (now - parseInt(lastVerified)) > oneHour) {
-              console.log('🔄 Verifying token (last verified over 1 hour ago)...')
+              // console.log('🔄 Verifying token (last verified over 1 hour ago)...')
               const meResponse = await axios.get(`${API_URL}/api/v1/auth/me`, {
                 timeout: 5000 // 5 second timeout
               })
               sessionStorage.setItem('token_last_verified', now.toString())
-              console.log('✅ Token verification successful')
+              // console.log('✅ Token verification successful')
 
               // Update user data with fresh data from server
               const freshUserData = meResponse.data
               setUser(freshUserData)
               localStorage.setItem('user', JSON.stringify(freshUserData))
-              console.log('🔄 User data refreshed from server')
+              // console.log('🔄 User data refreshed from server')
             } else {
-              console.log('✅ Token verification skipped (recently verified)')
+              // console.log('✅ Token verification skipped (recently verified)')
             }
           } catch (error: any) {
-            console.log('⚠️ Token verification failed:', error.response?.status, error.message)
+            // console.log('⚠️ Token verification failed:', error.response?.status, error.message)
 
             // Only clear auth for specific error conditions
             if (error.response?.status === 401 || error.response?.status === 403) {
@@ -179,38 +179,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               const thirtySeconds = 30 * 1000
 
               if (timeSinceLogin < thirtySeconds) {
-                console.log('⚠️ Token verification failed but user just logged in, keeping auth state')
+                // console.log('⚠️ Token verification failed but user just logged in, keeping auth state')
                 return // Don't clear auth immediately after login
               }
 
-              console.log('🔄 Token appears invalid (401/403), attempting refresh...')
+              // console.log('🔄 Token appears invalid (401/403), attempting refresh...')
 
               // Try to refresh token first
               if (storedRefreshToken) {
                 const refreshed = await refreshToken()
                 if (!refreshed) {
-                  console.log('❌ Token refresh failed, clearing auth')
+                  // console.log('❌ Token refresh failed, clearing auth')
                   clearAuthData()
                 } else {
-                  console.log('✅ Token refreshed successfully')
+                  // console.log('✅ Token refreshed successfully')
                 }
               } else {
-                console.log('❌ No refresh token available, clearing auth')
+                // console.log('❌ No refresh token available, clearing auth')
                 clearAuthData()
               }
             } else {
               // For network errors, server errors, etc., keep the user logged in
-              console.log('⚠️ Token verification failed due to network/server issue, keeping user logged in')
+              // console.log('⚠️ Token verification failed due to network/server issue, keeping user logged in')
               // Don't clear auth data - could be temporary network issue
             }
           }
         } else {
-          console.log('📭 No stored auth data found')
+          // console.log('📭 No stored auth data found')
         }
       } catch (error) {
-        console.error('❌ Error initializing auth:', error)
+        // console.error('❌ Error initializing auth:', error)
         // Don't automatically clear auth data on initialization errors
-        console.log('⚠️ Auth initialization error, but keeping any existing auth state')
+        // console.log('⚠️ Auth initialization error, but keeping any existing auth state')
       } finally {
         setIsLoading(false)
       }
@@ -261,7 +261,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       toast.success('Welcome back!')
       return true
     } catch (error: any) {
-      console.error('Login error:', error)
+      // console.error('Login error:', error)
       const message = error.response?.data?.detail || 'Login failed'
       toast.error(message)
       return false
@@ -273,7 +273,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const googleAuth = async (googleToken: string): Promise<boolean> => {
     try {
       setIsLoading(true)
-      console.log('🔄 Starting Google Auth with token:', googleToken?.substring(0, 50) + '...')
+      // console.log('🔄 Starting Google Auth with token:', googleToken?.substring(0, 50) + '...')
 
       const response = await axios.post(
         `${API_URL}/api/v1/auth/google`,
@@ -282,11 +282,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       )
 
-      console.log('✅ Google Auth Response:', response.data)
+      // console.log('✅ Google Auth Response:', response.data)
       const { access_token, refresh_token, user: userData } = response.data
 
-      console.log('👤 User data from Google auth:', userData)
-      console.log('🖼️ Profile picture from response:', userData.profile_picture)
+      // console.log('👤 User data from Google auth:', userData)
+      // console.log('🖼️ Profile picture from response:', userData.profile_picture)
 
       // Store tokens and user data
       localStorage.setItem('access_token', access_token)
@@ -310,9 +310,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       toast.success('Welcome to Reword!')
       return true
     } catch (error: any) {
-      console.error('❌ Google auth error:', error)
-      console.error('❌ Error response:', error.response?.data)
-      console.error('❌ Error status:', error.response?.status)
+      // console.error('❌ Google auth error:', error)
+      // console.error('❌ Error response:', error.response?.data)
+      // console.error('❌ Error status:', error.response?.status)
 
       const message = error.response?.data?.detail || 'Google authentication failed'
       toast.error(message)
@@ -346,7 +346,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // If no tokens were provided (e.g., local user needs verification),
       // we don't log them in yet.
       if (!access_token || !refresh_token) {
-        console.log('📝 Registration successful, but email verification required.')
+        // console.log('📝 Registration successful, but email verification required.')
         return true
       }
 
@@ -371,7 +371,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       toast.success('Account created successfully!')
       return true
     } catch (error: any) {
-      console.error('Registration error:', error)
+      // console.error('Registration error:', error)
       const message = error.response?.data?.detail || 'Registration failed'
       toast.error(message)
       return false
@@ -401,7 +401,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return true
     } catch (error) {
-      console.error('Token refresh error:', error)
+      // console.error('Token refresh error:', error)
       return false
     }
   }
@@ -455,7 +455,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const forceRestoreAuth = () => {
-    console.log('🔄 Force restoring auth from localStorage...')
+    // console.log('🔄 Force restoring auth from localStorage...')
     const storedToken = localStorage.getItem('access_token')
     const storedRefreshToken = localStorage.getItem('refresh_token')
     const storedUser = localStorage.getItem('user')
@@ -465,10 +465,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setRefreshTokenValue(storedRefreshToken)
       setUser(JSON.parse(storedUser))
       axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
-      console.log('✅ Auth restored from localStorage')
+      // console.log('✅ Auth restored from localStorage')
       return true
     }
-    console.log('❌ No auth data to restore')
+    // console.log('❌ No auth data to restore')
     return false
   }
 
@@ -483,14 +483,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (error.response?.status === 401 && !originalRequest._retry && token) {
           originalRequest._retry = true
 
-          console.log('🔄 401 error detected, attempting token refresh...')
+          // console.log('🔄 401 error detected, attempting token refresh...')
           const refreshed = await refreshToken()
           if (refreshed) {
-            console.log('✅ Token refreshed, retrying request')
-            originalRequest.headers['Authorization'] = `Bearer ${token}`
-            return axios(originalRequest)
+            // console.log('✅ Token refreshed, retrying request')
+            // Get the fresh token from storage
+            const newToken = localStorage.getItem('access_token')
+            if (newToken) {
+              originalRequest.headers['Authorization'] = `Bearer ${newToken}`
+              return axios(originalRequest)
+            }
           } else {
-            console.log('❌ Token refresh failed, logging out user')
+            // console.log('❌ Token refresh failed, logging out user')
             clearAuthData()
             toast.error('Session expired. Please log in again.')
           }

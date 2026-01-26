@@ -11,6 +11,21 @@ interface DowngradeModalProps {
 }
 
 export default function DowngradeModal({ isOpen, onClose, onConfirm, isLoading }: DowngradeModalProps) {
+  // Lock body scroll when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
 
   const featuresYouWillLose = [
@@ -47,7 +62,7 @@ export default function DowngradeModal({ isOpen, onClose, onConfirm, isLoading }
   ]
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999999] flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
@@ -80,7 +95,7 @@ export default function DowngradeModal({ isOpen, onClose, onConfirm, isLoading }
                   Important: This action cannot be undone
                 </h3>
                 <p className="text-red-700 dark:text-red-300 text-sm">
-                  Your subscription will be cancelled immediately and you'll lose access to all Pro features. 
+                  Your subscription will be cancelled immediately and you'll lose access to all Pro features.
                   Any saved content, templates, and settings will be permanently deleted.
                 </p>
               </div>

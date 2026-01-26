@@ -63,6 +63,21 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     }
   }, [])
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   const handleGoogleResponse = async (response: any) => {
     console.log('🎯 Google Response received in AuthModal:', response)
     setIsGoogleLoading(true)
@@ -245,10 +260,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999999] flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl hide-scrollbar">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h2>
@@ -381,7 +396,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         </form>
 
         {/* Divider */}
-        <div className="mt-6 mb-6">
+        <div className="mt-4 mb-4">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
@@ -393,7 +408,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         </div>
 
         {/* Google Sign-In Button Container */}
-        <div className="mb-6">
+        <div className="mb-4">
           <button
             onClick={handleGoogleSignIn}
             disabled={isSubmitting || isGoogleLoading}
@@ -431,7 +446,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         </div>
 
         {/* Switch Mode */}
-        <div className="mt-6 text-center">
+        <div className="mt-4 text-center">
           <p className="text-gray-500 dark:text-gray-400">
             {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
             <button
@@ -444,18 +459,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </p>
         </div>
 
-        {/* Benefits for Registration */}
-        {mode === 'register' && (
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-            <h4 className="text-gray-900 dark:text-white font-medium mb-2">Account Benefits:</h4>
-            <ul className="text-gray-700 dark:text-gray-300 text-sm space-y-1">
-              <li>• Save and organize your generated content</li>
-              <li>• Access your content history</li>
-              <li>• Higher rate limits for content generation</li>
-              <li>• Premium features and templates</li>
-            </ul>
-          </div>
-        )}
+
       </div>
     </div>
   )

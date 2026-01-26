@@ -19,7 +19,7 @@ export default function GoogleCallbackPage() {
   useEffect(() => {
     // Prevent multiple executions using refs (more reliable than state)
     if (hasProcessedRef.current || processingRef.current) {
-      console.log('🛑 Callback already processed or in progress, skipping...')
+      // console.log('🛑 Callback already processed or in progress, skipping...')
       return
     }
 
@@ -33,9 +33,9 @@ export default function GoogleCallbackPage() {
         const state = searchParams.get('state')
         const error = searchParams.get('error')
 
-        console.log('🔄 Google OAuth callback received with code:', code ? code.substring(0, 20) + '...' : 'Missing')
-        console.log('🔍 State:', state)
-        console.log('❌ Error:', error)
+        // console.log('🔄 Google OAuth callback received with code:', code ? code.substring(0, 20) + '...' : 'Missing')
+        // console.log('🔍 State:', state)
+        // console.log('❌ Error:', error)
 
         // Mark as processed immediately to prevent duplicate calls
         hasProcessedRef.current = true
@@ -54,7 +54,7 @@ export default function GoogleCallbackPage() {
         const existingUser = localStorage.getItem('user')
 
         if (existingToken && existingUser) {
-          console.log('✅ Already have valid tokens, redirecting...')
+          // console.log('✅ Already have valid tokens, redirecting...')
           setStatus('success')
           setMessage('Already authenticated! Redirecting...')
 
@@ -76,26 +76,23 @@ export default function GoogleCallbackPage() {
 
         // Create a unique request ID to track this specific request
         const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
-        console.log('🆔 Request ID:', requestId)
+        // console.log('🆔 Request ID:', requestId)
 
-        // Send the authorization code to your backend
+        // Send the authorization code to your backend (as JSON)
         const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
+        const redirectUri = `${window.location.origin}/auth/google/callback`
+
         const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, {
           code,
           state: state || 'dev-mode',
-          request_id: requestId
+          request_id: requestId,
+          redirect_uri: redirectUri
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          transformRequest: [(data) => {
-            return Object.keys(data).map(key => `${key}=${encodeURIComponent(data[key])}`).join('&')
-          }],
-          timeout: 10000 // 10 second timeout
+          timeout: 15000 // 15 second timeout
         })
 
         if (authResponse.data && authResponse.data.access_token) {
-          console.log('✅ Authentication successful!')
+          // console.log('✅ Authentication successful!')
 
           // Store tokens directly in localStorage
           localStorage.setItem('access_token', authResponse.data.access_token)
@@ -125,11 +122,11 @@ export default function GoogleCallbackPage() {
         }
 
       } catch (error: any) {
-        console.error('❌ Google OAuth callback error:', error)
+        // console.error('❌ Google OAuth callback error:', error)
 
         // Check if this is a duplicate request error (400 status)
         if (error.response?.status === 400) {
-          console.log('⚠️ Duplicate request detected, checking for existing auth...')
+          // console.log('⚠️ Duplicate request detected, checking for existing auth...')
 
           // Wait a moment and check if we have tokens from the successful request
           setTimeout(() => {
@@ -137,7 +134,7 @@ export default function GoogleCallbackPage() {
             const storedUser = localStorage.getItem('user')
 
             if (storedToken && storedUser) {
-              console.log('✅ Found tokens from successful request, redirecting...')
+              // console.log('✅ Found tokens from successful request, redirecting...')
               setStatus('success')
               setMessage('Authentication successful! Redirecting...')
 
@@ -154,7 +151,7 @@ export default function GoogleCallbackPage() {
               }, 500)
             } else {
               // No tokens found, this is a real error
-              console.error('❌ No tokens found after duplicate request')
+              // console.error('❌ No tokens found after duplicate request')
               setStatus('error')
               setMessage('Authentication failed. Please try signing in again.')
               setTimeout(() => {

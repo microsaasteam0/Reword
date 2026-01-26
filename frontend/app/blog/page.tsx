@@ -29,52 +29,60 @@ export default function BlogPage() {
                 <Navbar showAuthButtons={true} />
             )}
             <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-                {/* Hero Section */}
-                <section className="pt-8 pb-16 px-6">
-                    <div className="max-w-6xl mx-auto text-center">
-                        <div className="inline-block mb-4 px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium">
-                            📚 Content Repurposing Insights
+                {/* Hero Section & Filter */}
+                <section className="relative pt-16 pb-20 px-6 overflow-hidden bg-[#0F172A] dark:bg-[#020617]">
+                    {/* Background Effects */}
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0F172A] to-[#0F172A] pointer-events-none"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-blue-500/10 rounded-[100%] blur-3xl pointer-events-none"></div>
+
+                    <div className="relative max-w-4xl mx-auto text-center z-10">
+                        <div className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 bg-blue-500/10 text-blue-300 rounded-full text-xs font-semibold uppercase tracking-wider border border-blue-500/20 shadow-lg shadow-blue-900/20 backdrop-blur-md">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                            </span>
+                            Content Repurposing Insights
                         </div>
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+
+                        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent tracking-tight leading-[1.1] drop-shadow-sm">
                             Reword Blog
                         </h1>
-                        <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                            Master the art of content repurposing with proven strategies, real examples, and actionable insights to multiply your reach across platforms
-                        </p>
-                        <div className="mt-8 flex flex-wrap gap-4 justify-center text-sm text-gray-500 dark:text-gray-400">
-                            <span className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                24 In-Depth Articles
-                            </span>
-                            <span className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                ~6 min read average
-                            </span>
-                            <span className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                                Actionable Strategies
-                            </span>
-                        </div>
-                    </div>
-                </section>
 
-                {/* Category Filter */}
-                <section className="px-6 pb-12">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="flex flex-wrap gap-3 justify-center">
+                        <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+                            Master the art of content repurposing with proven strategies, real examples, and actionable insights to multiply your reach across platforms.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-slate-400 text-sm font-medium mb-12 bg-slate-900/50 p-4 rounded-2xl border border-slate-800/50 inline-flex backdrop-blur-sm">
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                </div>
+                                24 In-Depth Articles
+                            </div>
+                            <div className="w-px h-4 bg-slate-700 hidden sm:block"></div>
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                                ~6 min read average
+                            </div>
+                            <div className="w-px h-4 bg-slate-700 hidden sm:block"></div>
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                </div>
+                                Actionable Strategies
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2.5 justify-center">
                             {categories.map((category) => (
                                 <button
                                     key={category}
                                     onClick={() => setSelectedCategory(category)}
-                                    className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category
-                                        ? 'bg-blue-600 text-white shadow-lg'
-                                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                    className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${selectedCategory === category
+                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25 ring-1 ring-blue-500 transform scale-105'
+                                        : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700/50 hover:border-slate-600'
                                         }`}
                                 >
                                     {category}

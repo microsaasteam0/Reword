@@ -309,6 +309,21 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     setMounted(true)
   }, [])
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   // Load data when modal opens
   useEffect(() => {
     if (isOpen && user) {
@@ -1045,7 +1060,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     <>
       {/* Modal Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hide-scrollbar"
+        className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hide-scrollbar z-[999999]"
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -1053,7 +1068,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: 9999,
+          zIndex: 999999,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

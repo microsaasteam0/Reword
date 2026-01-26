@@ -74,7 +74,7 @@ export default function Navbar({
   }
 
   return (
-    <nav className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-[9999] w-full relative">
+    <nav className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 sticky top-0 z-50 w-full relative">
       <div className="max-w-7xl mx-auto px-6 py-4 sm:py-5">
         <div className="flex items-center justify-between gap-2 sm:gap-4 min-w-0">
           {/* Logo */}

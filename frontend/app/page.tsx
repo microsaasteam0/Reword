@@ -110,7 +110,7 @@ export default function Home() {
     if (pendingTemplateStr) {
       try {
         const template = JSON.parse(pendingTemplateStr)
-        console.log('📦 Found pending template:', template.name)
+        // console.log('📦 Found pending template:', template.name)
         setContent(template.content)
         setActiveTab('content')
         toast.success(`Template "${template.name}" loaded!`)
@@ -124,7 +124,7 @@ export default function Home() {
         // Clean up regardless of whether we used it
         localStorage.removeItem('pendingTemplate')
       } catch (e) {
-        console.warn('Failed to parse pending template:', e)
+        // console.warn('Failed to parse pending template:', e)
         localStorage.removeItem('pendingTemplate')
       }
     }
@@ -134,7 +134,7 @@ export default function Home() {
     if (storedTemplate) {
       try {
         const template = JSON.parse(storedTemplate)
-        console.log('📦 Found stored template on page load:', template.name)
+        // console.log('📦 Found stored template on page load:', template.name)
         setContent(template.content)
         setActiveTab('content')
         toast.success(`Template "${template.name}" loaded!`)
@@ -148,7 +148,7 @@ export default function Home() {
           template_category: template.category
         })
       } catch (e) {
-        console.warn('Failed to parse stored template:', e)
+        // console.warn('Failed to parse stored template:', e)
         sessionStorage.removeItem('selectedTemplate')
       }
     }
@@ -202,7 +202,7 @@ export default function Home() {
   // Listen for auth success events (from OAuth callbacks)
   useEffect(() => {
     const handleAuthSuccess = (event: CustomEvent) => {
-      console.log('🎉 Auth success event received:', event.detail)
+      // console.log('🎉 Auth success event received:', event.detail)
       // Force restore auth state
       forceRestoreAuth()
     }
@@ -224,7 +224,7 @@ export default function Home() {
   // Listen for tab switch requests from nested components (e.g. FeatureGate)
   useEffect(() => {
     const handleSwitchTab = (event: CustomEvent) => {
-      console.log('🔄 Switch tab event received:', event.detail)
+      // console.log('🔄 Switch tab event received:', event.detail)
       if (event.detail && event.detail.tab) {
         setActiveMainTab(event.detail.tab as TabType)
         // If switching to pricing, stick to top
@@ -256,7 +256,7 @@ export default function Home() {
       const storedToken = localStorage.getItem('access_token')
       const storedUser = localStorage.getItem('user')
       if (storedToken && storedUser) {
-        console.log('🔄 Found tokens but not authenticated, forcing restore...')
+        // console.log('🔄 Found tokens but not authenticated, forcing restore...')
         forceRestoreAuth()
       }
     }
@@ -267,12 +267,12 @@ export default function Home() {
     // Only proceed with cache logic if authenticated
     if (isAuthenticated && user) {
       try {
-        console.log('🔄 MainPage: Loading usage stats...')
+        // console.log('🔄 MainPage: Loading usage stats...')
         const cacheKey = `usage-stats-${user.id}`
         const stats = await requestCache.get(
           cacheKey,
           async () => {
-            console.log('🔄 MainPage: Making fresh usage-stats API call')
+            // console.log('🔄 MainPage: Making fresh usage-stats API call')
             const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`)
             return response.data
           },
@@ -280,9 +280,9 @@ export default function Home() {
         )
 
         setUsageStats(stats)
-        console.log('📊 MainPage: Authenticated usage stats loaded:', stats)
+        // console.log('📊 MainPage: Authenticated usage stats loaded:', stats)
       } catch (error: any) {
-        console.error('Failed to load usage stats:', error)
+        // console.error('Failed to load usage stats:', error)
         // Set default stats on error matching Navbar logic
         setUsageStats({
           total_generations: 0,
@@ -317,13 +317,13 @@ export default function Home() {
       const cachedStats = requestCache.getCached<any>(cacheKey)
 
       if (cachedStats) {
-        console.log('📦 MainPage: Using immediately available cached stats')
+        // console.log('📦 MainPage: Using immediately available cached stats')
         setUsageStats(cachedStats)
       }
     }
 
     // Always load fresh data on app start or when auth state becomes ready
-    console.log('🚀 MainPage: Triggering usage stats reload')
+    // console.log('🚀 MainPage: Triggering usage stats reload')
     loadUsageStats()
   }, [isAuthenticated, user?.id, isProcessingPayment, loadUsageStats])
 
@@ -332,14 +332,14 @@ export default function Home() {
     if (isProcessingPayment) return
 
     const handleSubscriptionChange = () => {
-      console.log('🔄 MainPage: Subscription changed, invalidating cache and refreshing stats')
+      // console.log('🔄 MainPage: Subscription changed, invalidating cache and refreshing stats')
       const cacheKey = `usage-stats-${user?.id}`
       requestCache.invalidate(cacheKey)
       if (isAuthenticated && user) loadUsageStats()
     }
 
     const handleUsageStatsUpdate = () => {
-      console.log('🔄 MainPage: Usage stats updated event received, refreshing stats')
+      // console.log('🔄 MainPage: Usage stats updated event received, refreshing stats')
       const cacheKey = `usage-stats-${user?.id}`
       requestCache.invalidate(cacheKey)
       if (isAuthenticated && user) loadUsageStats()
@@ -360,7 +360,7 @@ export default function Home() {
       const userIsPremium = user.is_premium
       const statsIsPremium = usageStats.subscription_tier === 'pro'
       if (userIsPremium !== statsIsPremium) {
-        console.log('🔄 MainPage: Premium status mismatch detected, refreshing stats')
+        // console.log('🔄 MainPage: Premium status mismatch detected, refreshing stats')
         loadUsageStats()
       }
     }
@@ -368,7 +368,7 @@ export default function Home() {
 
   const checkPendingPayments = async () => {
     try {
-      console.log('🔍 Checking for pending payments...')
+      // console.log('🔍 Checking for pending payments...')
 
       // Get payment history to check for pending payments
       const historyResponse = await axios.get(`${API_URL}/api/v1/payment/history`)
@@ -379,16 +379,16 @@ export default function Home() {
         )
 
         if (pendingPayments.length > 0) {
-          console.log('⚠️ Found pending payments, attempting verification...')
+          // console.log('⚠️ Found pending payments, attempting verification...')
 
           // Try to verify the most recent pending payment
           const latestPending = pendingPayments[0]
-          console.log('🔄 Verifying pending payment:', latestPending.payment_id)
+          // console.log('🔄 Verifying pending payment:', latestPending.payment_id)
 
           const verifyResponse = await axios.post(`${API_URL}/api/v1/payment/check-status`)
 
           if (verifyResponse.data.success && verifyResponse.data.is_premium) {
-            console.log('✅ Pending payment verified successfully!')
+            // console.log('✅ Pending payment verified successfully!')
 
             // Update user with complete object to force re-render
             updateUser({
@@ -404,11 +404,11 @@ export default function Home() {
             }
           }
         } else {
-          console.log('✅ No pending payments found')
+          // console.log('✅ No pending payments found')
         }
       }
     } catch (error: any) {
-      console.log('⚠️ Error checking pending payments:', error.message)
+      // console.log('⚠️ Error checking pending payments:', error.message)
       // Don't show error to user as this is a background check
     }
   }
@@ -425,38 +425,38 @@ export default function Home() {
   const verifyPayment = useCallback(async () => {
     // Prevent multiple simultaneous verification attempts
     if (verificationInProgress) {
-      console.log('⚠️ Verification already in progress, skipping...')
+      // console.log('⚠️ Verification already in progress, skipping...')
       return
     }
 
     setVerificationInProgress(true)
 
     try {
-      console.log('🔍 Verifying payment status...')
-      console.log('🔑 Auth token:', axios.defaults.headers.common['Authorization'])
+      // console.log('🔍 Verifying payment status...')
+      // console.log('🔑 Auth token:', axios.defaults.headers.common['Authorization'])
 
       // Get payment_id from URL if available
       const urlParams = new URLSearchParams(window.location.search)
       const paymentId = urlParams.get('payment_id')
       const userId = urlParams.get('user_id')
 
-      console.log('📦 Payment ID from URL:', paymentId)
-      console.log('👤 User ID from URL:', userId)
+      // console.log('📦 Payment ID from URL:', paymentId)
+      // console.log('👤 User ID from URL:', userId)
 
       // Call the status check endpoint (webhooks handle actual verification)
       const verifyResponse = await axios.post(`${API_URL}/api/v1/payment/check-status`)
 
-      console.log('✅ Payment verification response:', verifyResponse.data)
+      // console.log('✅ Payment verification response:', verifyResponse.data)
 
       if (verifyResponse.data.success) {
         if (verifyResponse.data.status === 'failed') {
-          console.log('❌ Payment failed or was cancelled')
+          // console.log('❌ Payment failed or was cancelled')
           toast.error('Payment verification failed. Please try again.')
           return
         }
 
         if (verifyResponse.data.is_premium) {
-          console.log('🎉 User is now premium, updating context...')
+          // console.log('🎉 User is now premium, updating context...')
 
           // Update user with complete object to force re-render
           updateUser({
@@ -466,28 +466,28 @@ export default function Home() {
           toast.success('🎉 Premium features unlocked! Welcome to Pro!')
 
           // Don't reload the page - just update the UI state
-          console.log('✅ Payment verification complete, UI will update automatically')
+          // console.log('✅ Payment verification complete, UI will update automatically')
         } else {
-          console.log('⚠️ Payment verification successful but user not premium yet')
+          // console.log('⚠️ Payment verification successful but user not premium yet')
           toast.success('Payment processed! Your account will be upgraded shortly.')
         }
       } else {
-        console.log('⚠️ Payment verification failed')
+        // console.log('⚠️ Payment verification failed')
         toast.error('Payment verification failed. Please contact support if you completed the payment.')
       }
 
     } catch (error: any) {
-      console.error('❌ Payment verification error:', error)
-      console.error('❌ Error response:', error.response)
+      // console.error('❌ Payment verification error:', error)
+      // console.error('❌ Error response:', error.response)
 
       if (error.response?.status === 401) {
-        console.log('🔑 Authentication error, user might not be logged in properly')
+        // console.log('🔑 Authentication error, user might not be logged in properly')
         toast.error('Please log in again to complete the upgrade')
       } else if (error.response?.status === 500) {
-        console.log('🔄 Server error during verification')
+        // console.log('🔄 Server error during verification')
         toast.error('Verification failed. Please contact support if the issue persists.')
       } else {
-        console.log('🔄 Verification failed')
+        // console.log('🔄 Verification failed')
         toast.error('Payment verification failed. Please contact support if you completed the payment.')
       }
     } finally {
@@ -497,9 +497,9 @@ export default function Home() {
 
   // Handle payment success redirect
   useEffect(() => {
-    console.log('🔍 Payment success useEffect triggered')
-    console.log('📦 Window location:', window.location.href)
-    console.log('📦 Payment processed:', paymentProcessed)
+    // console.log('🔍 Payment success useEffect triggered')
+    // console.log('📦 Window location:', window.location.href)
+    // console.log('📦 Payment processed:', paymentProcessed)
 
     if (typeof window !== 'undefined' && !paymentProcessed) {
       const urlParams = new URLSearchParams(window.location.search)
@@ -507,15 +507,15 @@ export default function Home() {
       const paymentId = urlParams.get('payment_id')
       const userId = urlParams.get('user_id')
 
-      console.log('🔍 Checking for payment success...')
-      console.log('📦 URL params:', window.location.search)
-      console.log('📦 Payment status:', paymentStatus)
-      console.log('📦 Payment ID:', paymentId)
-      console.log('📦 User ID:', userId)
+      // console.log('🔍 Checking for payment success...')
+      // console.log('📦 URL params:', window.location.search)
+      // console.log('📦 Payment status:', paymentStatus)
+      // console.log('📦 Payment ID:', paymentId)
+      // console.log('📦 User ID:', userId)
 
       if (paymentStatus === 'success') {
-        console.log('🎉 Payment success detected!')
-        console.log('🔍 Auth status:', { isAuthenticated, user: !!user, authLoading })
+        // console.log('🎉 Payment success detected!')
+        // console.log('🔍 Auth status:', { isAuthenticated, user: !!user, authLoading })
 
         // Set processing flag to prevent event loops
         setIsProcessingPayment(true)
@@ -523,7 +523,7 @@ export default function Home() {
         if (paymentId) {
           const processedPayments = JSON.parse(sessionStorage.getItem('processed_payments') || '[]')
           if (processedPayments.includes(paymentId)) {
-            console.log('⚠️ Payment already processed in this session:', paymentId)
+            // console.log('⚠️ Payment already processed in this session:', paymentId)
             // Just clean URL and return
             const newUrl = window.location.pathname
             window.history.replaceState({}, document.title, newUrl)
@@ -548,14 +548,14 @@ export default function Home() {
 
         // Wait for auth to be fully initialized before proceeding
         const waitForAuthAndVerify = () => {
-          console.log('🔄 Waiting for auth...', { isAuthenticated, user: !!user, authLoading })
+          // console.log('🔄 Waiting for auth...', { isAuthenticated, user: !!user, authLoading })
 
           if (isAuthenticated && user) {
-            console.log('✅ User is authenticated, proceeding with verification')
+            // console.log('✅ User is authenticated, proceeding with verification')
 
             // Verify payment status and update user premium status first
             setTimeout(() => {
-              console.log('🚀 Calling verifyPayment...')
+              // console.log('🚀 Calling verifyPayment...')
               verifyPayment().finally(() => {
                 // Clear processing flag after verification completes
                 setIsProcessingPayment(false)
@@ -567,15 +567,15 @@ export default function Home() {
               })
             }, 1000) // Small delay to ensure everything is loaded
           } else if (!authLoading) {
-            console.log('⚠️ User not authenticated after payment, attempting to restore auth...')
+            // console.log('⚠️ User not authenticated after payment, attempting to restore auth...')
 
             // Try to force restore auth from localStorage
             const restored = forceRestoreAuth()
 
             if (restored) {
-              console.log('✅ Auth restored, proceeding with verification')
+              // console.log('✅ Auth restored, proceeding with verification')
               setTimeout(() => {
-                console.log('🚀 Calling verifyPayment after auth restore...')
+                // console.log('🚀 Calling verifyPayment after auth restore...')
                 verifyPayment().finally(() => {
                   // Clear processing flag after verification completes
                   setIsProcessingPayment(false)
@@ -587,14 +587,14 @@ export default function Home() {
                 })
               }, 1000)
             } else {
-              console.log('❌ Could not restore auth, user needs to log in again')
+              // console.log('❌ Could not restore auth, user needs to log in again')
               toast.error('Please log in again to complete your upgrade')
               setShowAuthModal(true)
               setAuthModalMode('login')
               setIsProcessingPayment(false)
             }
           } else {
-            console.log('🔄 Auth still loading, waiting...')
+            // console.log('🔄 Auth still loading, waiting...')
             setTimeout(waitForAuthAndVerify, 500)
           }
         }
@@ -602,14 +602,14 @@ export default function Home() {
         // Start waiting for auth
         waitForAuthAndVerify()
       } else {
-        console.log('📭 No payment success detected')
-        console.log('📦 Current URL:', window.location.href)
+        // console.log('📭 No payment success detected')
+        // console.log('📦 Current URL:', window.location.href)
       }
     } else {
-      console.log('📭 Payment success check skipped:', {
-        windowUndefined: typeof window === 'undefined',
-        paymentProcessed
-      })
+      // console.log('📭 Payment success check skipped:', {
+      //   windowUndefined: typeof window === 'undefined',
+      //   paymentProcessed
+      // })
     }
   }, [isAuthenticated, paymentProcessed, authLoading, user?.id, forceRestoreAuth, updateUser]) // Removed verifyPayment and use user.id instead of user object
 
@@ -660,7 +660,7 @@ export default function Home() {
 
     try {
       // Add your newsletter signup API call here
-      console.log('Newsletter signup:', newsletterEmail)
+      // console.log('Newsletter signup:', newsletterEmail)
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -670,7 +670,7 @@ export default function Home() {
 
       trackAnalytics('newsletter_signup', { email: newsletterEmail })
     } catch (error) {
-      console.error('Newsletter signup error:', error)
+      // console.error('Newsletter signup error:', error)
       toast.error('Failed to subscribe. Please try again.')
     } finally {
       setIsSubscribing(false)
@@ -742,11 +742,11 @@ export default function Home() {
 
       // Dispatch event to notify navbar to refresh (with small delay to ensure API call completes)
       setTimeout(() => {
-        console.log('🔄 Dispatching usage-stats-updated event')
+        // console.log('🔄 Dispatching usage-stats-updated event')
         window.dispatchEvent(new CustomEvent('usage-stats-updated'))
 
         // Also dispatch content-generated event for dashboard refresh
-        console.log('🔄 Dispatching content-generated event')
+        // console.log('🔄 Dispatching content-generated event')
         window.dispatchEvent(new CustomEvent('content-generated', {
           detail: {
             type: activeTab === 'url' ? 'url' : 'content',
@@ -787,7 +787,7 @@ export default function Home() {
           // Add a small delay to ensure content generation is fully complete
           setTimeout(async () => {
             try {
-              console.log('🔄 Starting auto-save...')
+              // console.log('🔄 Starting auto-save...')
               await handleSaveContent(
                 `Auto-saved: ${new Date().toLocaleDateString()}`,
                 'auto-generated',
@@ -799,16 +799,16 @@ export default function Home() {
                 }),
                 false // Don't show generic toast for auto-save
               )
-              console.log('✅ Auto-save completed')
+              // console.log('✅ Auto-save completed')
 
               // Only show toast if component is still mounted (user hasn't navigated away)
               if (isMountedRef.current) {
                 toast.success('💾 Auto-saved!', { duration: 2000 })
               } else {
-                console.log('🚫 Component unmounted, skipping auto-save toast')
+                // console.log('🚫 Component unmounted, skipping auto-save toast')
               }
             } catch (error) {
-              console.log('❌ Auto-save failed:', error)
+              // console.log('❌ Auto-save failed:', error)
               // Don't show error toast for auto-save failures to avoid noise
             }
           }, 1000) // 1 second delay
@@ -818,7 +818,7 @@ export default function Home() {
     } catch (error: any) {
       clearInterval(progressInterval)
       setTransformProgress(0)
-      console.error('Error:', error)
+      // console.error('Error:', error)
 
       let errorMessage = 'Failed to repurpose content'
       let helpTip = ''
@@ -974,7 +974,7 @@ export default function Home() {
         analyticsCache.current.delete(cacheKey)
       }, 5 * 60 * 1000)
     } catch (error) {
-      console.log('Analytics tracking failed:', error)
+      // console.log('Analytics tracking failed:', error)
     }
   }
   // Enhanced keyboard navigation and accessibility
@@ -1073,7 +1073,7 @@ export default function Home() {
       }, 1000)
 
     } catch (error) {
-      console.error('Newsletter subscription error:', error)
+      // console.error('Newsletter subscription error:', error)
       toast.error('Failed to redirect. Please try again.')
     } finally {
       setIsSubscribing(false)
@@ -1098,14 +1098,14 @@ export default function Home() {
 
     // Prevent save operations during navigation
     if (isNavigating) {
-      console.log('🚫 Save operation cancelled - navigation in progress')
+      // console.log('🚫 Save operation cancelled - navigation in progress')
       return
     }
 
     try {
-      console.log('Saving content:', { title, contentType, content: content.substring(0, 100) + '...' })
-      console.log('API URL:', `${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/save`)
-      console.log('Auth headers:', axios.defaults.headers.common['Authorization'])
+      // console.log('Saving content:', { title, contentType, content: content.substring(0, 100) + '...' })
+      // console.log('API URL:', `${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/save`)
+      // console.log('Auth headers:', axios.defaults.headers.common['Authorization'])
 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/save`, {
         title,
@@ -1113,7 +1113,7 @@ export default function Home() {
         content,
       })
 
-      console.log('Save response:', response.data)
+      // console.log('Save response:', response.data)
 
       // Only show toast if requested and component is still mounted
       if (showToast && isMountedRef.current) {
@@ -1130,9 +1130,9 @@ export default function Home() {
         }
       }))
     } catch (error: any) {
-      console.error('Error saving content:', error)
-      console.error('Error response:', error.response?.data)
-      console.error('Error status:', error.response?.status)
+      // console.error('Error saving content:', error)
+      // console.error('Error response:', error.response?.data)
+      // console.error('Error status:', error.response?.status)
 
       // Only show error toast if component is still mounted
       if (isMountedRef.current) {
@@ -1213,7 +1213,7 @@ export default function Home() {
 
     return (
       <div className="fixed inset-0 bg-gray-500/40 dark:bg-gray-950/90 backdrop-blur-xl z-[999999] flex items-center justify-center p-4">
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:[&::-webkit-scrollbar]:block md:[-ms-overflow-style:auto] md:[scrollbar-width:auto]">
           {!isAuthenticated ? (
             /* Onboarding for Unauthenticated Users - Sign Up Focus */
             <div className="text-center py-2 sm:py-0">
@@ -2112,7 +2112,7 @@ export default function Home() {
                     </button>
                     <button
                       onClick={() => {
-                        console.log('Community quick access clicked:', { isAuthenticated, user: !!user, isPremium: user?.is_premium })
+                        // console.log('Community quick access clicked:', { isAuthenticated, user: !!user, isPremium: user?.is_premium })
                         if (!isAuthenticated || !user) {
                           toast.error('Please sign in to access community templates')
                           return

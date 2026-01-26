@@ -42,6 +42,21 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
     }
   }, [isOpen])
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.documentElement.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   // Populate form when editing
   useEffect(() => {
     if (editTemplate) {
@@ -85,12 +100,12 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.name.trim()) {
       toast.error('Please enter a template name')
       return
     }
-    
+
     if (!formData.content.trim()) {
       toast.error('Please enter template content')
       return
@@ -119,7 +134,7 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
       if (onTemplateCreated) {
         onTemplateCreated(response.data)
       }
-      
+
       onClose()
     } catch (error: any) {
       console.error('Error saving template:', error)
@@ -139,7 +154,7 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
 
   const insertSampleContent = (type: string) => {
     let sampleContent = ''
-    
+
     switch (type) {
       case 'blog':
         sampleContent = `# Your Blog Title Here
@@ -233,7 +248,7 @@ Content for section 2
 ## Conclusion
 Wrap up your content`
     }
-    
+
     handleInputChange('content', sampleContent)
     toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} template structure inserted!`)
   }
@@ -241,7 +256,7 @@ Wrap up your content`
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999999] flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
@@ -377,7 +392,7 @@ Wrap up your content`
                       {formData.is_public ? 'Public Template' : 'Private Template'}
                     </h4>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">
-                      {formData.is_public 
+                      {formData.is_public
                         ? 'Other users can discover and use this template'
                         : 'Only you can see and use this template'
                       }

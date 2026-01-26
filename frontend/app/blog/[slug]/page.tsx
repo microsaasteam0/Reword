@@ -1,6 +1,7 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPostBySlug, getAllPosts } from '@/lib/blog-data';
@@ -11,14 +12,28 @@ import Footer from '@/components/Footer';
 
 import { useAuth } from '@/contexts/AuthContext';
 import AuthenticatedNavbar from '@/components/AuthenticatedNavbar';
+import AuthModal from '@/components/AuthModal';
 
 export default function BlogPostPage() {
     const { isAuthenticated } = useAuth();
     const params = useParams();
+    const router = useRouter();
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('register');
+
     const slug = params?.slug as string;
     const post = getPostBySlug(slug);
     const allPosts = getAllPosts();
     const relatedPosts = allPosts.filter(p => p.id !== post?.id).slice(0, 3);
+
+    const handleGetStarted = () => {
+        if (isAuthenticated) {
+            router.push('/pricing');
+        } else {
+            setAuthModalMode('register');
+            setShowAuthModal(true);
+        }
+    };
 
     if (!post) {
         return (
@@ -38,8 +53,24 @@ export default function BlogPostPage() {
             {isAuthenticated ? (
                 <AuthenticatedNavbar activeTab="blog" />
             ) : (
-                <Navbar showAuthButtons={true} />
+                <Navbar
+                    showAuthButtons={true}
+                    onSignIn={() => {
+                        setAuthModalMode('login');
+                        setShowAuthModal(true);
+                    }}
+                    onSignUp={() => {
+                        setAuthModalMode('register');
+                        setShowAuthModal(true);
+                    }}
+                />
             )}
+
+            <AuthModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                initialMode={authModalMode}
+            />
             <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
                 {/* Header */}
                 <div className="pt-8 pb-8 px-6">
@@ -52,16 +83,20 @@ export default function BlogPostPage() {
                         </Link>
 
                         {/* Category & Read Time */}
-                        <div className="flex items-center gap-4 mb-4">
-                            <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-4">
+                            <span className="px-3 py-1 sm:px-4 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 rounded-full text-xs sm:text-sm font-medium border border-blue-200 dark:border-blue-800">
                                 {post.category}
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm">
+                            <span className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium flex items-center">
+                                <span className="w-1 h-1 rounded-full bg-gray-400 mr-3"></span>
                                 {post.readTime}
                             </span>
                             {post.featured && (
-                                <span className="px-4 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300 rounded-full text-sm font-bold">
-                                    ⭐ Featured
+                                <span className="px-3 py-1 sm:px-4 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full text-xs sm:text-sm font-bold border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 shadow-sm">
+                                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                    </svg>
+                                    Featured
                                 </span>
                             )}
                         </div>
@@ -251,12 +286,12 @@ export default function BlogPostPage() {
                         <p className="text-white/90 mb-8 text-lg">
                             Start repurposing your content with Reword today
                         </p>
-                        <Link
-                            href="/auth"
+                        <button
+                            onClick={handleGetStarted}
                             className="inline-block bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors"
                         >
                             Get Started Free
-                        </Link>
+                        </button>
                     </div>
                 </section>
             </div>
