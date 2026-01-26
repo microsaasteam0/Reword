@@ -2639,7 +2639,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                       : featureGate.remainingGenerations === 0)
                   ))
                 }
-                className="group px-10 py-5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 disabled:bg-slate-300 dark:disabled:bg-slate-900/50 text-white font-black rounded-2xl transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl shadow-slate-900/20 transform hover:-translate-y-1 active:scale-95 disabled:hover:translate-y-0 disabled:cursor-not-allowed min-w-[320px] border border-slate-700/50"
+                className="group px-6 py-4 sm:px-10 sm:py-5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 disabled:bg-slate-300 dark:disabled:bg-slate-900/50 text-white font-black rounded-2xl transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl shadow-slate-900/20 transform hover:-translate-y-1 active:scale-95 disabled:hover:translate-y-0 disabled:cursor-not-allowed w-full sm:w-auto sm:min-w-[320px] border border-slate-700/50 text-sm sm:text-base"
               >
                 {isLoading ? (
                   <>
@@ -3090,9 +3090,9 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-4xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-tight mb-3">
+            <h3 className="text-2xl sm:text-4xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-tight mb-3">
               Weekly Creator Tips
-              <Sparkles className="w-8 h-8 text-pink-500 inline-block ml-3 animate-pulse" />
+              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500 inline-block ml-3 animate-pulse" />
             </h3>
             <p className="text-slate-600 dark:text-slate-400 text-lg font-bold max-w-md mx-auto">
               Join <span className="text-blue-600 dark:text-blue-400 underline decoration-blue-500/30 decoration-4">5,000+ creators</span> getting AI strategies & growth hacks.

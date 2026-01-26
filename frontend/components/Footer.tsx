@@ -112,9 +112,10 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="footer-gradient border-t border-slate-200 dark:border-slate-800 mt-20 relative overflow-hidden" aria-label="Site Footer">
+    <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 mt-20 relative overflow-hidden transition-colors duration-300" aria-label="Site Footer">
       {/* Decorative Background Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
 
       <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
@@ -153,58 +154,53 @@ export default function Footer() {
 
             {/* Newsletter Container */}
             <div className="p-8 bg-slate-100/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-[2.5rem] shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-2xl transition-all group-hover:bg-blue-500/10"></div>
-
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg">
                   <Mail className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-2xl font-black text-slate-900 dark:text-white leading-tight flex items-center gap-2">
+                  <h4 className="text-xl font-black text-slate-900 dark:text-white leading-tight">
                     Weekly Creator Tips
-                    <Sparkles className="w-6 h-6 text-pink-500 fill-pink-500" />
+                    <Sparkles className="w-5 h-5 text-pink-500 inline-block ml-2" />
                   </h4>
-                  <p className="text-slate-600 dark:text-slate-400 font-bold">Join 5,000+ creators getting AI strategies & growth hacks.</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 font-bold mt-1">AI strategies & growth hacks.</p>
                 </div>
               </div>
 
-              <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row gap-3 relative z-10">
-                <div className="flex-1 relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">@</span>
+              <form onSubmit={handleNewsletterSubscribe} className="flex flex-col gap-3 relative z-10">
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
                   <input
                     type="email"
                     placeholder="Enter your email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full pl-12 pr-6 py-4 text-base font-medium focus:ring-4 focus:ring-blue-500/10 outline-none transition-all shadow-inner"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                     disabled={isSubscribing}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full text-base font-black shadow-xl shadow-blue-500/25 active:scale-95 transition-all flex items-center gap-2"
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl text-sm font-black shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   {isSubscribing ? '...' : 'Subscribe'}
-                  <ChevronDown className="w-5 h-5 -rotate-90" />
+                  <ChevronDown className="w-4 h-4 -rotate-90" />
                 </button>
               </form>
-              <p className="mt-5 text-sm text-slate-500 font-bold text-center">
-                ✨ No spam, unsubscribe anytime
-              </p>
 
-              <div className="flex justify-center gap-12 mt-8 pt-8 border-t border-slate-200/50 dark:border-slate-700/50">
+              <div className="flex items-center justify-between mt-8 pt-8 border-t border-slate-200/50 dark:border-slate-700/50">
                 <div className="text-center">
-                  <div className="text-2xl font-black text-blue-600 dark:text-blue-400">5K+</div>
-                  <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Creators</div>
+                  <div className="text-lg font-black text-blue-600">5K+</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Creators</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black text-purple-600 dark:text-purple-400">50K+</div>
-                  <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Posts Generated</div>
+                  <div className="text-lg font-black text-purple-600">50K+</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Posts</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black text-green-500 dark:text-green-400">99.9%</div>
-                  <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Uptime</div>
+                  <div className="text-lg font-black text-green-500">99.9%</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Uptime</div>
                 </div>
               </div>
             </div>
@@ -279,18 +275,6 @@ export default function Footer() {
         </div>
       </div>
 
-      <style jsx>{`
-        .footer-gradient {
-          background: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.05), transparent 40%),
-                      var(--footer-bg);
-        }
-        :global(.dark) .footer-gradient {
-          --footer-bg: #020617;
-        }
-        :global(:not(.dark)) .footer-gradient {
-          --footer-bg: #f8fafc;
-        }
-      `}</style>
     </footer>
   )
 }
