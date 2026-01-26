@@ -14,6 +14,7 @@
     "api:deployed": "node switch-api.js deployed"
   },
   "dependencies": {
+    "@entrext/support-client": "^0.2.0",
     "@google-cloud/local-auth": "^3.0.1",
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12",

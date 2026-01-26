@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import Image from 'next/image'
 import { useAuth } from '../contexts/AuthContext'
 import { API_URL } from '@/lib/api-config'
+import { supportClient } from '../lib/support/client'
 
 interface FAQ {
   question: string
@@ -21,9 +22,17 @@ const SupportWidget = () => {
   const [activeTab, setActiveTab] = useState<'home' | 'messages' | 'faq'>('home')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [category, setCategory] = useState<"feedback" | "bug" | "feature" | "support">('support')
   const [isSending, setIsSending] = useState(false)
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Pre-fill email when user is authenticated
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email)
+    }
+  }, [user])
 
   // Common FAQs
   const faqs: FAQ[] = [
@@ -70,24 +79,23 @@ const SupportWidget = () => {
     setIsSending(true)
 
     try {
-      // Send to backend endpoint (we'll create this next)
-      // For now, we'll simulate a success or use a simple mailto fallback if API fails
-      try {
-        await axios.post(`${API_URL}/api/v1/support/contact`, {
-          email,
-          message,
-          timestamp: new Date().toISOString(),
-          username: user?.username || null
-        })
-        toast.success('Message sent! We\'ll get back to you shortly.')
-        setMessage('')
-        // Optional: clear email or keep it for convenience
-        setIsOpen(false) // Close widget on success
-      } catch (err) {
-        // console.error('Support API error', err)
-        toast.error('Support system currently unavailable. Please try again later.')
-      }
+      await supportClient.submitTicket({
+        product: "Reword", // Micro-saas name
+        category: category,
+        user_email: email,
+        message: message,
+        metadata: {
+          page: typeof window !== 'undefined' ? window.location.pathname : 'unknown',
+          isAuthenticated: isAuthenticated,
+          username: user?.username || 'Guest'
+        }
+      })
+
+      toast.success('Message sent! We\'ll get back to you shortly.')
+      setMessage('')
+      setIsOpen(false)
     } catch (error) {
+      console.error('Support submission error:', error)
       toast.error('Failed to send message. Please try again.')
     } finally {
       setIsSending(false)
@@ -280,8 +288,20 @@ const SupportWidget = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="your@email.com"
-                            className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl focus:ring-0 focus:border-blue-500 hover:border-gray-200 dark:hover:border-gray-600 focus:bg-white dark:focus:bg-gray-800 outline-none transition-all dark:text-white"
+                            className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl focus:ring-0 focus:border-blue-500 hover:border-gray-200 dark:hover:border-gray-600 focus:bg-white dark:focus:bg-gray-800 outline-none transition-all dark:text-white mb-4"
                           />
+
+                          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-1">Category</label>
+                          <select
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value as any)}
+                            className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-xl focus:ring-0 focus:border-blue-500 hover:border-gray-200 dark:hover:border-gray-600 focus:bg-white dark:focus:bg-gray-800 outline-none transition-all dark:text-white mb-4 appearance-none cursor-pointer"
+                          >
+                            <option value="support">General Support</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="feature">Feature Request</option>
+                          </select>
                         </div>
 
                         <div className="space-y-1.5">
@@ -414,8 +434,8 @@ const SupportWidget = () => {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
           className={`w-16 h-16 rounded-full shadow-xl shadow-blue-600/20 flex items-center justify-center transition-all duration-300 ${isOpen
-              ? 'hidden md:flex bg-gray-900 dark:bg-gray-800 text-white rotate-90 scale-90'
-              : 'flex bg-gradient-to-tr from-blue-600 to-purple-600 text-white hover:shadow-blue-500/40'
+            ? 'hidden md:flex bg-gray-900 dark:bg-gray-800 text-white rotate-90 scale-90'
+            : 'flex bg-gradient-to-tr from-blue-600 to-purple-600 text-white hover:shadow-blue-500/40'
             }`}
         >
           {isOpen ? (

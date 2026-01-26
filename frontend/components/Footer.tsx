@@ -7,7 +7,11 @@ import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function Footer() {
+interface FooterProps {
+  onSupportClick?: () => void
+}
+
+export default function Footer({ onSupportClick }: FooterProps) {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [openSection, setOpenSection] = useState<string | null>(null)
@@ -235,6 +239,13 @@ export default function Footer() {
                             {link.name}
                             <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </a>
+                        ) : link.name === 'Support' ? (
+                          <button
+                            onClick={onSupportClick}
+                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold block text-left w-full"
+                          >
+                            {link.name}
+                          </button>
                         ) : (
                           <Link
                             href={link.href}

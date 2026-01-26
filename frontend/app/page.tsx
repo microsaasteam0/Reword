@@ -24,6 +24,7 @@ import AuthenticatedNavbar from '../components/AuthenticatedNavbar'
 import DashboardModal from '../components/DashboardModal'
 import SubscriptionWarning from '../components/SubscriptionWarning'
 import Footer from '../components/Footer'
+import SupportModal from '../components/SupportModal'
 import { requestCache } from '@/lib/cache-util'
 import { API_URL } from '@/lib/api-config'
 
@@ -73,6 +74,7 @@ export default function Home() {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false)
   const [templateSelectorSource, setTemplateSelectorSource] = useState<string>('all') // Track which source to show
   const [showDashboard, setShowDashboard] = useState(false)
+  const [showSupportModal, setShowSupportModal] = useState(false)
   const [browserFingerprint, setBrowserFingerprint] = useState<any>(null)
 
   // Sample content suggestions
@@ -4268,13 +4270,19 @@ Best regards`)
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer onSupportClick={() => setShowSupportModal(true)} />
 
       {/* Dashboard Modal */}
       <DashboardModal
         isOpen={showDashboard}
         onClose={() => setShowDashboard(false)}
         externalUsageStats={usageStats}
+      />
+
+      {/* Support Modal */}
+      <SupportModal
+        isOpen={showSupportModal}
+        onClose={() => setShowSupportModal(false)}
       />
     </div>
   )
