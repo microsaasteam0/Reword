@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, Heart, ChevronDown } from 'lucide-react'
+import { Sparkles, Heart, ChevronDown, Mail, Github, Twitter, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
@@ -65,125 +65,129 @@ export default function Footer() {
         { name: 'About Us', href: 'https://www.entrext.com/', external: true },
         { name: 'Careers', href: 'https://deformity.ai/d/C-P5znqtG_ZZ', external: true },
         { name: 'Contact', href: 'mailto:business@entrext.in?subject=Reword Contact', external: true },
+        { name: 'Support', href: '#', external: false },
       ]
     },
     {
       title: 'Legal',
       links: [
-        { name: 'Privacy', href: '/privacy-policy', external: false },
-        { name: 'Terms', href: '/terms-of-service', external: false },
-        { name: 'Cookies', href: '/cookie-policy', external: false },
+        { name: 'Privacy Policy', href: '/privacy-policy', external: false },
+        { name: 'Terms of Service', href: '/terms-of-service', external: false },
+        { name: 'Cookie Policy', href: '/cookie-policy', external: false },
       ]
     }
   ]
 
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 mt-16" aria-label="Site Footer">
-      <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
-        <div className="flex flex-col lg:flex-row justify-between gap-8 lg:gap-12">
+    <footer className="footer-gradient border-t border-slate-200 dark:border-slate-800/50 mt-20 relative overflow-hidden" aria-label="Site Footer">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-          {/* Brand & Newsletter Section */}
-          <div className="lg:w-1/3 space-y-6 md:space-y-8">
-            <div itemScope itemType="https://schema.org/Organization">
-              <div className="flex items-center mb-4">
-                <div className="bg-white rounded-xl shadow-lg p-1 mr-3 flex items-center justify-center w-10 h-10 transform transition-all hover:rotate-3">
-                  <Image src="/logo.png" alt="Reword Logo" width={40} height={40} unoptimized itemProp="logo" />
+      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+
+          {/* Brand Info & Socials */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="flex flex-col space-y-6">
+              <Link href="/" className="flex items-center group w-fit">
+                <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 transform transition-transform group-hover:rotate-6">
+                  <Image src="/logo.png" alt="Reword Logo" width={32} height={32} unoptimized />
                 </div>
-                <span className="text-xl font-bold text-gray-900 dark:text-white">Reword</span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed" itemProp="description">
-                The AI-powered engine for content creators to scale their reach across X, LinkedIn, and Instagram instantly.
+                <span className="ml-3 text-2xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Reword
+                </span>
+              </Link>
+              <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed max-w-sm">
+                The AI-powered engine for content creators to scale their reach across X, LinkedIn, and Instagram instantly. Turn one idea into a weeks worth of content.
               </p>
+              <div className="flex items-center gap-4">
+                <a href="#" className="p-2.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 rounded-xl transition-all duration-300">
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a href="#" className="p-2.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-700 rounded-xl transition-all duration-300">
+                  <Github className="w-5 h-5" />
+                </a>
+                <a href="#" className="p-2.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-blue-700 hover:text-white dark:hover:bg-blue-700 rounded-xl transition-all duration-300">
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-500" />
+            {/* Premium Newsletter Section */}
+            <div className="p-6 md:p-8 bg-white/50 dark:bg-slate-800/30 backdrop-blur-md rounded-[2.5rem] border border-slate-200 dark:border-slate-700/50 shadow-2xl shadow-blue-500/5">
+              <h4 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                <Mail className="w-5 h-5 text-blue-500" />
                 Newsletter
               </h4>
-              <form onSubmit={handleNewsletterSubscribe} className="flex flex-row gap-2">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
+                Get early access to weekly AI templates & content tips.
+              </p>
+              <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder="name@email.com"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-sm"
+                  className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none transition-all shadow-inner"
                   disabled={isSubscribing}
                 />
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/20 active:scale-95 transition-all whitespace-nowrap"
+                  className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-blue-500/25 active:scale-95 transition-all whitespace-nowrap"
                 >
                   {isSubscribing ? '...' : 'Join Free'}
                 </button>
               </form>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500 pl-1">
-                Join 500+ creators scaling their content. No spam, unsubscribe anytime.
+              <p className="mt-4 text-[11px] text-slate-400 font-medium flex items-center gap-1.5 opacity-80">
+                <Sparkles className="w-3 h-3 text-blue-400" />
+                Trusted by 500+ creators and marketers worldwide.
               </p>
             </div>
           </div>
 
-          {/* Links Sections - Accordion on Mobile, Grid on Desktop */}
-          <div className="lg:w-1/2 flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-8">
+          {/* Links Grid */}
+          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {sections.map((section) => (
-              <div key={section.title} className="border-b md:border-none border-gray-200 dark:border-gray-800 pb-4 md:pb-0 last:border-0 last:pb-0">
-                <button
+              <div key={section.title} className="space-y-6">
+                <div
                   onClick={() => toggleSection(section.title)}
-                  className="w-full flex items-center justify-between md:cursor-default group"
+                  className="flex items-center justify-between cursor-pointer md:cursor-default"
                 >
-                  <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-widest">{section.title}</h3>
-                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 md:hidden ${openSection === section.title ? 'rotate-180 text-blue-500' : ''}`} />
-                </button>
+                  <h3 className="text-slate-950 dark:text-white font-black text-sm uppercase tracking-widest relative">
+                    {section.title}
+                    <span className="absolute -bottom-1 left-0 w-8 h-1 bg-blue-500 rounded-full"></span>
+                  </h3>
+                  <ChevronDown className={`w-5 h-5 text-slate-400 md:hidden transition-transform duration-300 ${openSection === section.title ? 'rotate-180 text-blue-500' : ''}`} />
+                </div>
 
-                {/* Mobile Accordion Content */}
-                <AnimatePresence initial={false}>
-                  {(openSection === section.title || typeof window !== 'undefined' && window.innerWidth >= 768) && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="md:!h-auto md:!opacity-100 overflow-hidden"
-                    >
-                      <ul className="space-y-3 pt-4 md:pt-4">
-                        {section.links.map((link) => (
-                          <li key={link.name}>
-                            {link.external ? (
-                              <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors text-sm font-medium flex items-center gap-1 group/link">
-                                {link.name}
-                              </a>
-                            ) : (
-                              <Link href={link.href} className="text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors text-sm font-medium block">
-                                {link.name}
-                              </Link>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Desktop Content (Force render if needed or rely on above conditional) */}
-                {/* Actually calling window.innerWidth in render might cause hydration mismatch. 
-                    Better strategy: CSS Display. 
-                    - Mobile: Accordion (controlled by state).
-                    - Desktop: Always visible (hidden on mobile? No, shared content).
-                    
-                    Fix: Render the list always on MD+. On Mobile, use the motion div.
-                */}
-                <div className="hidden md:block">
-                  <ul className="space-y-3 pt-4">
+                {/* Shared Container for Mobile & Desktop */}
+                <div className={`${openSection === section.title ? 'block' : 'hidden'} md:block`}>
+                  <ul className="flex flex-col space-y-5">
                     {section.links.map((link) => (
                       <li key={link.name}>
                         {link.external ? (
-                          <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors text-sm font-medium">
-                            {link.name}
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-semibold inline-flex items-center group/link"
+                          >
+                            <span className="relative">
+                              {link.name}
+                              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-blue-500 transition-all duration-300 group-hover/link:w-full"></span>
+                            </span>
                           </a>
                         ) : (
-                          <Link href={link.href} className="text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors text-sm font-medium">
-                            {link.name}
+                          <Link
+                            href={link.href}
+                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-semibold inline-flex items-center group/link"
+                          >
+                            <span className="relative">
+                              {link.name}
+                              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-blue-500 transition-all duration-300 group-hover/link:w-full"></span>
+                            </span>
                           </Link>
                         )}
                       </li>
@@ -195,20 +199,48 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-6 text-[12px]">
-          <div className="text-gray-500 font-medium text-center sm:text-left">
-            © 2026 Reword. All rights reserved.
-          </div>
+        {/* Improved Bottom Section */}
+        <div className="mt-16 pt-10 border-t border-slate-200 dark:border-slate-800/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-sm">
+            <div className="order-2 md:order-1 flex flex-col items-center md:items-start gap-2">
+              <p className="text-slate-500 dark:text-slate-400 font-bold">
+                © 2026 Reword. All rights reserved.
+              </p>
+              <div className="flex items-center gap-4 text-slate-400 dark:text-slate-500 font-medium">
+                <Link href="#" className="hover:text-blue-500 transition-colors">Privacy</Link>
+                <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full"></span>
+                <Link href="#" className="hover:text-blue-500 transition-colors">Terms</Link>
+                <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full"></span>
+                <Link href="#" className="hover:text-blue-500 transition-colors">Cookies</Link>
+              </div>
+            </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2 text-gray-500 font-medium bg-gray-50 dark:bg-gray-800/50 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-700">
-              Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 animate-pulse" /> by
-              <a href="https://entrext.in" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Entrext Labs</a>
+            <div className="order-1 md:order-2">
+              <div className="group flex items-center gap-3 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 px-6 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 transition-all duration-300 shadow-sm cursor-default">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-bold">
+                  Built with <Heart className="w-4 h-4 text-red-500 fill-red-500 animate-pulse group-hover:scale-125 transition-transform" /> by
+                  <a href="https://entrext.in" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 font-black hover:text-indigo-500 transition-colors ml-1">
+                    Entrext Labs
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .footer-gradient {
+          background: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.05), transparent 40%),
+                      var(--footer-bg);
+        }
+        :global(.dark) .footer-gradient {
+          --footer-bg: #020617;
+        }
+        :global(:not(.dark)) .footer-gradient {
+          --footer-bg: #f8fafc;
+        }
+      `}</style>
     </footer>
   )
 }

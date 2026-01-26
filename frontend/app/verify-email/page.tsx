@@ -10,6 +10,8 @@ import toast from 'react-hot-toast'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 
+import { API_URL } from '../../lib/api-config'
+
 const VerifyEmailContent = () => {
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -26,7 +28,7 @@ const VerifyEmailContent = () => {
 
         const verifyEmail = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/verify-email?token=${token}`)
+                const response = await axios.get(`${API_URL}/api/v1/auth/verify-email?token=${token}`)
                 if (response.data.success) {
                     setStatus('success')
                     setMessage(response.data.message || 'Email successfully verified!')

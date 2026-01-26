@@ -164,37 +164,37 @@ async def rate_limit_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# Add CORS middleware for frontend
+# Add path-normalization middleware to handle double slashes, etc.
+@app.middleware("http")
+async def normalize_path_middleware(request: Request, call_next):
+    # Get current path
+    path = request.url.path
+    
+    # Check for multiple slashes (e.g., //api/v1/...)
+    if "//" in path:
+        import re
+        normalized_path = re.sub(r'/+', '/', path)
+        print(f"🔄 Normalizing path from {path} to {normalized_path}")
+        
+        # We can't easily change request.url.path directly in some FastAPI versions, 
+        # but we can modify the scope
+        request.scope["path"] = normalized_path
+        
+    response = await call_next(request)
+    return response
+
+# Configure CORS properly
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_credentials=True,
+    allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
-# Add manual CORS headers middleware
-@app.middleware("http")
-async def add_cors_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    response.headers["Access-Control-Max-Age"] = "86400"
-    return response
 
-# Handle preflight OPTIONS requests
-@app.options("/{full_path:path}")
-async def options_handler(request: Request):
-    return JSONResponse(
-        content={},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Max-Age": "86400"
-        }
-    )
 
 # Global exception handler
 @app.exception_handler(Exception)
