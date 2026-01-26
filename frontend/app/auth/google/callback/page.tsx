@@ -82,12 +82,19 @@ export default function GoogleCallbackPage() {
         const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
         const redirectUri = `${window.location.origin}/auth/google/callback`
 
-        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, {
+        const payload = {
           code,
           state: state || 'dev-mode',
           request_id: requestId,
           redirect_uri: redirectUri
-        }, {
+        }
+
+        console.log('📤 Sending auth payload:', payload)
+
+        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, payload, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
           timeout: 15000 // 15 second timeout
         })
 
