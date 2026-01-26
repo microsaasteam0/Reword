@@ -114,104 +114,111 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[999999] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-md z-[999999] flex items-center justify-center p-4">
+      <div className="relative bg-[#1E293B] dark:bg-[#020617] rounded-3xl border border-slate-700/50 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl overflow-hidden">
+
+        {/* Background Effects */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-blue-600/10 to-transparent pointer-events-none"></div>
+        <div className="absolute -top-20 -right-20 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Header */}
-        <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              Upgrade to Pro
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
+        <div className="relative p-6 pb-0 flex items-center justify-between z-10">
+          <div className="flex items-center gap-2 text-white">
+            <div className="p-2 bg-blue-500/20 rounded-xl border border-blue-500/30">
+              <Crown className="w-5 h-5 text-blue-400" />
+            </div>
+            <h2 className="text-lg font-bold">Upgrade to Pro</h2>
           </div>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full p-2 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {/* Plan Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-4 mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <span className="font-semibold text-gray-900 dark:text-white">{planNames[selectedPlan as keyof typeof planNames] || selectedPlan}</span>
+        <div className="relative p-6 z-10">
+
+          {/* Plan Summary Card */}
+          <div className="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 mb-8 overflow-hidden group hover:border-blue-500/50 transition-colors duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-purple-600/5 group-hover:from-blue-600/10 transition-colors"></div>
+
+            <div className="relative flex justify-between items-start mb-4">
+              <div>
+                <p className="text-slate-400 text-sm font-medium mb-1">Selected Plan</p>
+                <h3 className="text-2xl font-bold text-white tracking-tight">{planNames[selectedPlan as keyof typeof planNames] || selectedPlan}</h3>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">${amount}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">/{billingCycle}</div>
+                <div className="flex items-baseline gap-1 justify-end">
+                  <span className="text-3xl font-bold text-white tracking-tight">${amount}</span>
+                  <span className="text-slate-400 font-medium">/{billingCycle}</span>
+                </div>
+                {savings > 0 && (
+                  <span className="inline-block mt-1 px-2 py-0.5 bg-green-500/10 text-green-400 text-xs font-bold rounded-full border border-green-500/20">
+                    Save {savings}%
+                  </span>
+                )}
               </div>
             </div>
 
-            {savings > 0 && (
-              <div className="text-sm text-green-700 dark:text-green-400 font-medium">
-                Save {savings}% with yearly billing
-              </div>
-            )}
+            <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent my-4"></div>
+
+            {/* Feature List */}
+            <ul className="space-y-3">
+              {[
+                "Unlimited content repurposing",
+                "URL processing & extraction",
+                "Content library & history",
+                "Advanced AI templates",
+                "Priority 24/7 support"
+              ].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-slate-300">
+                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+                    <Check className="w-3 h-3 text-blue-400" />
+                  </div>
+                  {feature}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Dodo Payments Checkout Button */}
-          <div className="mt-6">
+          {/* Checkout Action */}
+          <div className="space-y-4">
             <button
               onClick={handleCheckout}
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+              className="w-full group relative py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <Crown className="w-5 h-5" />
-                  Pay ${amount} {billingCycle}
-                  <ExternalLink className="w-4 h-4" />
-                </>
-              )}
+              <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span className="relative flex items-center justify-center gap-2">
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Secure Checkout
+                    <ExternalLink className="w-4 h-4 opacity-70" />
+                  </>
+                )}
+              </span>
             </button>
 
-            <div className="mt-4 text-center">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                Secure payment powered by Dodo Payments
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                🔒 SSL encrypted • 14-day money-back guarantee
-              </p>
+            <div className="flex items-center justify-center gap-4 text-[10px] text-slate-500 font-medium">
+              <span className="flex items-center gap-1.5">
+                <svg className="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z" /></svg>
+                Secure by Dodo Payments
+              </span>
+              <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+              <span className="flex items-center gap-1.5">
+                <svg className="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" /></svg>
+                SSL Encrypted
+              </span>
             </div>
           </div>
 
-          {/* Features List */}
-          <div className="mt-6 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">What you'll get:</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                Unlimited content repurposing
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                URL processing & content extraction
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                Save & organize content library
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                Advanced AI templates & styles
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                Export to multiple formats
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
-                Priority support (24h response)
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
