@@ -1,18 +1,19 @@
-from fastapi import FastAPI, Request, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
-from routes import register_routes
-from database import create_tables, get_db
-from sqlalchemy.orm import Session
-from sqlalchemy import text
+from pathlib import Path
 import os
 import time
 import asyncio
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+
+from routes import register_routes
+from database import create_tables, get_db
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 from dotenv import load_dotenv
-import os
-from pathlib import Path
 
 # Load env from root directory
 env_path = Path(__file__).resolve().parent.parent / '.env'
@@ -25,12 +26,27 @@ background_tasks = set()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan manager for background tasks"""
+    """Application lifespan manager for background tasks and initialization"""
     
-    # Startup
-    print("🚀 Starting SnippetStream API with subscription management...")
+    # --- Startup ---
+    print("🚀 Starting SnippetStream API...")
     
-    # Start subscription background task
+    # 1. Initialize database tables
+    try:
+        create_tables()
+        print("✅ Database tables initialized successfully")
+        
+        # Seed public templates
+        try:
+            from seed_public_templates import seed_public_templates
+            seed_public_templates()
+            print("✅ Public templates seeding completed")
+        except Exception as seed_error:
+            print(f"⚠️ Template seeding warning: {seed_error}")
+    except Exception as e:
+        print(f"⚠️ Database initialization warning: {e}")
+
+    # 2. Start subscription background task
     try:
         from subscription_manager import subscription_background_task
         task = asyncio.create_task(subscription_background_task())
@@ -42,14 +58,10 @@ async def lifespan(app: FastAPI):
     
     yield
     
-    # Shutdown
+    # --- Shutdown ---
     print("🛑 Shutting down SnippetStream API...")
-    
-    # Cancel background tasks
     for task in background_tasks:
         task.cancel()
-    
-    # Wait for tasks to complete
     if background_tasks:
         await asyncio.gather(*background_tasks, return_exceptions=True)
         print("✅ Background tasks stopped")
@@ -109,24 +121,6 @@ async def health_check(db: Session = Depends(get_db)):
                 "timestamp": time.time()
             }
         )
-
-# Initialize database tables
-try:
-    create_tables()
-    print("✅ Database tables initialized successfully")
-    
-    # Seed public templates if they don't exist
-    try:
-        from seed_public_templates import seed_public_templates
-        seed_public_templates()
-        print("✅ Public templates seeding completed")
-    except Exception as seed_error:
-        print(f"⚠️  Template seeding warning: {seed_error}")
-        print("   Templates may already exist or there was a seeding issue")
-        
-except Exception as e:
-    print(f"⚠️  Database initialization warning: {e}")
-    print("   This is normal if using SQLite for the first time")
 
 # Simple rate limiting middleware
 request_times = {}
@@ -288,10 +282,8 @@ async def admin_seed_templates(db: Session = Depends(get_db)):
             }
         )
 
+# Register all routes from the routes package
 register_routes(app)
-
-# Export the app for Vercel
-handler = app
 
 # Only run uvicorn if this file is executed directly (not imported by Vercel)
 if __name__ == "__main__":

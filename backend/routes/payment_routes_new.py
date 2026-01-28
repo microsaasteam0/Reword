@@ -61,14 +61,22 @@ try:
     print("✅ Using real DodoPayments SDK")
     
     # Initialize real Dodo Payments client with webhook key
+    bearer_token = os.environ.get("DODO_PAYMENTS_API_KEY")
+    if not bearer_token:
+        print("⚠️ DODO_PAYMENTS_API_KEY missing, using mock implementation for startup")
+        raise ImportError("DODO_PAYMENTS_API_KEY missing")
+        
     dodo_client = DodoPayments(
-        bearer_token=os.environ.get("DODO_PAYMENTS_API_KEY"),
+        bearer_token=bearer_token,
         environment=os.environ.get("DODO_PAYMENTS_ENVIRONMENT", "test_mode"),
         webhook_key=os.environ.get("DODO_WEBHOOK_SECRET")  # Add webhook key for signature verification
     )
     
-except ImportError:
-    print("⚠️ DodoPayments SDK not found, using mock implementation")
+except (ImportError, Exception) as error:
+    if "DODO_PAYMENTS_API_KEY" not in str(error):
+        print(f"⚠️ DodoPayments setup issue: {error}")
+    else:
+        print("⚠️ DODO_PAYMENTS_API_KEY missing, falling back to mock")
     
     # Fallback mock implementation
     class MockSession:
