@@ -14,7 +14,8 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     bundlePagesRouterDependencies: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'axios'],
+    parallelServerBuildTraces: true,
   },
   images: {
     remotePatterns: [
