@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../../../contexts/AuthContext'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Loader2 } from 'lucide-react'
 
-export default function GoogleCallbackPage() {
+function GoogleCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login } = useAuth()
@@ -19,7 +19,6 @@ export default function GoogleCallbackPage() {
   useEffect(() => {
     // Prevent multiple executions using refs (more reliable than state)
     if (hasProcessedRef.current || processingRef.current) {
-      // console.log('🛑 Callback already processed or in progress, skipping...')
       return
     }
 
@@ -29,7 +28,6 @@ export default function GoogleCallbackPage() {
 
       try {
         // Get the authorization code and state from URL
-        // Use both searchParams and direct window access as a fallback for reliability
         let code = searchParams.get('code')
         let state = searchParams.get('state')
         const error = searchParams.get('error')
@@ -77,11 +75,6 @@ export default function GoogleCallbackPage() {
         formData.append('code', String(code))
         formData.append('state', String(state || 'dev-mode'))
 
-        console.log('📤 Sending auth payload (FormData):', {
-          code: String(code).substring(0, 10) + '...',
-          state: state || 'dev-mode'
-        })
-
         const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, formData, {
           timeout: 15000
         })
@@ -111,53 +104,37 @@ export default function GoogleCallbackPage() {
         }
 
       } catch (error: any) {
-        // console.error('❌ Google OAuth callback error:', error)
-
         // Check if this is a duplicate request error (400 status)
         if (error.response?.status === 400) {
-          // console.log('⚠️ Duplicate request detected, checking for existing auth...')
-
           // Wait a moment and check if we have tokens from the successful request
           setTimeout(() => {
             const storedToken = localStorage.getItem('access_token')
             const storedUser = localStorage.getItem('user')
 
             if (storedToken && storedUser) {
-              // console.log('✅ Found tokens from successful request, redirecting...')
               setStatus('success')
               setMessage('Authentication successful! Redirecting...')
-
-              // Set axios header
               axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
-
-              // Dispatch auth success event
               window.dispatchEvent(new CustomEvent('auth-success', {
                 detail: { user: JSON.parse(storedUser) }
               }))
-
               setTimeout(() => {
                 window.location.replace('/')
               }, 500)
             } else {
-              // No tokens found, this is a real error
-              // console.error('❌ No tokens found after duplicate request')
               setStatus('error')
               setMessage('Authentication failed. Please try signing in again.')
               setTimeout(() => {
                 router.push('/')
               }, 3000)
             }
-          }, 200) // Small delay to allow the successful request to complete
+          }, 200)
         } else {
-          // Other errors
           setStatus('error')
           setMessage(error.message || 'Authentication failed')
-
-          // Only show toast for non-duplicate errors
           if (error.response?.status !== 400) {
             toast.error(`Google sign-in failed: ${error.message}`)
           }
-
           setTimeout(() => {
             router.push('/')
           }, 3000)
@@ -225,5 +202,17 @@ export default function GoogleCallbackPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+      </div>
+    }>
+      <GoogleCallbackContent />
+    </Suspense>
   )
 }

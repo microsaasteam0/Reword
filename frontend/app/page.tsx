@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Sparkles, Twitter, Linkedin, Instagram, Link as LinkIcon, FileText, Loader2, Copy, Check, Star, Zap, Shield, Users, TrendingUp, Clock, ChevronRight, Play, ArrowRight, HelpCircle, CheckCircle, AlertCircle, User, LogIn, Settings, Crown, Lock, X, Plus, MessageSquare, Globe, Mail } from 'lucide-react'
@@ -38,7 +38,7 @@ interface SocialMediaResponse {
 type TabType = 'home' | 'features' | 'pricing' | 'updates' | 'about' | 'community'
 type OnboardingStep = 'welcome' | 'choose-input' | 'add-content' | 'transform' | 'results' | 'completed'
 
-export default function Home() {
+function HomeContent() {
   const { user, isAuthenticated, isLoading: authLoading, forceRestoreAuth, updateUser } = useAuth()
   const featureGate = useFeatureGate()
   const { autoSaveEnabled } = useUserPreferences()
@@ -4285,5 +4285,20 @@ Best regards`)
         onClose={() => setShowSupportModal(false)}
       />
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+          <p className="text-gray-500 animate-pulse">Initializing Reword...</p>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   )
 }

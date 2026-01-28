@@ -9,7 +9,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  output: 'standalone',
   productionBrowserSourceMaps: false,
+  swcMinify: true,
+  experimental: {
+    bundlePagesRouterDependencies: true,
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   images: {
     remotePatterns: [
       {
