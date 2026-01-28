@@ -35,6 +35,7 @@ class ContentHistoryResponse(BaseModel):
     twitter_thread: Optional[str]
     linkedin_post: Optional[str]
     instagram_carousel: Optional[str]
+    context: Optional[str]
     processing_time: Optional[float]
     created_at: str
 
@@ -246,6 +247,7 @@ async def get_content_history(
             twitter_thread=item.twitter_thread,
             linkedin_post=item.linkedin_post,
             instagram_carousel=item.instagram_carousel,
+            context=item.context,
             processing_time=item.processing_time,
             created_at=item.created_at.isoformat()
         )
@@ -277,6 +279,7 @@ async def get_content_generation(
         twitter_thread=generation.twitter_thread,
         linkedin_post=generation.linkedin_post,
         instagram_carousel=generation.instagram_carousel,
+        context=generation.context,
         processing_time=generation.processing_time,
         created_at=generation.created_at.isoformat()
     )

@@ -47,6 +47,7 @@ class ContentGeneration(Base):
     twitter_thread = Column(Text, nullable=True)
     linkedin_post = Column(Text, nullable=True)
     instagram_carousel = Column(Text, nullable=True)
+    context = Column(Text, nullable=True)  # JSON string for personalization context
     processing_time = Column(Float, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     

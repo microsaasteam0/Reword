@@ -43,6 +43,7 @@ class ContentRequest(BaseModel):
     session_id: Optional[str] = None
     timezone: Optional[str] = None
     screen_resolution: Optional[str] = None
+    context: Optional[Dict] = None
 
 
 class SocialMediaResponse(BaseModel):
@@ -163,7 +164,7 @@ def fetch_content_from_url(url: str) -> str:
 # ----------------------------------------------------
 # Twitter Thread Generator (Async)
 # ----------------------------------------------------
-async def create_twitter_thread_async(content: str) -> List[str]:
+async def create_twitter_thread_async(content: str, context: Optional[Dict] = None) -> List[str]:
 
     system_prompt = """
 You are a social media expert.
@@ -178,6 +179,19 @@ Rules:
 
 Return only the 10 lines.
 """
+
+    if context:
+        system_prompt += f"\n\nPersonalization Context:\n"
+        if context.get('audience'): system_prompt += f"- Audience: {context['audience']}\n"
+        if context.get('tone'): system_prompt += f"- Tone: {context['tone']}\n"
+        if context.get('mood'): system_prompt += f"- Mood: {context['mood']}\n"
+        if context.get('xThreadType'): system_prompt += f"- Thread Strategy: {context['xThreadType']}\n"
+        
+        # Add deep story context if present
+        if context.get('event'): system_prompt += f"- Specific Event: {context['event']}\n"
+        if context.get('importance'): system_prompt += f"- Why it matters: {context['importance']}\n"
+        if context.get('highlights'): system_prompt += f"- Highlights/Wins: {context['highlights']}\n"
+        if context.get('lessons'): system_prompt += f"- Key Lessons: {context['lessons']}\n"
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -214,7 +228,7 @@ Return only the 10 lines.
 # ----------------------------------------------------
 # LinkedIn Post Generator (Async)
 # ----------------------------------------------------
-async def create_linkedin_post_async(content: str) -> str:
+async def create_linkedin_post_async(content: str, context: Optional[Dict] = None) -> str:
 
     system_prompt = """
 You are a LinkedIn content strategist.
@@ -228,6 +242,24 @@ Structure:
 
 Use emojis (2-3 total).
 """
+
+    if context:
+        system_prompt += f"\n\nPersonalization Context:\n"
+        if context.get('audience'): system_prompt += f"- Audience: {context['audience']}\n"
+        if context.get('tone'): system_prompt += f"- Tone: {context['tone']}\n"
+        if context.get('mood'): system_prompt += f"- Mood: {context['mood']}\n"
+        
+        # Deep storytelling for LinkedIn
+        story_pts = []
+        if context.get('event'): story_pts.append(f"Event: {context['event']}")
+        if context.get('importance'): story_pts.append(f"Importance: {context['importance']}")
+        if context.get('highlights'): story_pts.append(f"Highlights: {context['highlights']}")
+        if context.get('role'): story_pts.append(f"My Role: {context['role']}")
+        if context.get('lessons'): story_pts.append(f"Lessons: {context['lessons']}")
+        if context.get('shoutouts'): story_pts.append(f"Shoutouts/Takeaways: {context['shoutouts']}")
+        
+        if story_pts:
+            system_prompt += "\nSpecific Story Points to incorporate:\n" + "\n".join(f"- {p}" for p in story_pts)
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -245,7 +277,7 @@ Use emojis (2-3 total).
 # ----------------------------------------------------
 # Instagram Carousel Generator (Async)
 # ----------------------------------------------------
-async def create_instagram_carousel_async(content: str) -> List[str]:
+async def create_instagram_carousel_async(content: str, context: Optional[Dict] = None) -> List[str]:
 
     system_prompt = """
 Create exactly 6-8 Instagram carousel slides.
@@ -257,6 +289,16 @@ Short description (max 6 words)
 
 Return slides only.
 """
+
+    if context:
+        system_prompt += f"\n\nPersonalization Context:\n"
+        if context.get('audience'): system_prompt += f"- Audience: {context['audience']}\n"
+        if context.get('tone'): system_prompt += f"- Tone: {context['tone']}\n"
+        if context.get('mood'): system_prompt += f"- Mood: {context['mood']}\n"
+        if context.get('instaVibe'): system_prompt += f"- Visual Aesthetic: {context['instaVibe']}\n"
+        
+        # Add highlight for slides
+        if context.get('highlights'): system_prompt += f"- Key wins to feature on slides: {context['highlights']}\n"
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -342,9 +384,9 @@ async def repurpose_content(
         # Generate all outputs in parallel for maximum speed
         print("⚡ Triggering parallel generation for all platforms...")
         
-        twitter_task = create_twitter_thread_async(content)
-        linkedin_task = create_linkedin_post_async(content)
-        instagram_task = create_instagram_carousel_async(content)
+        twitter_task = create_twitter_thread_async(content, request.context)
+        linkedin_task = create_linkedin_post_async(content, request.context)
+        instagram_task = create_instagram_carousel_async(content, request.context)
         
         results = await asyncio.gather(
             twitter_task,
@@ -374,6 +416,7 @@ async def repurpose_content(
                 twitter_thread=json.dumps(twitter_thread),
                 linkedin_post=linkedin_post,
                 instagram_carousel=json.dumps(instagram_carousel),
+                context=json.dumps(request.context) if request.context else None,
                 processing_time=processing_time,
             )
             db.add(generation)

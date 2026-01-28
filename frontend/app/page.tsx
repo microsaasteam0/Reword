@@ -75,6 +75,21 @@ function HomeContent() {
   const [templateSelectorSource, setTemplateSelectorSource] = useState<string>('all') // Track which source to show
   const [showDashboard, setShowDashboard] = useState(false)
   const [showSupportModal, setShowSupportModal] = useState(false)
+  const [personalization, setPersonalization] = useState({
+    audience: '',
+    tone: 'Professional',
+    mood: 'Neutral',
+    goal: '',
+    event: '',
+    importance: '',
+    highlights: '',
+    role: '',
+    lessons: '',
+    shoutouts: '',
+    xThreadType: 'Educational',
+    instaVibe: 'Clean & Minimal'
+  })
+  const [showPersonalization, setShowPersonalization] = useState(false)
   const [browserFingerprint, setBrowserFingerprint] = useState<any>(null)
 
   // Sample content suggestions
@@ -710,7 +725,9 @@ function HomeContent() {
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/repurpose`,
-        activeTab === 'url' ? { url } : { content },
+        activeTab === 'url'
+          ? { url, context: personalization }
+          : { content, context: personalization },
         {
           timeout: 120000 // 2-minute timeout
         }
@@ -2614,6 +2631,216 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                 <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
                   AI optimizing for maximum engagement
                 </div>
+              </div>
+            )}
+
+            {/* Advanced Personalization Dashboard */}
+            {!isLoading && !results && (
+              <div className="mt-10 mb-6 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-500 bg-white dark:bg-slate-900">
+                <button
+                  onClick={() => setShowPersonalization(!showPersonalization)}
+                  className="w-full flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all duration-300 group"
+                >
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-4 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-gray-900 dark:text-white font-black text-lg">Guided Personalization</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">Tell us the story behind your content for better AI results.</p>
+                    </div>
+                  </div>
+                  <div className={`p-2 rounded-full border border-slate-200 dark:border-slate-700 transition-transform duration-500 ${showPersonalization ? 'rotate-180' : ''}`}>
+                    <ChevronRight className="w-5 h-5 opacity-50 group-hover:opacity-100" />
+                  </div>
+                </button>
+
+                {showPersonalization && (
+                  <div className="p-8 space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 border-t border-slate-100 dark:border-slate-800">
+
+                    {/* Core Context Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-blue-500 dark:text-blue-400 flex items-center">
+                          <Users className="w-3 h-3 mr-1.5" /> Target Audience
+                        </label>
+                        <input
+                          type="text"
+                          value={personalization.audience}
+                          onChange={(e) => setPersonalization({ ...personalization, audience: e.target.value })}
+                          placeholder="e.g. Early Founders, CEOs"
+                          className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-indigo-500 flex items-center">
+                          <MessageSquare className="w-3 h-3 mr-1.5" /> Tone
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={personalization.tone}
+                            onChange={(e) => setPersonalization({ ...personalization, tone: e.target.value })}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                          >
+                            <option>Professional</option>
+                            <option>Casual & Friendly</option>
+                            <option>Witty & Humorous</option>
+                            <option>Inspirational</option>
+                            <option>Direct & Concise</option>
+                          </select>
+                          <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 pointer-events-none text-slate-400" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-purple-500 flex items-center">
+                          <Zap className="w-3 h-3 mr-1.5" /> Mood
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={personalization.mood}
+                            onChange={(e) => setPersonalization({ ...personalization, mood: e.target.value })}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-purple-500 outline-none transition-all appearance-none cursor-pointer"
+                          >
+                            <option>Neutral</option>
+                            <option>Excited & Hype</option>
+                            <option>Reflective & Humble</option>
+                            <option>Vulnerable & Raw</option>
+                            <option>Bold & Challenging</option>
+                            <option>Grateful</option>
+                          </select>
+                          <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 pointer-events-none text-slate-400" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Deep Story Context (LinkedIn Focus) */}
+                    <div className="space-y-6 pt-6 ">
+                      <div className="flex items-center group cursor-help">
+                        <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center mr-3">
+                          <FileText className="w-4 h-4 text-orange-500" />
+                        </div>
+                        <h4 className="text-slate-900 dark:text-white font-bold">Deep Story Context (LinkedIn Focus)</h4>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">What specific event or achievement are we posting about?</label>
+                          <textarea
+                            value={personalization.event}
+                            onChange={(e) => setPersonalization({ ...personalization, event: e.target.value })}
+                            placeholder="Include when/where it happened..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Why did this matter to you personally/professionally?</label>
+                          <textarea
+                            value={personalization.importance}
+                            onChange={(e) => setPersonalization({ ...personalization, importance: e.target.value })}
+                            placeholder="Tell us the significance..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">2-3 Standout highlights or wins from this experience?</label>
+                          <textarea
+                            value={personalization.highlights}
+                            onChange={(e) => setPersonalization({ ...personalization, highlights: e.target.value })}
+                            placeholder="Key moments of success..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">What role did you play and what impact did you own?</label>
+                          <textarea
+                            value={personalization.role}
+                            onChange={(e) => setPersonalization({ ...personalization, role: e.target.value })}
+                            placeholder="Your specific contribution..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Key skill, insight, or lesson you walked away with?</label>
+                          <textarea
+                            value={personalization.lessons}
+                            onChange={(e) => setPersonalization({ ...personalization, lessons: e.target.value })}
+                            placeholder="What did you learn?"
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Who deserves a shoutout or what's the big takeaway?</label>
+                          <textarea
+                            value={personalization.shoutouts}
+                            onChange={(e) => setPersonalization({ ...personalization, shoutouts: e.target.value })}
+                            placeholder="Bigger lesson for others..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Platform Specific Vibes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                      <div className="space-y-4">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center mr-3">
+                            <Twitter className="w-4 h-4 text-white" />
+                          </div>
+                          <h4 className="text-slate-800 dark:text-slate-200 font-bold">X (Twitter) Options</h4>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-slate-400">Thread Strategy</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {['Educational', 'Storytelling', 'Listicle'].map((type) => (
+                              <button
+                                key={type}
+                                onClick={() => setPersonalization({ ...personalization, xThreadType: type })}
+                                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${personalization.xThreadType === type
+                                  ? 'bg-slate-900 text-white shadow-lg'
+                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'}`}
+                              >
+                                {type}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center mr-3">
+                            <Instagram className="w-4 h-4 text-white" />
+                          </div>
+                          <h4 className="text-slate-800 dark:text-slate-200 font-bold">Instagram Vibes</h4>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-widest text-slate-400">Visual Aesthetic</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {['Clean & Minimal', 'Bold & Vibrant', 'Dark Mode'].map((vibe) => (
+                              <button
+                                key={vibe}
+                                onClick={() => setPersonalization({ ...personalization, instaVibe: vibe })}
+                                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${personalization.instaVibe === vibe
+                                  ? 'bg-pink-600 text-white shadow-lg'
+                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'}`}
+                              >
+                                {vibe}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                )}
               </div>
             )}
 
