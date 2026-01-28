@@ -167,18 +167,34 @@ def fetch_content_from_url(url: str) -> str:
 async def create_twitter_thread_async(content: str, context: Optional[Dict] = None) -> List[str]:
 
     system_prompt = """
-You are a social media expert.
+You are an expert X (Twitter) thread writer.
 
-Create EXACTLY 10 independent X posts.
+Create EXACTLY 10 tweets that form ONE connected thread.
+
+Thread Structure:
+1/10 Hook (big attention grabber)
+2/10 The problem or pain point
+3/10 Why it matters (personal/professional)
+4/10 What you built or achieved
+5/10 Key highlight #1
+6/10 Key highlight #2
+7/10 Your role/contribution
+8/10 Lesson learned
+9/10 Bigger takeaway for others
+10/10 Call-to-action + engagement question
 
 Rules:
-- Each under 200 characters
-- Each ends with 2-3 hashtags
-- Numbered 1/10 ... 10/10
-- Standalone posts (no continuation)
+- Each tweet must be under 240 characters
+- Each tweet must start with "1/10", "2/10"... "10/10"
+- Tweets should feel connected (not standalone)
+- Use max 1 emoji per tweet
+- Hashtags ONLY in the final tweet (2–3 hashtags)
+- Return ONLY the 10 tweets, one per line
 
-Return only the 10 lines.
+If any context field is missing, skip it gracefully.
+Do NOT invent fake details.
 """
+
 
     if context:
         system_prompt += f"\n\nPersonalization Context:\n"
@@ -235,15 +251,30 @@ async def create_linkedin_post_async(content: str, context: Optional[Dict] = Non
     system_prompt = """
 You are a LinkedIn content strategist.
 
-Structure:
-1. Hook
-2. Short paragraphs with double breaks
-3. Bullet points
-4. Call-to-action question
-5. 3-5 hashtags
+Write ONE high-performing LinkedIn post using this structure:
 
-Use emojis (2-3 total).
+1. Hook (1 short scroll-stopping line)
+2. Context (what happened + when/where)
+3. Key highlights (2–4 bullet points)
+4. Personal role/contribution
+5. Skills or lessons learned
+6. Gratitude/shoutouts (optional)
+7. Closing reflection (bigger takeaway)
+8. Engagement question (end with a question)
+9. 3–5 relevant hashtags
+
+Formatting Rules:
+- Use short paragraphs with double line breaks
+- Use only 2–3 emojis total
+- Keep it under 180 words
+- Must naturally include all provided context story points
+
+Return ONLY the post text.
+If any context field is missing, skip it gracefully.
+Do NOT invent fake details.
 """
+
+
 
     if context:
         system_prompt += f"\n\nPersonalization Context:\n"
@@ -284,14 +315,34 @@ Use emojis (2-3 total).
 async def create_instagram_carousel_async(content: str, context: Optional[Dict] = None) -> List[str]:
 
     system_prompt = """
-Create exactly 6-8 Instagram carousel slides.
+You are an Instagram carousel content strategist.
 
-Each slide must be exactly 2 lines:
+Create EXACTLY 8 slides for an Instagram carousel.
 
-Emoji + TITLE (uppercase)
-Short description (max 6 words)
+Carousel Story Structure:
+Slide 1: Hook (big bold attention grabber)
+Slide 2: Problem or pain point
+Slide 3: Why it matters personally/professionally
+Slide 4: The achievement or solution
+Slide 5: Key highlight #1
+Slide 6: Key highlight #2
+Slide 7: Lesson or takeaway
+Slide 8: Call-to-action + engagement prompt
 
-Return slides only.
+Formatting Rules:
+- Each slide MUST have EXACTLY 2 lines:
+  Line 1: Emoji + TITLE (uppercase, max 3 words)
+  Line 2: Short description (max 6 words)
+
+Strict Output Rules:
+- No extra lines
+- No numbering
+- No hashtags
+- Slides must be separated by ONE blank line
+- Return ONLY the slides, nothing else
+
+If any context field is missing, skip it gracefully.
+Do NOT invent fake details.
 """
 
     if context:
