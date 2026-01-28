@@ -668,34 +668,48 @@ async def get_usage_stats(
     try:
         from models import UsageStats, ContentGeneration
         from datetime import datetime, timedelta, timezone
+        import sqlalchemy
         
-        # Get usage stats for last 30 days
-        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        # Get current time in UTC
+        now_utc = datetime.now(timezone.utc)
+        thirty_days_ago = now_utc - timedelta(days=30)
+        twenty_four_hours_ago = now_utc - timedelta(hours=24)
+        
+        # Helper to handle potential naive/aware comparison issues
+        def get_count_robust(query, date_limit):
+            try:
+                return query.filter(ContentGeneration.created_at >= date_limit).count()
+            except sqlalchemy.exc.StatementError:
+                # If it fails due to timezone mismatch, try naive
+                return query.filter(ContentGeneration.created_at >= date_limit.replace(tzinfo=None)).count()
+
+        def get_usage_robust(query, date_limit):
+            try:
+                return query.filter(UsageStats.created_at >= date_limit).count()
+            except sqlalchemy.exc.StatementError:
+                return query.filter(UsageStats.created_at >= date_limit.replace(tzinfo=None)).count()
         
         total_generations = db.query(ContentGeneration).filter(
             ContentGeneration.user_id == current_user.id
         ).count()
         
-        recent_generations = db.query(ContentGeneration).filter(
-            ContentGeneration.user_id == current_user.id,
-            ContentGeneration.created_at >= thirty_days_ago
-        ).count()
+        recent_generations_query = db.query(ContentGeneration).filter(
+            ContentGeneration.user_id == current_user.id
+        )
+        recent_generations = get_count_robust(recent_generations_query, thirty_days_ago)
         
         # Rate limit info - 24 hour window for free users only
         if current_user.is_premium:
-            # Premium users have unlimited access
-            rate_limit = -1  # -1 indicates unlimited
-            remaining_requests = -1  # -1 indicates unlimited
+            rate_limit = -1
+            remaining_requests = -1
         else:
-            # Free users have daily limits
-            twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
-            recent_usage = db.query(UsageStats).filter(
+            recent_usage_query = db.query(UsageStats).filter(
                 UsageStats.user_id == current_user.id,
-                UsageStats.action == "generate",
-                UsageStats.created_at >= twenty_four_hours_ago
-            ).count()
+                UsageStats.action == "generate"
+            )
+            recent_usage = get_usage_robust(recent_usage_query, twenty_four_hours_ago)
             
-            rate_limit = 2  # Free users get 2 per day
+            rate_limit = 2
             remaining_requests = max(0, rate_limit - recent_usage)
         
         return {
@@ -708,8 +722,6 @@ async def get_usage_stats(
         }
     except Exception as e:
         print(f"❌ Error in get_usage_stats: {str(e)}")
-        import traceback
-        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Usage stats error: {str(e)}")
 
 @auth_router.get("/feature-limits")
