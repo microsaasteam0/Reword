@@ -87,9 +87,10 @@ function HomeContent() {
     lessons: '',
     shoutouts: '',
     xThreadType: 'Educational',
-    instaVibe: 'Clean & Minimal'
+    instaVibe: 'Clean & Minimal',
+    cta: ''
   })
-  const [showPersonalization, setShowPersonalization] = useState(false)
+  const [showPersonalization, setShowPersonalization] = useState(true)
   const [browserFingerprint, setBrowserFingerprint] = useState<any>(null)
 
   // Sample content suggestions
@@ -2635,7 +2636,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
             )}
 
             {/* Advanced Personalization Dashboard */}
-            {!isLoading && !results && (
+            {!isLoading && (
               <div className="mt-10 mb-6 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-500 bg-white dark:bg-slate-900">
                 <button
                   onClick={() => setShowPersonalization(!showPersonalization)}
@@ -2779,6 +2780,26 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                             value={personalization.shoutouts}
                             onChange={(e) => setPersonalization({ ...personalization, shoutouts: e.target.value })}
                             placeholder="Bigger lesson for others..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">What is the main goal or key takeaway for your readers?</label>
+                          <textarea
+                            value={personalization.goal}
+                            onChange={(e) => setPersonalization({ ...personalization, goal: e.target.value })}
+                            placeholder="e.g. Inspire them to start, teach them X..."
+                            rows={2}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Any specific call-to-action (CTA)?</label>
+                          <textarea
+                            value={(personalization as any).cta || ''}
+                            onChange={(e) => setPersonalization({ ...personalization, cta: e.target.value } as any)}
+                            placeholder="e.g. Subscribe to my newsletter, check out the link..."
                             rows={2}
                             className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
                           />

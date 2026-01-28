@@ -255,10 +255,10 @@ def check_rate_limit(user: User, db: Session) -> bool:
             return True  # Premium users have no rate limit
         
         # Check usage in last 24 hours for free users
-        from datetime import datetime, timedelta
+        from datetime import datetime, timedelta, timezone
         from models import UsageStats
         
-        twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+        twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
         recent_usage = db.query(UsageStats).filter(
             UsageStats.user_id == user.id,
             UsageStats.action == "generate",

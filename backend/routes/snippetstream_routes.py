@@ -192,6 +192,8 @@ Return only the 10 lines.
         if context.get('importance'): system_prompt += f"- Why it matters: {context['importance']}\n"
         if context.get('highlights'): system_prompt += f"- Highlights/Wins: {context['highlights']}\n"
         if context.get('lessons'): system_prompt += f"- Key Lessons: {context['lessons']}\n"
+        if context.get('goal'): system_prompt += f"- Main Goal: {context['goal']}\n"
+        if context.get('cta'): system_prompt += f"- Call to Action: {context['cta']}\n"
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -257,6 +259,8 @@ Use emojis (2-3 total).
         if context.get('role'): story_pts.append(f"My Role: {context['role']}")
         if context.get('lessons'): story_pts.append(f"Lessons: {context['lessons']}")
         if context.get('shoutouts'): story_pts.append(f"Shoutouts/Takeaways: {context['shoutouts']}")
+        if context.get('goal'): story_pts.append(f"Main Goal: {context['goal']}")
+        if context.get('cta'): story_pts.append(f"Call to Action: {context['cta']}")
         
         if story_pts:
             system_prompt += "\nSpecific Story Points to incorporate:\n" + "\n".join(f"- {p}" for p in story_pts)
@@ -299,6 +303,7 @@ Return slides only.
         
         # Add highlight for slides
         if context.get('highlights'): system_prompt += f"- Key wins to feature on slides: {context['highlights']}\n"
+        if context.get('goal'): system_prompt += f"- Content Goal: {context['goal']}\n"
 
     messages = [
         {"role": "system", "content": system_prompt},

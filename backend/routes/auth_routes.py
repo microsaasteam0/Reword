@@ -667,10 +667,10 @@ async def get_usage_stats(
 ):
     """Get user usage statistics"""
     from models import UsageStats, ContentGeneration
-    from datetime import datetime, timedelta
+    from datetime import datetime, timedelta, timezone
     
     # Get usage stats for last 30 days
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     
     total_generations = db.query(ContentGeneration).filter(
         ContentGeneration.user_id == current_user.id
@@ -688,7 +688,7 @@ async def get_usage_stats(
         remaining_requests = -1  # -1 indicates unlimited
     else:
         # Free users have daily limits
-        twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+        twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
         recent_usage = db.query(UsageStats).filter(
             UsageStats.user_id == current_user.id,
             UsageStats.action == "generate",
