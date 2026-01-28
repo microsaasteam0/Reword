@@ -4,7 +4,7 @@ Handles payment verification, subscription updates, and payment history tracking
 """
 import json
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session
 from models import User, Subscription, PaymentHistory

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 from database import get_db
@@ -334,8 +334,7 @@ async def get_content_analytics(
     db: Session = Depends(get_db)
 ):
     """Get user's content analytics"""
-    from datetime import datetime, timedelta
-    
+    from datetime import timedelta
     # Get analytics for last 30 days
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     
