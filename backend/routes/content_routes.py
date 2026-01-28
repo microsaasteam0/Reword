@@ -179,7 +179,7 @@ async def update_saved_content(
     if request.is_favorite is not None:
         saved_content.is_favorite = request.is_favorite
     
-    saved_content.updated_at = datetime.utcnow()
+    saved_content.updated_at = datetime.now(timezone.utc)
     
     db.commit()
     db.refresh(saved_content)
@@ -337,7 +337,7 @@ async def get_content_analytics(
     from datetime import datetime, timedelta
     
     # Get analytics for last 30 days
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     
     # Content generation stats
     total_generations = db.query(ContentGeneration).filter(
@@ -376,5 +376,5 @@ async def get_content_analytics(
         "platform_usage": platform_stats,
         "saved_content": saved_count,
         "favorites": favorites_count,
-        "account_age_days": (datetime.utcnow() - current_user.created_at).days
+        "account_age_days": (datetime.now(timezone.utc) - current_user.created_at).days
     }

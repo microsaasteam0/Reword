@@ -41,7 +41,7 @@ class PaymentProcessor:
             status="pending",
             plan_type=plan_type,
             billing_cycle=billing_cycle,
-            checkout_created_at=datetime.utcnow(),
+            checkout_created_at=datetime.now(timezone.utc),
             payment_metadata=json.dumps(metadata or {})
         )
         
@@ -119,7 +119,7 @@ class PaymentProcessor:
             payment_record.status = "completed"
             payment_record.dodo_payment_id = dodo_payment_id
             payment_record.dodo_subscription_id = dodo_subscription_id
-            payment_record.payment_completed_at = datetime.utcnow()
+            payment_record.payment_completed_at = datetime.now(timezone.utc)
             
             # Create or update subscription
             subscription = self.create_or_update_subscription(
@@ -138,7 +138,7 @@ class PaymentProcessor:
             user.is_premium = True
             
             # Mark verification as completed
-            payment_record.verification_completed_at = datetime.utcnow()
+            payment_record.verification_completed_at = datetime.now(timezone.utc)
             
             # Commit all changes
             self.db.commit()
@@ -200,16 +200,16 @@ class PaymentProcessor:
             existing_subscription.status = "active"
             existing_subscription.amount = amount
             existing_subscription.dodo_subscription_id = dodo_subscription_id
-            existing_subscription.current_period_start = datetime.utcnow()
+            existing_subscription.current_period_start = datetime.now(timezone.utc)
             
             # Calculate next billing date
             if billing_cycle == "yearly":
-                existing_subscription.current_period_end = datetime.utcnow() + timedelta(days=365)
+                existing_subscription.current_period_end = datetime.now(timezone.utc) + timedelta(days=365)
             else:  # monthly
-                existing_subscription.current_period_end = datetime.utcnow() + timedelta(days=30)
+                existing_subscription.current_period_end = datetime.now(timezone.utc) + timedelta(days=30)
             
             existing_subscription.extra_metadata = json.dumps(dodo_payment_data or {})
-            existing_subscription.updated_at = datetime.utcnow()
+            existing_subscription.updated_at = datetime.now(timezone.utc)
             
             return existing_subscription
         
@@ -218,7 +218,7 @@ class PaymentProcessor:
             logger.info(f"🆕 Creating new subscription for user {user_id}")
             
             # Calculate billing period
-            current_period_start = datetime.utcnow()
+            current_period_start = datetime.now(timezone.utc)
             if billing_cycle == "yearly":
                 current_period_end = current_period_start + timedelta(days=365)
             else:  # monthly
@@ -267,7 +267,7 @@ class PaymentProcessor:
             
             # Update subscription status
             subscription.status = "cancelled"
-            subscription.updated_at = datetime.utcnow()
+            subscription.updated_at = datetime.now(timezone.utc)
             
             # Downgrade user
             user.is_premium = False
@@ -281,10 +281,10 @@ class PaymentProcessor:
                 status="completed",
                 plan_type="free",
                 billing_cycle="none",
-                payment_completed_at=datetime.utcnow(),
-                verification_completed_at=datetime.utcnow(),
+                payment_completed_at=datetime.now(timezone.utc),
+                verification_completed_at=datetime.now(timezone.utc),
                 notes="Subscription cancelled by user",
-                payment_metadata=json.dumps({"action": "cancellation", "cancelled_at": datetime.utcnow().isoformat()})
+                payment_metadata=json.dumps({"action": "cancellation", "cancelled_at": datetime.now(timezone.utc).isoformat()})
             )
             
             self.db.add(cancellation_record)

@@ -97,7 +97,7 @@ except (ImportError, Exception) as error:
                 "type": "payment.succeeded",
                 "data": {},
                 "business_id": "mock_business",
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
     class DodoPayments:
@@ -245,7 +245,7 @@ async def create_checkout(
             status="pending",
             plan_type=request.plan_id,
             billing_cycle=request.billing_cycle,
-            checkout_created_at=datetime.utcnow(),
+            checkout_created_at=datetime.now(timezone.utc),
             payment_metadata=json.dumps({
                 "session_id": session_id,
                 "checkout_url": checkout_url,
@@ -417,7 +417,7 @@ async def test_webhook():
     return {
         "status": "success",
         "message": "Webhook endpoint is working correctly!",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "environment": os.getenv("DODO_PAYMENTS_ENVIRONMENT", "test_mode")
     }
 
@@ -440,7 +440,7 @@ async def manual_expiration_check(
         return {
             "success": True,
             "message": "Expiration check completed successfully",
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
     except Exception as e:
@@ -456,7 +456,7 @@ async def get_subscription_health(
     
     try:
         from sqlalchemy import func
-        current_time = datetime.utcnow()
+        current_time = datetime.now(timezone.utc)
         
         # Count active subscriptions
         active_subs = db.query(func.count(Subscription.id)).filter(
@@ -530,7 +530,7 @@ async def cancel_subscription(
         
         # Cancel subscription
         subscription.status = "cancelled"
-        subscription.updated_at = datetime.utcnow()
+        subscription.updated_at = datetime.now(timezone.utc)
         
         # Downgrade user
         current_user.is_premium = False
@@ -545,8 +545,8 @@ async def cancel_subscription(
             status="completed",
             plan_type="free",
             billing_cycle="none",
-            payment_completed_at=datetime.utcnow(),
-            verification_completed_at=datetime.utcnow(),
+            payment_completed_at=datetime.now(timezone.utc),
+            verification_completed_at=datetime.now(timezone.utc),
             notes="Subscription cancelled by user",
             payment_metadata=json.dumps({"action": "cancellation"})
         )
@@ -639,7 +639,7 @@ async def get_payment_stats(
         
         # Recent payments (last 30 days)
         from datetime import datetime, timedelta
-        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
         recent_payments = db.query(func.count(PaymentHistory.id)).filter(
             PaymentHistory.created_at >= thirty_days_ago,
             PaymentHistory.status == "completed"
@@ -836,9 +836,9 @@ async def handle_subscription_active_webhook(event_data: dict, db: Session):
             subscription.plan_type = "pro"  # Map from plan_id if needed
             subscription.billing_cycle = billing_cycle
             subscription.amount = normalized_amount
-            subscription.current_period_start = datetime.utcnow()
-            subscription.current_period_end = datetime.utcnow() + timedelta(days=period_days)
-            subscription.updated_at = datetime.utcnow()
+            subscription.current_period_start = datetime.now(timezone.utc)
+            subscription.current_period_end = datetime.now(timezone.utc) + timedelta(days=period_days)
+            subscription.updated_at = datetime.now(timezone.utc)
         else:
             print(f"🆕 Creating new subscription")
             subscription = Subscription(
@@ -849,8 +849,8 @@ async def handle_subscription_active_webhook(event_data: dict, db: Session):
                 billing_cycle=billing_cycle,
                 amount=normalized_amount,
                 currency=currency,
-                current_period_start=datetime.utcnow(),
-                current_period_end=datetime.utcnow() + timedelta(days=period_days),
+                current_period_start=datetime.now(timezone.utc),
+                current_period_end=datetime.now(timezone.utc) + timedelta(days=period_days),
                 extra_metadata=json.dumps(serialize_webhook_data(event_data))
             )
             db.add(subscription)
@@ -867,8 +867,8 @@ async def handle_subscription_active_webhook(event_data: dict, db: Session):
             status="completed",
             plan_type="pro",
             billing_cycle=billing_cycle,
-            payment_completed_at=datetime.utcnow(),
-            verification_completed_at=datetime.utcnow(),
+            payment_completed_at=datetime.now(timezone.utc),
+            verification_completed_at=datetime.now(timezone.utc),
             notes="Activated via subscription.active webhook",
             payment_metadata=json.dumps(serialize_webhook_data(event_data))
         )
@@ -911,7 +911,7 @@ async def handle_subscription_updated_webhook(event_data: dict, db: Session):
         if subscription:
             # Update subscription with new data - use custom serializer
             subscription.extra_metadata = json.dumps(serialize_webhook_data(event_data))
-            subscription.updated_at = datetime.utcnow()
+            subscription.updated_at = datetime.now(timezone.utc)
             db.commit()
             print(f"✅ Subscription updated for {user.email}")
         
@@ -943,7 +943,7 @@ async def handle_subscription_on_hold_webhook(event_data: dict, db: Session):
         
         if subscription:
             subscription.status = "on_hold"
-            subscription.updated_at = datetime.utcnow()
+            subscription.updated_at = datetime.now(timezone.utc)
             
             # Optionally downgrade user (or keep premium until resolved)
             # user.is_premium = False  # Uncomment if you want to immediately revoke access
@@ -979,7 +979,7 @@ async def handle_subscription_failed_webhook(event_data: dict, db: Session):
         
         if subscription:
             subscription.status = "failed"
-            subscription.updated_at = datetime.utcnow()
+            subscription.updated_at = datetime.now(timezone.utc)
             
             # Downgrade user
             user.is_premium = False
@@ -1024,9 +1024,9 @@ async def handle_subscription_renewed_webhook(event_data: dict, db: Session):
         
         if subscription:
             # Extend subscription period
-            subscription.current_period_start = datetime.utcnow()
-            subscription.current_period_end = datetime.utcnow() + timedelta(days=30 if subscription.billing_cycle == "monthly" else 365)
-            subscription.updated_at = datetime.utcnow()
+            subscription.current_period_start = datetime.now(timezone.utc)
+            subscription.current_period_end = datetime.now(timezone.utc) + timedelta(days=30 if subscription.billing_cycle == "monthly" else 365)
+            subscription.updated_at = datetime.now(timezone.utc)
             
             # Ensure user is premium
             user.is_premium = True
@@ -1042,8 +1042,8 @@ async def handle_subscription_renewed_webhook(event_data: dict, db: Session):
                 status="completed",
                 plan_type=subscription.plan_type,
                 billing_cycle=subscription.billing_cycle,
-                payment_completed_at=datetime.utcnow(),
-                verification_completed_at=datetime.utcnow(),
+                payment_completed_at=datetime.now(timezone.utc),
+                verification_completed_at=datetime.now(timezone.utc),
                 notes="Subscription renewal via webhook",
                 payment_metadata=json.dumps(serialize_webhook_data(event_data))
             )
@@ -1080,7 +1080,7 @@ async def handle_subscription_cancelled_webhook(event_data: dict, db: Session):
         
         if subscription:
             subscription.status = "cancelled"
-            subscription.updated_at = datetime.utcnow()
+            subscription.updated_at = datetime.now(timezone.utc)
             
             # Downgrade user
             user.is_premium = False
@@ -1117,7 +1117,7 @@ async def handle_payment_failed_webhook(event_data: dict, db: Session):
         if payment_record:
             payment_record.status = "failed"
             payment_record.failure_reason = event_data.get('failure_reason', 'Payment failed')
-            payment_record.updated_at = datetime.utcnow()
+            payment_record.updated_at = datetime.now(timezone.utc)
             db.commit()
             print(f"❌ Payment marked as failed for {user.email}")
         
@@ -1161,8 +1161,8 @@ async def handle_payment_success_webhook(event_data: dict, db: Session):
         if payment_record:
             payment_record.status = "completed"
             payment_record.dodo_payment_id = payment_id
-            payment_record.payment_completed_at = datetime.utcnow()
-            payment_record.verification_completed_at = datetime.utcnow()
+            payment_record.payment_completed_at = datetime.now(timezone.utc)
+            payment_record.verification_completed_at = datetime.now(timezone.utc)
             db.commit()
             print(f"✅ Payment record updated for {user.email}")
         else:

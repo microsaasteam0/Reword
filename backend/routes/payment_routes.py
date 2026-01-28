@@ -667,7 +667,7 @@ async def start_trial(
         return {
             "success": True,
             "message": "7-day free trial started! Enjoy all Pro features.",
-            "trial_end_date": (datetime.utcnow() + timedelta(days=7)).isoformat()
+            "trial_end_date": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
         }
         
     except Exception as e:

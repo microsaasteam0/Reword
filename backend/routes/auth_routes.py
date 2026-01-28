@@ -665,47 +665,52 @@ async def get_usage_stats(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Get user usage statistics"""
-    from models import UsageStats, ContentGeneration
-    from datetime import datetime, timedelta, timezone
-    
-    # Get usage stats for last 30 days
-    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    
-    total_generations = db.query(ContentGeneration).filter(
-        ContentGeneration.user_id == current_user.id
-    ).count()
-    
-    recent_generations = db.query(ContentGeneration).filter(
-        ContentGeneration.user_id == current_user.id,
-        ContentGeneration.created_at >= thirty_days_ago
-    ).count()
-    
-    # Rate limit info - 24 hour window for free users only
-    if current_user.is_premium:
-        # Premium users have unlimited access
-        rate_limit = -1  # -1 indicates unlimited
-        remaining_requests = -1  # -1 indicates unlimited
-    else:
-        # Free users have daily limits
-        twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
-        recent_usage = db.query(UsageStats).filter(
-            UsageStats.user_id == current_user.id,
-            UsageStats.action == "generate",
-            UsageStats.created_at >= twenty_four_hours_ago
+    try:
+        from models import UsageStats, ContentGeneration
+        from datetime import datetime, timedelta, timezone
+        
+        # Get usage stats for last 30 days
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        
+        total_generations = db.query(ContentGeneration).filter(
+            ContentGeneration.user_id == current_user.id
         ).count()
         
-        rate_limit = 2  # Free users get 2 per day
-        remaining_requests = max(0, rate_limit - recent_usage)
-    
-    return {
-        "total_generations": total_generations,
-        "recent_generations": recent_generations,
-        "rate_limit": rate_limit,
-        "remaining_requests": remaining_requests,
-        "is_premium": current_user.is_premium,
-        "reset_period_hours": 24
-    }
+        recent_generations = db.query(ContentGeneration).filter(
+            ContentGeneration.user_id == current_user.id,
+            ContentGeneration.created_at >= thirty_days_ago
+        ).count()
+        
+        # Rate limit info - 24 hour window for free users only
+        if current_user.is_premium:
+            # Premium users have unlimited access
+            rate_limit = -1  # -1 indicates unlimited
+            remaining_requests = -1  # -1 indicates unlimited
+        else:
+            # Free users have daily limits
+            twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
+            recent_usage = db.query(UsageStats).filter(
+                UsageStats.user_id == current_user.id,
+                UsageStats.action == "generate",
+                UsageStats.created_at >= twenty_four_hours_ago
+            ).count()
+            
+            rate_limit = 2  # Free users get 2 per day
+            remaining_requests = max(0, rate_limit - recent_usage)
+        
+        return {
+            "total_generations": total_generations,
+            "recent_generations": recent_generations,
+            "rate_limit": rate_limit,
+            "remaining_requests": remaining_requests,
+            "is_premium": current_user.is_premium,
+            "reset_period_hours": 24
+        }
+    except Exception as e:
+        print(f"❌ Error in get_usage_stats: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Usage stats error: {str(e)}")
 
 @auth_router.get("/feature-limits")
 async def get_feature_limits(

@@ -55,9 +55,9 @@ def upgrade_user_to_premium(email: str):
             subscription.plan_type = "pro"
             subscription.billing_cycle = "monthly"
             subscription.amount = 15.00
-            subscription.current_period_start = datetime.utcnow()
-            subscription.current_period_end = datetime.utcnow() + timedelta(days=30)
-            subscription.updated_at = datetime.utcnow()
+            subscription.current_period_start = datetime.now(timezone.utc)
+            subscription.current_period_end = datetime.now(timezone.utc) + timedelta(days=30)
+            subscription.updated_at = datetime.now(timezone.utc)
         else:
             print(f"🆕 Creating new subscription")
             subscription = Subscription(
@@ -68,8 +68,8 @@ def upgrade_user_to_premium(email: str):
                 billing_cycle="monthly",
                 amount=15.00,
                 currency="USD",
-                current_period_start=datetime.utcnow(),
-                current_period_end=datetime.utcnow() + timedelta(days=30),
+                current_period_start=datetime.now(timezone.utc),
+                current_period_end=datetime.now(timezone.utc) + timedelta(days=30),
                 extra_metadata=json.dumps({"source": "manual_upgrade_for_testing"})
             )
             db.add(subscription)
@@ -85,8 +85,8 @@ def upgrade_user_to_premium(email: str):
             status="completed",
             plan_type="pro",
             billing_cycle="monthly",
-            payment_completed_at=datetime.utcnow(),
-            verification_completed_at=datetime.utcnow(),
+            payment_completed_at=datetime.now(timezone.utc),
+            verification_completed_at=datetime.now(timezone.utc),
             notes="Manual upgrade for testing while configuring webhooks",
             payment_metadata=json.dumps({"source": "manual_testing_upgrade"})
         )

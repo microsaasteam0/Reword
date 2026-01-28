@@ -36,6 +36,22 @@ async def lifespan(app: FastAPI):
         create_tables()
         print("✅ Database tables initialized successfully")
         
+        # Manual migration for 'context' column in content_generations
+        try:
+            from sqlalchemy import text
+            db_next = next(get_db())
+            # Check if column exists
+            check_query = text("SELECT column_name FROM information_schema.columns WHERE table_name='content_generations' AND column_name='context';")
+            result = db_next.execute(check_query).fetchone()
+            if not result:
+                print("🚀 Adding 'context' column to 'content_generations'...")
+                db_next.execute(text("ALTER TABLE content_generations ADD COLUMN context TEXT;"))
+                db_next.commit()
+                print("✅ Successfully added 'context' column!")
+            db_next.close()
+        except Exception as mig_error:
+            print(f"⚠️ Migration warning: {mig_error}")
+        
         # Seed public templates
         try:
             from seed_public_templates import seed_public_templates
