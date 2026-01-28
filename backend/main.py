@@ -285,6 +285,9 @@ async def admin_seed_templates(db: Session = Depends(get_db)):
 # Register all routes from the routes package
 register_routes(app)
 
+# Export for Vercel
+app = app
+
 # Only run uvicorn if this file is executed directly (not imported by Vercel)
 if __name__ == "__main__":
     import uvicorn
