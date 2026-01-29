@@ -7,10 +7,10 @@ interface FormattedTextProps {
   type?: 'tweet' | 'linkedin' | 'instagram' | 'default'
 }
 
-export const FormattedText: React.FC<FormattedTextProps> = ({ 
-  text, 
-  className = '', 
-  type = 'default' 
+export const FormattedText: React.FC<FormattedTextProps> = ({
+  text,
+  className = '',
+  type = 'default'
 }) => {
   // Get the appropriate CSS class based on type
   const getTypeClass = () => {
@@ -84,7 +84,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center">
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
           </div>
           <div>
@@ -115,19 +115,18 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              
+
               <div className="flex space-x-1">
                 {tweets.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToTweet(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentTweet ? 'bg-blue-400' : 'bg-gray-600'
-                    }`}
+                    className={`w-2 h-2 rounded-full transition-colors ${index === currentTweet ? 'bg-blue-400' : 'bg-gray-600'
+                      }`}
                   />
                 ))}
               </div>
-              
+
               <button
                 onClick={nextTweet}
                 disabled={currentTweet === tweets.length - 1}
@@ -138,7 +137,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
                 </svg>
               </button>
             </div>
-            
+
             <div className="text-xs text-gray-400">
               {currentTweet + 1} of {tweets.length}
             </div>
@@ -151,7 +150,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
         <div className="text-white leading-relaxed text-[15px] mb-4">
           {formatTweetContent(tweets[currentTweet])}
         </div>
-        
+
         <div className="text-gray-400 text-sm mb-4">
           2:34 PM · Dec 15, 2026 · <span className="text-blue-400">Web App</span>
         </div>
@@ -187,29 +186,29 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
           </svg>
           <span className="text-sm text-gray-500 group-hover:text-blue-400">Reply</span>
         </button>
-        
+
         <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-900 rounded-full transition-colors group">
           <svg className="w-5 h-5 text-gray-500 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <span className="text-sm text-gray-500 group-hover:text-green-400">Repost</span>
         </button>
-        
+
         <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-900 rounded-full transition-colors group">
           <svg className="w-5 h-5 text-gray-500 group-hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
           <span className="text-sm text-gray-500 group-hover:text-red-400">Like</span>
         </button>
-        
+
         <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-900 rounded-full transition-colors group">
           <svg className="w-5 h-5 text-gray-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
           <span className="text-sm text-gray-500 group-hover:text-blue-400">Bookmark</span>
         </button>
-        
-        <button 
+
+        <button
           onClick={() => onCopy(tweets[currentTweet], `tweet-${currentTweet}`)}
           className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-900 rounded-full transition-colors group"
         >
@@ -234,7 +233,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
       {/* Save Button Section - Separate and More Visible */}
       {onSave ? (
         <div className="border-t border-gray-800 p-3">
-          <button 
+          <button
             onClick={onSave}
             className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 border border-green-500/30 text-green-400 rounded-lg transition-colors text-sm font-medium"
             title="Save this Twitter thread to your account"
@@ -296,113 +295,38 @@ interface LinkedInDisplayProps {
 export const LinkedInDisplay: React.FC<LinkedInDisplayProps> = ({ post, onCopy, copied, onSave }) => {
   // More aggressive formatting for LinkedIn posts
   const formatLinkedInPost = (text: string) => {
-    // First, try to split by double line breaks
-    let paragraphs = text.split('\n\n').filter(p => p.trim() !== '')
-    
-    // If no double line breaks, try to create them intelligently
-    if (paragraphs.length === 1) {
-      const singleText = paragraphs[0]
-      
-      // Split by periods and group into paragraphs
-      const sentences = singleText.split(/(?<=[.!?])\s+/)
-      paragraphs = []
-      let currentParagraph = ""
-      let sentenceCount = 0
-      
-      for (const sentence of sentences) {
-        if (sentenceCount === 0 && sentence.match(/^[💡🚀🎯✨💪🔥⚡]/)) {
-          // Hook sentence - make it its own paragraph
-          if (currentParagraph) paragraphs.push(currentParagraph.trim())
-          paragraphs.push(sentence.trim())
-          currentParagraph = ""
-          sentenceCount = 0
-        } else if (sentence.includes('•') || sentence.includes('Key') || sentence.includes('insights:')) {
-          // Bullet point section
-          if (currentParagraph) paragraphs.push(currentParagraph.trim())
-          paragraphs.push(sentence.trim())
-          currentParagraph = ""
-          sentenceCount = 0
-        } else if (sentence.match(/#\w+/)) {
-          // Hashtags
-          if (currentParagraph) paragraphs.push(currentParagraph.trim())
-          paragraphs.push(sentence.trim())
-          currentParagraph = ""
-          sentenceCount = 0
-        } else {
-          currentParagraph += sentence + " "
-          sentenceCount++
-          
-          // Create new paragraph after 2-3 sentences
-          if (sentenceCount >= 2) {
-            paragraphs.push(currentParagraph.trim())
-            currentParagraph = ""
-            sentenceCount = 0
-          }
-        }
-      }
-      
-      if (currentParagraph.trim()) {
-        paragraphs.push(currentParagraph.trim())
-      }
-    }
-    
-    return paragraphs.map((paragraph, index) => {
-      const trimmedParagraph = paragraph.trim()
-      
-      // Handle bullet points
-      if (trimmedParagraph.includes('•') || trimmedParagraph.match(/Key\s+(points|insights)/i)) {
-        const lines = trimmedParagraph.split(/\n|(?=•)/)
-        return (
-          <div key={index} className="mb-4">
-            {lines.map((line, lineIndex) => {
-              const trimmedLine = line.trim()
-              if (trimmedLine.startsWith('•')) {
-                return (
-                  <div key={lineIndex} className="flex items-start mb-2 ml-4">
-                    <span className="text-blue-400 mr-3 mt-1 font-bold">•</span>
-                    <span className="flex-1">{trimmedLine.replace(/^•\s*/, '')}</span>
-                  </div>
-                )
-              } else if (trimmedLine && !trimmedLine.startsWith('•')) {
-                return (
-                  <div key={lineIndex} className="mb-2 font-semibold text-white">
-                    {trimmedLine}
-                  </div>
-                )
-              }
-              return null
-            })}
-          </div>
-        )
-      }
-      
+    // Simplify formatting to honor LLM spacing
+    // We use whitespace-pre-wrap on the container, so we just need to handle highlighting
+    const lines = text.split('\n');
+    return lines.map((line, index) => {
       // Handle hashtags
-      if (trimmedParagraph.match(/^#\w+/) || trimmedParagraph.includes('#')) {
+      if (line.includes('#')) {
+        const parts = line.split(/(#\w+)/g);
         return (
-          <div key={index} className="mt-4">
-            <div className="text-blue-400 text-sm font-medium">
-              {trimmedParagraph}
-            </div>
+          <div key={index} className="min-h-[1em]">
+            {parts.map((part, pIndex) =>
+              part.startsWith('#') ? (
+                <span key={pIndex} className="text-blue-400 font-medium">{part}</span>
+              ) : (
+                <span key={pIndex}>{part}</span>
+              )
+            )}
           </div>
-        )
+        );
       }
-      
-      // Handle hook (first paragraph with emoji)
-      if (index === 0 && trimmedParagraph.match(/^[💡🚀🎯✨💪🔥⚡]/)) {
-        return (
-          <div key={index} className="mb-4 text-base font-semibold text-white leading-relaxed">
-            {trimmedParagraph}
-          </div>
-        )
-      }
-      
-      // Regular paragraph
+
+      // Handle Bold/Hook lines (starting with emoji)
+      const isHook = line.trim().match(/^[💡🚀🎯✨💪🔥⚡]/);
+
       return (
-        <div key={index} className="mb-4 leading-relaxed text-gray-300 text-sm">
-          {trimmedParagraph}
+        <div
+          key={index}
+          className={`min-h-[1em] ${isHook ? 'text-white font-bold text-base' : 'text-gray-300 text-sm'}`}
+        >
+          {line}
         </div>
-      )
-    })
+      );
+    });
   }
 
   return (
@@ -435,7 +359,7 @@ export const LinkedInDisplay: React.FC<LinkedInDisplayProps> = ({ post, onCopy, 
 
       {/* Post Content */}
       <div className="p-4">
-        <div className="text-gray-200">
+        <div className="text-gray-200 whitespace-pre-wrap">
           {formatLinkedInPost(post)}
         </div>
       </div>
@@ -472,21 +396,21 @@ export const LinkedInDisplay: React.FC<LinkedInDisplayProps> = ({ post, onCopy, 
             </svg>
             <span className="text-sm font-medium text-gray-300 group-hover:text-blue-400">Like</span>
           </button>
-          
+
           <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-800 rounded transition-colors flex-1 justify-center group">
             <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
             <span className="text-sm font-medium text-gray-300 group-hover:text-blue-400">Comment</span>
           </button>
-          
+
           <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-800 rounded transition-colors flex-1 justify-center group">
             <svg className="w-5 h-5 text-gray-400 group-hover:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <span className="text-sm font-medium text-gray-300 group-hover:text-green-400">Repost</span>
           </button>
-          
+
           <button className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-800 rounded transition-colors flex-1 justify-center group">
             <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
@@ -556,7 +480,7 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
   const parseSlide = (text: string) => {
     // First, try to split by \n (proper line breaks from backend)
     const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '')
-    
+
     if (lines.length >= 2) {
       return {
         title: lines[0],
@@ -565,18 +489,18 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
     } else if (lines.length === 1) {
       // Single line - try to split intelligently as fallback
       const singleLine = lines[0]
-      
+
       // Look for emoji at the start - simple check for common emojis
       const emojiMatch = singleLine.match(/^([💡🚀⚡🎯💪🧠⭐🔥🌟✨📋🎬🌍💖🌈📖👥🛠️📜💞📲])/)
-      
+
       if (emojiMatch) {
         const withoutEmoji = singleLine.replace(emojiMatch[1], '').trim()
         const words = withoutEmoji.split(' ')
-        
+
         if (words.length > 3) {
           // Find natural break point - look for uppercase words or after 2-3 words
           let splitIndex = 3
-          
+
           for (let i = 2; i < Math.min(5, words.length); i++) {
             const currentTitle = words.slice(0, i).join(' ')
             if (currentTitle.length > 15 || words[i]?.length > 6) {
@@ -584,17 +508,17 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
               break
             }
           }
-          
+
           const title = emojiMatch[1] + ' ' + words.slice(0, splitIndex).join(' ')
           const description = words.slice(splitIndex).join(' ')
-          
+
           return { title, description }
         }
       }
-      
+
       return { title: singleLine, description: '' }
     }
-    
+
     return { title: text, description: '' }
   }
 
@@ -666,9 +590,8 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                  index === currentSlide ? 'bg-white' : 'bg-white/50'
-                }`}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${index === currentSlide ? 'bg-white' : 'bg-white/50'
+                  }`}
               />
             ))}
           </div>
@@ -746,7 +669,7 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
 
         {/* Caption */}
         <div className="text-sm text-gray-300 mb-2">
-          <span className="font-semibold text-white">yourbrand</span> Check out these amazing tips! 
+          <span className="font-semibold text-white">yourbrand</span> Check out these amazing tips!
           <span className="text-pink-400"> #tips #growth #success</span>
         </div>
 

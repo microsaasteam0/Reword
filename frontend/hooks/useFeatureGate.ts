@@ -78,15 +78,15 @@ export const useFeatureGate = () => {
           can_access_analytics: isPremium,
           can_use_advanced_templates: isPremium,
           can_customize_branding: isPremium,
-          generation_limit: isPremium ? -1 : 2,
-          remaining_generations: isPremium ? -1 : 2, // This should be 2 for free users
+          generation_limit: isPremium ? 20 : 2,
+          remaining_generations: isPremium ? 20 : 2,
           supported_platforms: ['twitter', 'linkedin', 'instagram'],
           export_formats: isPremium ? ['clipboard', 'txt', 'json', 'csv'] : ['clipboard'],
           max_bulk_items: isPremium ? 50 : 1,
           max_content_length: isPremium ? 50000 : 10000
         })
 
-        console.log('Applied fallback limits:', { isPremium, remaining_generations: isPremium ? -1 : 2 })
+        console.log('Applied fallback limits:', { isPremium, remaining_generations: isPremium ? 20 : 2 })
       } finally {
         setLoading(false)
       }

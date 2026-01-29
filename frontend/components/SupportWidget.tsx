@@ -38,7 +38,7 @@ const SupportWidget = () => {
   const faqs: FAQ[] = [
     {
       question: "How does the credit system work?",
-      answer: "Free users get 2 generations per day. Pro users get unlimited generations. Credits reset every 24 hours.",
+      answer: "Free users get 2 generations per day. Pro users get 20 generations per day. Credits reset every 24 hours.",
       category: "Billing"
     },
     {

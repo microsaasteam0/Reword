@@ -60,6 +60,14 @@ class FeatureGate:
         """Check if user can access analytics"""
         return self.user and self.user.is_premium
     
+    def can_create_templates(self) -> bool:
+        """Check if user can create custom templates"""
+        return self.user and self.user.is_premium
+
+    def can_browse_community_templates(self) -> bool:
+        """Check if user can browse public templates"""
+        return self.user and self.user.is_premium
+
     def can_bulk_process(self, item_count: int = 1) -> bool:
         """Check if user can process multiple items"""
         if not self.user:
@@ -69,30 +77,35 @@ class FeatureGate:
             return item_count <= 1
         
         # Pro users can process up to 50 items
-        # Enterprise users (future) can process unlimited
         return item_count <= 50
     
     def can_use_advanced_templates(self) -> bool:
         """Check if user can use advanced AI templates"""
+        # "Advanced AI templates" in pricing refers to custom and community templates
         return self.user and self.user.is_premium
     
-    def can_customize_branding(self) -> bool:
-        """Check if user can customize branding"""
-        return self.user and self.user.is_premium
+    def get_history_limit(self) -> int:
+        """Get history item limit based on tier"""
+        if not self.user:
+            return 0
+        if self.user.is_premium:
+            return 1000 # Effectively unlimited
+        return 5 # "Basic content history"
     
     def get_generation_limit(self) -> int:
         """Get daily generation limit"""
-        if not self.user or not self.user.is_premium:
+        if not self.user:
             return 2
-        return -1  # -1 indicates unlimited for premium
+        if self.user.is_premium:
+            return 20  # Market standard for Pro tier
+        return 2
     
     def get_remaining_generations(self, db: Session) -> int:
-        """Get remaining generations for today"""
+        """Get remaining generations for today (24h sliding window)"""
         if not self.user:
             return 0
         
-        if self.user.is_premium:
-            return -1  # -1 indicates unlimited for premium
+        limit = self.get_generation_limit()
         
         # Count usage in last 24 hours
         twenty_four_hours_ago = datetime.now(timezone.utc) - timedelta(hours=24)
@@ -102,15 +115,11 @@ class FeatureGate:
             UsageStats.created_at >= twenty_four_hours_ago
         ).count()
         
-        return max(0, 2 - recent_usage)
+        return max(0, limit - recent_usage)
     
     def get_supported_platforms(self) -> List[str]:
         """Get list of supported social platforms"""
-        base_platforms = ["twitter", "linkedin", "instagram"]
-        
-        # All users get the same 3 platforms for now
-        # TODO: Add TikTok support when implemented
-        return base_platforms
+        return ["twitter", "linkedin", "instagram"]
     
     def get_export_formats(self) -> List[str]:
         """Get available export formats"""
@@ -120,6 +129,7 @@ class FeatureGate:
         if self.user.is_premium:
             return ["clipboard", "txt", "json", "csv"]
         
+        # Free users: Copy to clipboard only
         return ["clipboard"]
     
     def get_feature_limits(self, db: Session) -> Dict:
@@ -131,10 +141,11 @@ class FeatureGate:
             "can_save_content": self.can_save_content(),
             "can_process_urls": self.can_process_urls(),
             "can_access_analytics": self.can_access_analytics(),
-            "can_use_advanced_templates": self.can_use_advanced_templates(),
-            "can_customize_branding": self.can_customize_branding(),
+            "can_create_templates": self.can_create_templates(),
+            "can_browse_templates": self.can_browse_community_templates(),
             "generation_limit": self.get_generation_limit(),
             "remaining_generations": self.get_remaining_generations(db),
+            "history_limit": self.get_history_limit(),
             "supported_platforms": self.get_supported_platforms(),
             "export_formats": self.get_export_formats(),
             "max_bulk_items": 50 if self.user and self.user.is_premium else 1,

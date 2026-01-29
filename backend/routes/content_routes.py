@@ -235,9 +235,16 @@ async def get_content_history(
     db: Session = Depends(get_db)
 ):
     """Get user's content generation history"""
+    from feature_gates import get_feature_gate
+    feature_gate = get_feature_gate(current_user)
+    tier_limit = feature_gate.get_history_limit()
+    
+    # Use the smaller of requested limit and tier limit
+    effective_limit = min(limit, tier_limit)
+    
     history = db.query(ContentGeneration).filter(
         ContentGeneration.user_id == current_user.id
-    ).order_by(ContentGeneration.created_at.desc()).offset(offset).limit(limit).all()
+    ).order_by(ContentGeneration.created_at.desc()).offset(offset).limit(effective_limit).all()
     
     return [
         ContentHistoryResponse(
@@ -334,6 +341,14 @@ async def get_content_analytics(
     db: Session = Depends(get_db)
 ):
     """Get user's content analytics"""
+    from feature_gates import get_feature_gate
+    feature_gate = get_feature_gate(current_user)
+    if not feature_gate.can_access_analytics():
+        raise HTTPException(
+            status_code=403,
+            detail="Analytics dashboard is a Pro feature. Upgrade to Pro to track your content performance."
+        )
+
     from datetime import timedelta
     # Get analytics for last 30 days
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)

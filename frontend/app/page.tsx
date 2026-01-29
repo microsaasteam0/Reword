@@ -91,6 +91,7 @@ function HomeContent() {
     cta: ''
   })
   const [showPersonalization, setShowPersonalization] = useState(true)
+  const [enabledPlatforms, setEnabledPlatforms] = useState<string[]>(['twitter', 'linkedin', 'instagram'])
   const [browserFingerprint, setBrowserFingerprint] = useState<any>(null)
 
   // Sample content suggestions
@@ -641,9 +642,6 @@ function HomeContent() {
         setShowAuthModal(true)
         setAuthModalMode('register')
         // TODO: Add plan selection to registration flow
-      } else if (planId === 'enterprise') {
-        // TODO: Redirect to contact sales
-        window.open('mailto:business@entrext.in?subject=Enterprise Plan Inquiry', '_blank')
       }
     } else {
       // For authenticated users
@@ -656,9 +654,6 @@ function HomeContent() {
         } else {
           setShowPaymentModal(true)
         }
-      } else if (planId === 'enterprise') {
-        // TODO: Redirect to contact sales
-        window.open('mailto:business@entrext.in?subject=Enterprise Plan Inquiry', '_blank')
       }
     }
   }
@@ -727,8 +722,8 @@ function HomeContent() {
       const response = await axios.post(
         `${API_URL}/api/v1/repurpose`,
         activeTab === 'url'
-          ? { url, context: personalization }
-          : { content, context: personalization },
+          ? { url, context: personalization, enabled_platforms: enabledPlatforms }
+          : { content, context: personalization, enabled_platforms: enabledPlatforms },
         {
           timeout: 120000 // 2-minute timeout
         }
@@ -852,7 +847,7 @@ function HomeContent() {
           errorMessage = rateLimitData.message
 
           if (rateLimitData.reason === 'daily_limit_exceeded') {
-            helpTip = 'Sign up for unlimited generations or wait 24 hours for your limit to reset.'
+            helpTip = 'Sign up for 2 generations per day or wait 24 hours for your limit to reset.'
             setTimeout(() => {
               setShowAuthModal(true)
               setAuthModalMode('register')
@@ -860,7 +855,7 @@ function HomeContent() {
           } else if (rateLimitData.reason === 'hourly_limit_exceeded') {
             helpTip = 'You are making requests too quickly. Please wait an hour before trying again.'
           } else {
-            helpTip = 'Upgrade to Pro for unlimited generations.'
+            helpTip = 'Upgrade to Pro for 20 generations per day.'
           }
         } else {
           // Fallback for old format or middleware rate limits
@@ -873,11 +868,11 @@ function HomeContent() {
           } else if (backendMessage.includes('Upgrade to premium')) {
             // User rate limit for authenticated users
             errorMessage = backendMessage
-            helpTip = 'Upgrade to premium for unlimited generations.'
+            helpTip = 'Upgrade to premium for higher limits.'
           } else if (isAuthenticated) {
             // Generic authenticated user rate limit
             errorMessage = 'Rate limit exceeded. Please wait 24 hours or upgrade to continue.'
-            helpTip = 'Upgrade to premium for unlimited generations.'
+            helpTip = 'Upgrade to premium for higher limits.'
           } else {
             // Non-authenticated user
             errorMessage = 'Please sign in to generate content.'
@@ -1787,7 +1782,7 @@ function HomeContent() {
                       <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                       <span>
                         {user?.is_premium
-                          ? 'Unlimited repurposing'
+                          ? '20 generations/day'
                           : usageStats && usageStats.remaining_requests >= 0
                             ? `${usageStats.remaining_requests} left`
                             : 'Loading...'
@@ -1858,12 +1853,12 @@ function HomeContent() {
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="relative p-3 sm:p-4 bg-gray-200 dark:bg-gray-800/30 hover:bg-gray-300 dark:hover:bg-gray-800/50 border border-gray-300 dark:border-gray-700/50 hover:border-blue-500/30 rounded-xl transition-all duration-300 text-center group-hover:transform group-hover:scale-105">
                         <div className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full flex items-center justify-center border border-blue-500/30">
-                          <div className="text-lg sm:text-2xl font-bold text-blue-500 dark:text-blue-400 animate-pulse">∞</div>
+                          <div className="text-lg sm:text-2xl font-bold text-blue-500 dark:text-blue-400 animate-pulse">20</div>
                         </div>
-                        <div className="text-gray-900 dark:text-white font-semibold mb-1 text-xs sm:text-sm">Unlimited</div>
+                        <div className="text-gray-900 dark:text-white font-semibold mb-1 text-xs sm:text-sm">Daily Limit</div>
                         <div className="text-gray-600 dark:text-gray-400 text-xs">
-                          <span className="hidden sm:inline">Repurpose without limits</span>
-                          <span className="sm:hidden">No limits</span>
+                          <span className="hidden sm:inline">20 generations per day</span>
+                          <span className="sm:hidden">20/day</span>
                         </div>
                       </div>
                     </div>
@@ -2656,6 +2651,39 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                   </div>
                 </button>
 
+                {/* Platform Toggles */}
+                <div className="px-8 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mr-2">Generate for:</span>
+                    <button
+                      onClick={() => setEnabledPlatforms(prev => prev.includes('twitter') ? prev.filter(p => p !== 'twitter') : [...prev, 'twitter'])}
+                      className={`flex items-center px-4 py-2 rounded-xl border transition-all duration-300 ${enabledPlatforms.includes('twitter') ? 'bg-blue-500/10 border-blue-500/50 text-blue-500' : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-400'}`}
+                    >
+                      <Twitter className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-bold">X / Twitter</span>
+                    </button>
+                    <button
+                      onClick={() => setEnabledPlatforms(prev => prev.includes('linkedin') ? prev.filter(p => p !== 'linkedin') : [...prev, 'linkedin'])}
+                      className={`flex items-center px-4 py-2 rounded-xl border transition-all duration-300 ${enabledPlatforms.includes('linkedin') ? 'bg-blue-600/10 border-blue-600/50 text-blue-600' : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-400'}`}
+                    >
+                      <Linkedin className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-bold">LinkedIn</span>
+                    </button>
+                    <button
+                      onClick={() => setEnabledPlatforms(prev => prev.includes('instagram') ? prev.filter(p => p !== 'instagram') : [...prev, 'instagram'])}
+                      className={`flex items-center px-4 py-2 rounded-xl border transition-all duration-300 ${enabledPlatforms.includes('instagram') ? 'bg-pink-500/10 border-pink-500/50 text-pink-500' : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-400'}`}
+                    >
+                      <Instagram className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-bold">Instagram</span>
+                    </button>
+                  </div>
+                  {enabledPlatforms.length === 0 && (
+                    <p className="text-xs text-red-500 mt-2 font-medium flex items-center">
+                      <AlertCircle className="w-3 h-3 mr-1" /> At least one platform must be selected.
+                    </p>
+                  )}
+                </div>
+
                 {showPersonalization && (
                   <div className="p-8 space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 border-t border-slate-100 dark:border-slate-800">
 
@@ -2918,7 +2946,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                     <span>
                       {isAuthenticated
                         ? (user?.is_premium
-                          ? 'Repurpose Your Content (Unlimited)'
+                          ? 'Repurpose Your Content (Pro)'
                           : `Repurpose Your Content (${usageStats ? (usageStats.remaining_requests ?? usageStats.remaining_generations ?? (usageStats.rate_limit - usageStats.recent_generations)) : (featureGate.loading ? '...' : featureGate.remainingGenerations)} left)`
                         )
                         : 'Sign In to Repurpose Content'
@@ -3460,7 +3488,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                     <User className="w-6 h-6" />
                     <div>
                       <span className="font-bold text-lg">Free User</span>
-                      <div className="text-sm opacity-80">2 generations/day • Upgrade for unlimited</div>
+                      <div className="text-sm opacity-80">2 generations/day • Upgrade for 20/day</div>
                     </div>
                   </>
                 )}
@@ -3505,7 +3533,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
             <div className="mt-6 text-sm text-yellow-500 dark:text-yellow-400 bg-yellow-500/10 rounded-lg p-4 border border-yellow-500/20">
               <strong>Free Plan:</strong> 2 transformations per day
               <br />
-              <span className="text-xs opacity-80">Upgrade for unlimited access</span>
+              <span className="text-xs opacity-80">Upgrade for higher daily limits</span>
             </div>
           )}
         </div>
@@ -3536,7 +3564,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
           {isAuthenticated && user?.is_premium && (
             <div className="mt-6 text-sm text-green-400 bg-green-500/10 rounded-lg p-4 border border-green-500/20">
               <Crown className="w-4 h-4 inline mr-2" />
-              <strong>Pro:</strong> Unlimited across all platforms
+              <strong>Pro:</strong> 20 generations per day
             </div>
           )}
         </div>
@@ -3687,7 +3715,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
           <Crown className="w-16 h-16 text-yellow-500 dark:text-yellow-400 mx-auto mb-6" />
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready to Unlock Pro Features?</h3>
           <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg max-w-2xl mx-auto">
-            Upgrade to Pro for unlimited generations, URL processing, content library, custom templates, and more.
+            Upgrade to Pro for 20 daily generations, URL processing, content library, custom templates, and more.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
@@ -3776,7 +3804,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
                 <>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                    <span>Unlimited content generations</span>
+                    <span>20 content generations per day</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -4291,7 +4319,7 @@ Best regards`)
           <ul className="space-y-4 mb-8">
             <li className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700 dark:text-gray-300">3 content generations per day</span>
+              <span className="text-gray-700 dark:text-gray-300">2 content generations per day</span>
             </li>
             <li className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-green-500" />
@@ -4332,14 +4360,14 @@ Best regards`)
 
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold mb-2">Pro</h3>
-            <div className="text-4xl font-bold mb-4">$15<span className="text-lg">/month</span></div>
+            <div className="text-4xl font-bold mb-4">$14<span className="text-lg">/month</span></div>
             <p className="text-blue-100">For content creators and marketers</p>
           </div>
 
           <ul className="space-y-4 mb-8">
             <li className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-white" />
-              <span>Unlimited content generations</span>
+              <span>20 content generations per day</span>
             </li>
             <li className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-white" />

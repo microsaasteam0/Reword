@@ -698,19 +698,15 @@ async def get_usage_stats(
         )
         recent_generations = get_count_robust(recent_generations_query, thirty_days_ago)
         
-        # Rate limit info - 24 hour window for free users only
-        if current_user.is_premium:
-            rate_limit = -1
-            remaining_requests = -1
-        else:
-            recent_usage_query = db.query(UsageStats).filter(
-                UsageStats.user_id == current_user.id,
-                UsageStats.action == "generate"
-            )
-            recent_usage = get_usage_robust(recent_usage_query, twenty_four_hours_ago)
-            
-            rate_limit = 2
-            remaining_requests = max(0, rate_limit - recent_usage)
+        # Rate limit info - 24 hour window
+        rate_limit = 20 if current_user.is_premium else 2
+        
+        recent_usage_query = db.query(UsageStats).filter(
+            UsageStats.user_id == current_user.id,
+            UsageStats.action == "generate"
+        )
+        recent_usage = get_usage_robust(recent_usage_query, twenty_four_hours_ago)
+        remaining_requests = max(0, rate_limit - recent_usage)
         
         return {
             "total_generations": total_generations,

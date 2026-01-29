@@ -30,13 +30,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   }, [])
 
   const pricing = {
-    pro: { monthly: 15, yearly: 144 },
-    enterprise: { monthly: 49, yearly: 470 }
+    pro: { monthly: 14, yearly: 129 }
   }
 
   const planNames = {
-    pro: 'Creator Pro',
-    enterprise: 'Agency'
+    pro: 'Creator Pro'
   }
 
   const amount = pricing[selectedPlan as keyof typeof pricing]?.[billingCycle] || 0
@@ -173,7 +171,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             {/* Feature List */}
             <ul className="space-y-3">
               {[
-                "Unlimited content repurposing",
+                "20 content generations per day",
                 "URL processing & extraction",
                 "Content library & history",
                 "Advanced AI templates",

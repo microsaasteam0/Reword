@@ -202,7 +202,15 @@ async def create_custom_template(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Create a new custom template"""
+    """Create a new custom template - Pro feature"""
+    from feature_gates import get_feature_gate
+    feature_gate = get_feature_gate(current_user)
+    if not feature_gate.can_create_templates():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Creating custom templates is a Pro feature. Upgrade to Pro to customize your workflow."
+        )
+
     try:
         # Validate category
         valid_categories = ['blog', 'newsletter', 'marketing', 'social', 'other']
@@ -512,9 +520,18 @@ async def test_public_templates_endpoint():
 @router.get("/public", response_model=List[CustomTemplateResponse])
 async def get_public_templates(
     category: Optional[str] = None,
+    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Get all public templates from other users (browsing doesn't require auth)"""
+    """Get all public templates from other users - Pro feature"""
+    from feature_gates import get_feature_gate
+    feature_gate = get_feature_gate(current_user)
+    if not feature_gate.can_browse_community_templates():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Browsing community templates is a Pro feature. Upgrade to Pro to see what others are creating."
+        )
+
     try:
         print(f"🌐 Public templates endpoint called - category: {category}")
         

@@ -251,10 +251,9 @@ def create_user(db: Session, email: str, username: str, password: str, full_name
 def check_rate_limit(user: User, db: Session) -> bool:
     """Check if user has exceeded rate limit"""
     try:
-        if user.is_premium:
-            return True  # Premium users have no rate limit
+        limit = 20 if user.is_premium else 2
         
-        # Check usage in last 24 hours for free users
+        # Check usage in last 24 hours
         from datetime import datetime, timedelta, timezone
         from models import UsageStats
         
@@ -265,7 +264,7 @@ def check_rate_limit(user: User, db: Session) -> bool:
             UsageStats.created_at >= twenty_four_hours_ago
         ).count()
         
-        return recent_usage < 5  # Free users: 5 generations per 24 hours
+        return recent_usage < limit
         
     except Exception as e:
         print(f"Error in check_rate_limit: {e}")

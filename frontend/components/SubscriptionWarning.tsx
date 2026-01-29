@@ -33,7 +33,7 @@ export default function SubscriptionWarning({ onUpgradeClick }: SubscriptionWarn
     } else if (daysUntilExpiry !== null && daysUntilExpiry <= 1) {
       return {
         title: 'Subscription Expires Tomorrow',
-        message: 'Your premium subscription expires in less than 24 hours. Renew now to continue enjoying unlimited features.',
+        message: 'Your premium subscription expires in less than 24 hours. Renew now to continue enjoying premium features.',
         urgency: 'high',
         icon: AlertTriangle,
         bgColor: 'bg-red-50 dark:bg-red-900/20',
@@ -53,7 +53,7 @@ export default function SubscriptionWarning({ onUpgradeClick }: SubscriptionWarn
         buttonColor: 'bg-yellow-600 hover:bg-yellow-700'
       }
     }
-    
+
     return null
   }
 
@@ -71,10 +71,10 @@ export default function SubscriptionWarning({ onUpgradeClick }: SubscriptionWarn
       >
         <X size={16} />
       </button>
-      
+
       <div className="flex items-start space-x-3 pr-6">
         <Icon className={`${textColor} mt-0.5 flex-shrink-0`} size={20} />
-        
+
         <div className="flex-1">
           <h3 className={`font-semibold ${textColor} text-sm mb-1`}>
             {title}
@@ -82,7 +82,7 @@ export default function SubscriptionWarning({ onUpgradeClick }: SubscriptionWarn
           <p className={`${textColor} text-sm mb-3 opacity-90`}>
             {message}
           </p>
-          
+
           <div className="flex items-center space-x-3">
             <button
               onClick={onUpgradeClick}
@@ -91,7 +91,7 @@ export default function SubscriptionWarning({ onUpgradeClick }: SubscriptionWarn
               <Crown size={16} />
               <span>Renew Subscription</span>
             </button>
-            
+
             {subscriptionInfo && (
               <div className={`${textColor} text-xs opacity-75`}>
                 Plan: {subscriptionInfo.plan_type} ({subscriptionInfo.billing_cycle})

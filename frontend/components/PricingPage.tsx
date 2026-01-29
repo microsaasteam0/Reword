@@ -179,10 +179,10 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
       id: 'pro',
       name: 'Pro',
       description: 'For serious content creators and marketers',
-      price: { monthly: 15, yearly: 144 },
+      price: { monthly: 14, yearly: 129 },
       badge: 'Most Popular',
       features: [
-        'Unlimited content generations',
+        '20 content generations per day',
         'Transform text + process URLs directly',
         'X/Twitter, LinkedIn, Instagram formats',
         'Save & organize unlimited content',
@@ -212,7 +212,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
   const faqs = [
     {
       question: 'What happens when I reach my daily limit on the free plan?',
-      answer: 'Free users get 2 content generations per 24-hour period. Once you reach this limit, you can either wait for the reset or upgrade to Pro for unlimited generations.'
+      answer: 'Free users get 2 content generations per 24-hour period. Once you reach this limit, you can either wait for the reset or upgrade to Pro for 20 generations per day.'
     },
     {
       question: 'Can I process content from URLs?',
@@ -460,7 +460,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
                   category: 'Content Generation',
                   feature: 'Daily Generations',
                   free: '2 per day',
-                  pro: 'Unlimited',
+                  pro: '20/Day',
                   highlight: true
                 },
                 {
@@ -624,8 +624,8 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
             <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
               <Crown className="w-6 h-6 text-blue-500 dark:text-blue-400" />
             </div>
-            <h4 className="text-gray-900 dark:text-white font-semibold mb-2">Unlimited Power</h4>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Pro users get unlimited generations and advanced features.</p>
+            <h4 className="text-gray-900 dark:text-white font-semibold mb-2">High Volume</h4>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Pro users get 20 generations per day and advanced features.</p>
           </div>
         </div>
       </div>

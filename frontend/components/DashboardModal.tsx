@@ -446,8 +446,8 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       const fallbackStats = {
         total_generations: 0,
         recent_generations: 0,
-        rate_limit: user?.is_premium ? 999 : 10,
-        remaining_requests: user?.is_premium ? 999 : 10,
+        rate_limit: user?.is_premium ? 20 : 2,
+        remaining_requests: user?.is_premium ? 20 : 2,
         is_premium: user?.is_premium || false
       }
       setUsageStats(fallbackStats)
@@ -1549,7 +1549,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         {user?.is_premium ? 'Pro Member' : 'Free Plan'}
                       </div>
                       <p className="text-gray-600 dark:text-gray-300 text-sm">
-                        {user?.is_premium ? 'Unlimited generations' : `${usageStats?.remaining_requests || 0} generations left`}
+                        {user?.is_premium ? `${usageStats?.remaining_requests ?? 20} generations left` : `${usageStats?.remaining_requests ?? 2} generations left`}
                       </p>
                     </div>
                   </div>
@@ -1567,7 +1567,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         </div>
                         <div className="text-right">
                           <div className="text-yellow-600 dark:text-yellow-400 font-semibold">Active</div>
-                          <div className="text-gray-500 dark:text-gray-400 text-xs">Unlimited access</div>
+                          <div className="text-gray-500 dark:text-gray-400 text-xs">20 generations/day</div>
                         </div>
                       </div>
                       <button

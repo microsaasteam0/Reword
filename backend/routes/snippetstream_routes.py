@@ -44,6 +44,7 @@ class ContentRequest(BaseModel):
     timezone: Optional[str] = None
     screen_resolution: Optional[str] = None
     context: Optional[Dict] = None
+    enabled_platforms: Optional[List[str]] = ["twitter", "linkedin", "instagram"]
 
 
 class SocialMediaResponse(BaseModel):
@@ -254,26 +255,47 @@ You are a LinkedIn content strategist.
 Write ONE high-performing LinkedIn post using this structure:
 
 1. Hook (1 short scroll-stopping line)
+
 2. Context (what happened + when/where)
+
 3. Key highlights (2–4 bullet points)
+
 4. Personal role/contribution
+
 5. Skills or lessons learned
+
 6. Gratitude/shoutouts (optional)
+
 7. Closing reflection (bigger takeaway)
-8. Engagement question (end with a question)
+
+8. Engagement question (MUST end with a question mark)
+
 9. 3–5 relevant hashtags
 
-Formatting Rules:
-- Use short paragraphs with double line breaks
-- Use only 2–3 emojis total
-- Keep it under 180 words
+Formatting Rules (VERY STRICT):
+- Use short paragraphs (1–2 lines max)
+- Add EXACTLY ONE blank line between paragraphs
+- Bullet points must use this format only:
+  - Highlight text here
+  - Highlight text here
+
+Emoji Rules:
+- Use ONLY 2–3 emojis total in the entire post
+
+Length Rules:
+- Keep the post under 180 words
+
+Output Rules:
+- Do NOT use headings like "Hook:" or "Highlights:"
+- Do NOT include numbering (no "1.", "2.")
+- Do NOT add extra commentary
+- Return ONLY the final LinkedIn post text
+
+Context Rules:
 - Must naturally include all provided context story points
-
-Return ONLY the post text.
-If any context field is missing, skip it gracefully.
-Do NOT invent fake details.
+- If any context field is missing, skip it gracefully
+- Do NOT invent fake details
 """
-
 
 
     if context:
@@ -440,21 +462,45 @@ async def repurpose_content(
         # Generate all outputs in parallel for maximum speed
         print("⚡ Triggering parallel generation for all platforms...")
         
-        twitter_task = create_twitter_thread_async(content, request.context)
-        linkedin_task = create_linkedin_post_async(content, request.context)
-        instagram_task = create_instagram_carousel_async(content, request.context)
+        # Determine which tasks to run based on enabled_platforms
+        enabled = request.enabled_platforms or ["twitter", "linkedin", "instagram"]
         
-        results = await asyncio.gather(
-            twitter_task,
-            linkedin_task,
-            instagram_task,
-            return_exceptions=True
-        )
+        tasks = []
+        task_names = []
+        
+        if "twitter" in enabled or "x" in enabled:
+            tasks.append(create_twitter_thread_async(content, request.context))
+            task_names.append("twitter")
+        
+        if "linkedin" in enabled:
+            tasks.append(create_linkedin_post_async(content, request.context))
+            task_names.append("linkedin")
+            
+        if "instagram" in enabled:
+            tasks.append(create_instagram_carousel_async(content, request.context))
+            task_names.append("instagram")
+        
+        if not tasks:
+            raise HTTPException(status_code=400, detail="At least one platform must be selected")
+            
+        results = await asyncio.gather(*tasks, return_exceptions=True)
         
         # Unpack results and handle potential errors
-        raw_twitter = results[0] if not isinstance(results[0], Exception) else ["❌ Twitter error"]
-        raw_linkedin = results[1] if not isinstance(results[1], Exception) else "❌ LinkedIn error"
-        raw_instagram = results[2] if not isinstance(results[2], Exception) else ["❌ Instagram error"]
+        raw_twitter = []
+        raw_linkedin = ""
+        raw_instagram = []
+        
+        for i, name in enumerate(task_names):
+            res = results[i]
+            if isinstance(res, Exception):
+                print(f"❌ {name} generation error: {res}")
+                if name == "twitter": raw_twitter = ["❌ Twitter error"]
+                elif name == "linkedin": raw_linkedin = "❌ LinkedIn error"
+                elif name == "instagram": raw_instagram = ["❌ Instagram error"]
+            else:
+                if name == "twitter": raw_twitter = res
+                elif name == "linkedin": raw_linkedin = res
+                elif name == "instagram": raw_instagram = res
         
         # Clean results
         twitter_thread = clean_twitter_thread(raw_twitter)
