@@ -6,7 +6,8 @@ Disallow: /verify-email
 Disallow: /*?token=
 
 # Sitemap
-Sitemap: https://reword.app/sitemap.xml
+Sitemap: https://reword.entrext.com/sitemap.xml
+
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
