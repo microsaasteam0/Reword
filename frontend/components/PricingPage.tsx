@@ -448,7 +448,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
                     </div>
                     <span className="text-slate-900 dark:text-white font-bold text-base sm:text-lg mb-1">Pro</span>
                     <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-medium">
-                      ${billingCycle === 'monthly' ? '15/mo' : '144/yr'}
+                      ${billingCycle === 'monthly' ? '14/mo' : '129/yr'}
                     </span>
                   </div>
                 </th>
