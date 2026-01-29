@@ -71,7 +71,7 @@ export function UserPreferencesProvider({ children }: UserPreferencesProviderPro
 
   const updateUserPreference = async (key: string, value: boolean) => {
     try {
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/preferences`, {
+      await axios.put(`${API_URL}/api/v1/auth/preferences`, {
         [key]: value
       })
     } catch (error: any) {

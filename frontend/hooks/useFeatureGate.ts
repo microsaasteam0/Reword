@@ -113,7 +113,7 @@ export const useFeatureGate = () => {
     if (!isAuthenticated) return
 
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/feature-limits`)
+      const response = await axios.get(`${API_URL}/api/v1/auth/feature-limits`)
       setFeatureLimits(response.data)
     } catch (error) {
       console.error('Error refreshing feature limits:', error)

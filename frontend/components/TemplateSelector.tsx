@@ -104,7 +104,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const handleTemplateSelect = async (template: CustomTemplate) => {
     try {
       // Increment usage count
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${template.id}/use`)
+      await axios.post(`${API_URL}/api/v1/templates/${template.id}/use`)
 
       // Update local state
       setTemplates(prev => prev.map(t =>

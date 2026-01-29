@@ -7,6 +7,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import CustomTemplateModal from './CustomTemplateModal'
 import { useAuth } from '../contexts/AuthContext'
+import { API_URL } from '@/lib/api-config'
 
 interface CustomTemplate {
   id: number
@@ -82,8 +83,8 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
       }
       // Only load user's own templates in the management interface
       params.append('include_public', 'false')
-      
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/?${params.toString()}`
+
+      const url = `${API_URL}/api/v1/templates/?${params.toString()}`
       const response = await axios.get(url)
       setTemplates(response.data)
     } catch (error: any) {
@@ -115,7 +116,7 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
     }
 
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${templateId}`)
+      await axios.delete(`${API_URL}/api/v1/templates/${templateId}`)
       setTemplates(prev => prev.filter(t => t.id !== templateId))
       toast.success('Template deleted successfully')
     } catch (error: any) {
@@ -127,11 +128,11 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
   const handleUseTemplate = async (template: CustomTemplate) => {
     try {
       // Increment usage count
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${template.id}/use`)
-      
+      await axios.post(`${API_URL}/api/v1/templates/${template.id}/use`)
+
       // Update local state
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
+      setTemplates(prev => prev.map(t =>
+        t.id === template.id
           ? { ...t, usage_count: t.usage_count + 1 }
           : t
       ))
@@ -139,7 +140,7 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
       if (onTemplateSelect) {
         onTemplateSelect(template)
       }
-      
+
       toast.success(`Template "${template.name}" loaded!`)
     } catch (error: any) {
       console.error('Error using template:', error)
@@ -165,16 +166,16 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
 
   const toggleFavorite = async (template: CustomTemplate) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${template.id}`, {
+      const response = await axios.put(`${API_URL}/api/v1/templates/${template.id}`, {
         is_favorite: !template.is_favorite
       })
-      
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
+
+      setTemplates(prev => prev.map(t =>
+        t.id === template.id
           ? { ...t, is_favorite: !t.is_favorite }
           : t
       ))
-      
+
       toast.success(template.is_favorite ? 'Removed from favorites' : 'Added to favorites')
     } catch (error: any) {
       console.error('Error toggling favorite:', error)
@@ -213,7 +214,7 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
           <div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Custom Templates</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              {user?.is_premium 
+              {user?.is_premium
                 ? 'Create and manage your reusable content templates'
                 : 'Upgrade to Pro to create and manage custom templates'
               }
@@ -264,11 +265,10 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
           <button
             key={category.value}
             onClick={() => setSelectedCategory(category.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              selectedCategory === category.value
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedCategory === category.value
                 ? 'bg-blue-500/20 text-blue-600 dark:text-blue-500 dark:text-blue-400 border border-blue-500/30'
                 : 'bg-gray-100 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700/50 hover:text-gray-800 dark:hover:text-gray-300'
-            }`}
+              }`}
           >
             {category.label}
           </button>
@@ -293,11 +293,11 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
             {user?.is_premium ? 'No Templates Yet' : 'Custom Templates - Pro Feature'}
           </h4>
           <p className="text-gray-600 dark:text-gray-500 mb-6">
-            {user?.is_premium 
-              ? (selectedCategory === 'all' 
-                  ? 'Create your first custom template to get started'
-                  : `No templates found in the ${categories.find(c => c.value === selectedCategory)?.label} category`
-                )
+            {user?.is_premium
+              ? (selectedCategory === 'all'
+                ? 'Create your first custom template to get started'
+                : `No templates found in the ${categories.find(c => c.value === selectedCategory)?.label} category`
+              )
               : 'Upgrade to Pro to create and manage your own custom templates'
             }
           </p>
@@ -363,14 +363,13 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={() => toggleFavorite(template)}
-                  className={`p-1 rounded transition-colors ${
-                    template.is_favorite 
-                      ? 'text-yellow-600 dark:text-yellow-500 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300' 
+                  className={`p-1 rounded transition-colors ${template.is_favorite
+                      ? 'text-yellow-600 dark:text-yellow-500 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300'
                       : 'text-gray-500 dark:text-gray-500 hover:text-yellow-600 dark:hover:text-yellow-500 dark:text-yellow-400'
-                  }`}
+                    }`}
                 >
                   <Star className={`w-4 h-4 ${template.is_favorite ? 'fill-current' : ''}`} />
                 </button>
@@ -423,7 +422,7 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
                   <Eye className="w-4 h-4 mr-1" />
                   {expandedTemplate === template.id ? 'Hide' : 'Preview'} Content
                 </button>
-                
+
                 {expandedTemplate === template.id && (
                   <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
                     <pre className="text-gray-700 dark:text-gray-300 text-xs whitespace-pre-wrap max-h-32 overflow-y-auto">
@@ -445,14 +444,14 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
                     Use Template
                   </button>
                 )}
-                
+
                 <button
                   onClick={() => handleCopyContent(template.content, template.name)}
                   className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
-                
+
                 <button
                   onClick={() => {
                     if (!user?.is_premium) {
@@ -461,16 +460,15 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
                     }
                     setEditingTemplate(template)
                   }}
-                  className={`p-2 transition-colors ${
-                    user?.is_premium 
+                  className={`p-2 transition-colors ${user?.is_premium
                       ? 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 dark:text-blue-400'
                       : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                  }`}
+                    }`}
                   disabled={!user?.is_premium}
                 >
                   <Edit className="w-4 h-4" />
                 </button>
-                
+
                 <button
                   onClick={() => {
                     if (!user?.is_premium) {
@@ -479,11 +477,10 @@ const CustomTemplateManager: React.FC<CustomTemplateManagerProps> = ({
                     }
                     handleDeleteTemplate(template.id)
                   }}
-                  className={`p-2 transition-colors ${
-                    user?.is_premium 
+                  className={`p-2 transition-colors ${user?.is_premium
                       ? 'text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 dark:text-red-400'
                       : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                  }`}
+                    }`}
                   disabled={!user?.is_premium}
                 >
                   <Trash2 className="w-4 h-4" />

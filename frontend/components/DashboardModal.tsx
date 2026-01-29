@@ -779,7 +779,7 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
     setIsSavingProfile(true)
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+      const response = await axios.put(`${API_URL}/api/v1/auth/profile`, {
         username: editedUsername.trim(),
         full_name: editedFullName.trim() || null,
         profile_picture: editedProfilePicture.trim() || null

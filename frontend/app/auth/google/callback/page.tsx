@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../../../contexts/AuthContext'
+import { API_URL } from '@/lib/api-config'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Loader2 } from 'lucide-react'
@@ -68,14 +69,14 @@ function GoogleCallbackContent() {
 
         setMessage('Authenticating with Reword...')
 
-        const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
+
 
         // Use FormData as required by the backend's Form(...) parameters
         const formData = new FormData()
         formData.append('code', String(code))
         formData.append('state', String(state || 'dev-mode'))
 
-        const authResponse = await axios.post(`${apiUrl}/api/v1/auth/google/callback`, formData, {
+        const authResponse = await axios.post(`${API_URL}/api/v1/auth/google/callback`, formData, {
           timeout: 15000
         })
 

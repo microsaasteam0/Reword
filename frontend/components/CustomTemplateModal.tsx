@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, FileText, Tag, Globe, Lock, Star, Sparkles } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { API_URL } from '@/lib/api-config'
 
 interface CustomTemplateModalProps {
   isOpen: boolean
@@ -83,7 +84,7 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
 
   const loadCategories = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/categories/list`)
+      const response = await axios.get(`${API_URL}/api/v1/templates/categories/list`)
       setCategories(response.data.categories)
     } catch (error) {
       console.error('Error loading categories:', error)
@@ -118,14 +119,14 @@ const CustomTemplateModal: React.FC<CustomTemplateModalProps> = ({
       if (editTemplate) {
         // Update existing template
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/${editTemplate.id}`,
+          `${API_URL}/api/v1/templates/${editTemplate.id}`,
           formData
         )
         toast.success('Template updated successfully!')
       } else {
         // Create new template
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/templates/`,
+          `${API_URL}/api/v1/templates/`,
           formData
         )
         toast.success('Template created successfully!')

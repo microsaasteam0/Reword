@@ -977,7 +977,7 @@ function HomeContent() {
       }
 
       // Use authenticated endpoint only
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/analytics/track`
+      const endpoint = `${API_URL}/api/v1/analytics/track`
 
       await axios.post(endpoint, {
         action,
@@ -1127,7 +1127,7 @@ function HomeContent() {
       // console.log('API URL:', `${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/save`)
       // console.log('Auth headers:', axios.defaults.headers.common['Authorization'])
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/content/save`, {
+      const response = await axios.post(`${API_URL}/api/v1/content/save`, {
         title,
         content_type: contentType,
         content,
