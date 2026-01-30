@@ -14,12 +14,12 @@ export default function SEOHead({
   description = 'Turn your blogs, articles, and newsletters into engaging X threads, LinkedIn posts, and Instagram carousels with AI. Join 5,000+ creators growing their audience.',
   keywords = 'content repurposing, social media automation, AI content creation, Twitter threads, LinkedIn posts, Instagram carousels, content marketing, social media tools',
   image = '/og-image.png',
-  url = 'https://reword.app',
+  url = 'https://reword.entrext.com',
   type = 'website'
 }: SEOHeadProps) {
   const fullTitle = title.includes('Reword') ? title : `${title} | Reword`
-  const fullUrl = url.startsWith('http') ? url : `https://reword.app${url}`
-  const fullImage = image.startsWith('http') ? image : `https://reword.app${image}`
+  const fullUrl = url.startsWith('http') ? url : `https://reword.entrext.com${url}`
+  const fullImage = image.startsWith('http') ? image : `https://reword.entrext.com${image}`
 
   return (
     <Head>
@@ -71,7 +71,7 @@ export default function SEOHead({
             "creator": {
               "@type": "Organization",
               "name": "Reword",
-              "url": "https://reword.app"
+              "url": "https://reword.entrext.com"
             }
           })
         }}

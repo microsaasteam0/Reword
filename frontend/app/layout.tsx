@@ -17,7 +17,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NODE_ENV === 'production'
-    ? 'https://reword.app'
+    ? 'https://reword.entrext.com'
     : 'http://localhost:3000'
   ),
   title: {
@@ -164,7 +164,7 @@ export default function RootLayout({
               "name": "Reword",
               "alternateName": "Reword AI",
               "description": "Reword is an AI-powered content repurposing tool that transforms blogs, articles, and newsletters into platform-optimized social media posts for X (Twitter), LinkedIn, and Instagram.",
-              "url": "https://reword.app",
+              "url": "https://reword.entrext.com",
               "applicationCategory": "BusinessApplication, MultimediaApplication",
               "operatingSystem": "Web, Windows, macOS, Linux, Android, iOS",
               "keywords": "AI content repurposing, social media automation, blog to twitter thread, newsletter to linkedin post, content transformation tool, AI writing assistant",
@@ -193,7 +193,7 @@ export default function RootLayout({
                 "@type": "Organization",
                 "name": "Entrext Labs",
                 "url": "https://entrext.in",
-                "logo": "https://reword.app/logo.png"
+                "logo": "https://reword.entrext.com/logo.png"
               },
               "featureList": [
                 "Blog-to-Social Transformation",
@@ -203,7 +203,7 @@ export default function RootLayout({
                 "Custom Content Templates",
                 "Advanced AI Usage Statistics"
               ],
-              "screenshot": "https://reword.app/og-image.png",
+              "screenshot": "https://reword.entrext.com/og-image.png",
               "softwareVersion": "1.0.0"
             })
           }}
