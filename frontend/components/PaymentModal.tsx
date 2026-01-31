@@ -30,7 +30,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   }, [])
 
   const pricing = {
-    pro: { monthly: 14, yearly: 129 }
+    pro: { monthly: 15, yearly: 144 }
   }
 
   const planNames = {

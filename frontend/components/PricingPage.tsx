@@ -179,7 +179,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
       id: 'pro',
       name: 'Pro',
       description: 'For serious content creators and marketers',
-      price: { monthly: 14, yearly: 129 },
+      price: { monthly: 15, yearly: 144 },
       badge: 'Most Popular',
       features: [
         '20 content generations per day',
@@ -448,7 +448,7 @@ export default function PricingPage({ onSignUp }: PricingPageProps) {
                     </div>
                     <span className="text-slate-900 dark:text-white font-bold text-base sm:text-lg mb-1">Pro</span>
                     <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-medium">
-                      ${billingCycle === 'monthly' ? '14/mo' : '129/yr'}
+                      ${billingCycle === 'monthly' ? '15/mo' : '144/yr'}
                     </span>
                   </div>
                 </th>
