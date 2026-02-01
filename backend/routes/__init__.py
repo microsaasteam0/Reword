@@ -6,7 +6,7 @@ from .template_routes import router as template_router
 from .public_only_routes import public_router
 from .admin_routes import router as admin_router
 from .dev_routes import dev_router
-from .export_routes import export_router
+from .support_routes import router as support_router
 
 def register_routes(app):
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
@@ -16,6 +16,7 @@ def register_routes(app):
     app.include_router(template_router, tags=["Custom Templates"])
     app.include_router(public_router, tags=["Public Only"])
     app.include_router(admin_router, tags=["Admin"])
+    app.include_router(support_router, tags=["Support"])
     app.include_router(snippetstream_router, prefix="/api/v1", tags=["SnippetStream"])
     
     if dev_router:

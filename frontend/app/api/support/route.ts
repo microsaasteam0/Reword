@@ -12,37 +12,30 @@ export async function POST(req: Request) {
 
         // 1. Validation
         const { product, category, message, user_email } = body;
-        if (!product || !category || !message || !user_email || !emailRegex.test(user_email)) {
-            return NextResponse.json({ error: "Invalid data" }, { status: 400 });
-        }
+        // 2. Forward to Python backend
+        const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ||
+            process.env.NEXT_PUBLIC_API_URL ||
+            "https://reword-api.vercel.app";
 
-        // 2. Secret Retrieval
-        // Note: You MUST set this in Vercel Project Settings -> Environment Variables
-        const FORM_SECRET = process.env.NEXT_PUBLIC_ANON_KEY;
+        const backendUrl = rawBackendUrl.replace(/\/+$/, '');
+        const targetUrl = `${backendUrl}/support`;
 
-        if (!FORM_SECRET) {
-            console.error("❌ CRITICAL: NEXT_PUBLIC_ANON_KEY is not defined in Vercel environment variables.");
-            return NextResponse.json({ error: "Server Configuration Error" }, { status: 500 });
-        }
+        console.log(`📡 Forwarding support ticket to Python Backend: ${targetUrl}`);
 
-        console.log(`📡 Forwarding to Supabase... (Key verify: ${FORM_SECRET.substring(0, 5)}...)`);
-
-        // 3. Direct Call to Supabase (Matching your backend logic)
-        const res = await fetch(SUPABASE_URL, {
+        const res = await fetch(targetUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-form-secret": FORM_SECRET,
-                "Authorization": `Bearer ${FORM_SECRET}`
             },
             body: JSON.stringify(body),
         });
 
-        if (res.status === 429) {
-            return NextResponse.json({ error: "Too many submissions" }, { status: 429 });
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error(`❌ Python Backend Error (${res.status}):`, data);
         }
 
-        const data = await res.json();
         return NextResponse.json(data, { status: res.status });
 
     } catch (error: any) {
