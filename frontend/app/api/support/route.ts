@@ -10,54 +10,43 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        // Minimal frontend validation
+        // 1. Validation
         const { product, category, message, user_email } = body;
-
-        if (!product || !category || !message || !user_email) {
-            return NextResponse.json(
-                { error: "Missing required fields" },
-                { status: 400 }
-            );
+        if (!product || !category || !message || !user_email || !emailRegex.test(user_email)) {
+            return NextResponse.json({ error: "Invalid data" }, { status: 400 });
         }
 
-        if (!emailRegex.test(user_email)) {
-            return NextResponse.json(
-                { error: "Invalid email address." },
-                { status: 400 }
-            );
+        // 2. Secret Retrieval
+        // Note: You MUST set this in Vercel Project Settings -> Environment Variables
+        const FORM_SECRET = process.env.NEXT_PUBLIC_ANON_KEY;
+
+        if (!FORM_SECRET) {
+            console.error("❌ CRITICAL: NEXT_PUBLIC_ANON_KEY is not defined in Vercel environment variables.");
+            return NextResponse.json({ error: "Server Configuration Error" }, { status: 500 });
         }
 
-        // Forward Directly to Supabase Edge Function
-        // Using the secret from environment variables
-        const formSecret = process.env.NEXT_PUBLIC_ANON_KEY;
+        console.log(`📡 Forwarding to Supabase... (Key verify: ${FORM_SECRET.substring(0, 5)}...)`);
 
-        console.log(`🚀 Forwarding support ticket directly to Supabase...`);
-
+        // 3. Direct Call to Supabase (Matching your backend logic)
         const res = await fetch(SUPABASE_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-form-secret": formSecret || ""
+                "x-form-secret": FORM_SECRET
             },
             body: JSON.stringify(body),
         });
 
         if (res.status === 429) {
-            return NextResponse.json(
-                { error: "Too many submissions. Try again later." },
-                { status: 429 }
-            );
+            return NextResponse.json({ error: "Too many submissions" }, { status: 429 });
         }
 
         const data = await res.json();
         return NextResponse.json(data, { status: res.status });
 
     } catch (error: any) {
-        console.error("🚨 Support Direct Proxy Exception:", error);
-        return NextResponse.json(
-            { error: "Internal Proxy Error", detail: error?.message || "Unknown error" },
-            { status: 500 }
-        );
+        console.error("🚨 Proxy Error:", error);
+        return NextResponse.json({ error: "Internal Error" }, { status: 500 });
     }
 }
 
