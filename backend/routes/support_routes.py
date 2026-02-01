@@ -7,78 +7,87 @@ import requests
 
 router = APIRouter(prefix="/api/v1/support", tags=["Support"])
 
+class SupportTicket(BaseModel):
+    product: str
+    category: str
+    user_email: str
+    message: str
+    metadata: Optional[dict] = None
+
 class ContactRequest(BaseModel):
     email: str
     message: str
-    timestamp: str
+    timestamp: Optional[str] = None
     username: Optional[str] = None
 
-def send_support_email(email: str, message: str, username: Optional[str] = None):
+def send_support_email(email: str, message: str, username: Optional[str] = None, category: Optional[str] = None, product: Optional[str] = None, metadata: Optional[dict] = None):
     """
     Send support email using Brevo (Sendinblue) API
     """
     # Get configuration from environment variables
     brevo_api_key = os.getenv("BREVO_API_KEY", "")
-    from_email = os.getenv("BREVO_FROM_EMAIL", "noreply@yourdomain.com")
-    from_name = os.getenv("BREVO_FROM_NAME", "Reword Support")
+    from_email = os.getenv("BREVO_FROM_EMAIL", "noreply@entrext.com")
+    from_name = os.getenv("BREVO_FROM_NAME", f"{product or 'Reword'} Support")
     to_email = os.getenv("BREVO_TO_EMAIL", "business@entrext.in")
-    
-    print(f"📧 Attempting to send support email from {email}")
-    print(f"📧 Brevo Config: from={from_email}, to={to_email}")
     
     # Email content
     display_info = f"{username} ({email})" if username else email
-    subject = f"Reword Support Request from {display_info}"
+    subject = f"[{category or 'Support'}] {product or 'Reword'} Support Request from {display_info}"
     
-    backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+    backend_url = os.getenv("BACKEND_URL", "https://snippetstream-api22-production.up.railway.app")
+    
+    # Format metadata as HTML if present
+    metadata_html = ""
+    if metadata:
+        metadata_html = "<h3>Metadata:</h3><ul>"
+        for key, value in metadata.items():
+            metadata_html += f"<li><strong>{key}:</strong> {value}</li>"
+        metadata_html += "</ul>"
+
     html_content = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="padding: 20px; text-align: center;">
-            <img src="{backend_url.rstrip('/')}/static/logo.png" alt="Reword Logo" style="width: 60px; height: 60px; margin-bottom: 10px;">
-            <h2 style="color: #3b82f6; margin: 10px 0;">New Support Request</h2>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background-color: #3b82f6; padding: 30px; text-align: center;">
+            <h2 style="color: white; margin: 0;">New Support Request</h2>
+            <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0;">{product or 'Reword'} Submissions</p>
         </div>
         
-        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p><strong>From:</strong> {email}</p>
-            <p><strong>Time:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-        </div>
-        
-        <div style="background-color: #fff; padding: 20px; border-left: 4px solid #4CAF50; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #333;">Message:</h3>
-            <p style="white-space: pre-wrap; color: #555;">{message}</p>
-        </div>
-        
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-            <p style="color: #888; font-size: 14px;">
-                Please reply directly to this email to respond to the user at: <strong>{email}</strong>
-            </p>
+        <div style="padding: 20px;">
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0;"><strong>From:</strong> {email}</p>
+                <p style="margin: 5px 0 0 0;"><strong>Category:</strong> {category or 'General'}</p>
+                <p style="margin: 5px 0 0 0;"><strong>Time:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-top: 0; color: #1e293b;">Message:</h3>
+                <div style="white-space: pre-wrap; color: #475569; background-color: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px;">{message}</div>
+            </div>
+            
+            {metadata_html}
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
+                <p style="color: #64748b; font-size: 14px; margin: 0;">
+                    Reply to this email to respond to <strong>{email}</strong>
+                </p>
+            </div>
         </div>
     </div>
     """
     
     try:
         if not brevo_api_key:
-            # If no API key, just print to console (useful for dev)
-            print("⚠️ BREVO_API_KEY not found. Simulating email send:")
-            print(f"Subject: {subject}")
-            print(f"From: {from_name} <{from_email}>")
-            print(f"To: {to_email}")
-            print(f"Reply-To: {email}")
-            print(f"\nMessage:\n{message}")
-            print("\n💡 To enable email sending, add BREVO_API_KEY to your .env file")
+            print(f"⚠️ BREVO_API_KEY not found. Simulating email send for {email}")
             return
 
         # Brevo API endpoint
         url = "https://api.brevo.com/v3/smtp/email"
         
-        # Headers
         headers = {
             "accept": "application/json",
             "api-key": brevo_api_key,
             "content-type": "application/json"
         }
         
-        # Email payload
         payload = {
             "sender": {
                 "name": from_name,
@@ -92,42 +101,47 @@ def send_support_email(email: str, message: str, username: Optional[str] = None)
             ],
             "replyTo": {
                 "email": email,
-                "name": "Customer"
+                "name": "User"
             },
             "subject": subject,
             "htmlContent": html_content
         }
         
-        print(f"📤 Sending email via Brevo...")
-        
-        # Send email using Brevo API
         response = requests.post(url, json=payload, headers=headers)
         
-        if response.status_code == 201:
-            result = response.json()
-            print(f"✅ Support email sent successfully via Brevo!")
-            print(f"📧 Message ID: {result.get('messageId', 'N/A')}")
+        if response.status_code in [200, 201]:
+            print(f"✅ Support email sent successfully for {email}")
         else:
-            print(f"❌ Brevo API error: {response.status_code}")
-            print(f"Response: {response.text}")
-        
+            print(f"❌ Brevo API error: {response.status_code} - {response.text}")
+            
     except Exception as e:
-        print(f"❌ Failed to send support email via Brevo: {str(e)}")
-        print(f"💡 Error type: {type(e).__name__}")
-        # Don't raise error to client, just log it
+        print(f"❌ Failed to send support email: {str(e)}")
         
 @router.post("/contact")
 async def contact_support(request: ContactRequest, background_tasks: BackgroundTasks):
     """
-    Handle contact support requests
+    Handle contact support requests (legacy format)
     """
     try:
-        # Send email in background to avoid blocking response
         background_tasks.add_task(send_support_email, request.email, request.message, request.username)
-        
-        return {
-            "success": True, 
-            "message": "Message received. We will get back to you shortly."
-        }
+        return {"success": True, "message": "Message received"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/submit-ticket")
+async def submit_ticket(payload: SupportTicket, background_tasks: BackgroundTasks):
+    """
+    Handle support tickets (Supabase-style format used by @entrext/support-client)
+    """
+    try:
+        background_tasks.add_task(
+            send_support_email, 
+            email=payload.user_email, 
+            message=payload.message, 
+            category=payload.category, 
+            product=payload.product,
+            metadata=payload.metadata
+        )
+        return {"success": True, "message": "Ticket submitted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

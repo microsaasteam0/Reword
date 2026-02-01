@@ -200,13 +200,6 @@ function HomeContent() {
 
   // Preload critical resources
   useEffect(() => {
-    // Preload fonts and critical assets
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
-    link.as = 'style'
-    document.head.appendChild(link)
-
     // Track page load performance
     if (typeof window !== 'undefined' && window.performance) {
       const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart
