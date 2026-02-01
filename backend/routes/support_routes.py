@@ -27,8 +27,6 @@ def submit_support(payload: SupportRequest):
        SUPABASE_URL,
        headers={
            "Content-Type": "application/json",
-           "apikey": form_secret or "",  # Critical for Supabase Gateway
-           "Authorization": f"Bearer {form_secret or ''}",
            "x-form-secret": form_secret or ""
        },
        json=payload.dict()
