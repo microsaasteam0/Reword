@@ -32,7 +32,8 @@ export async function POST(req: Request) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-form-secret": FORM_SECRET
+                "x-form-secret": FORM_SECRET,
+                "Authorization": `Bearer ${FORM_SECRET}`
             },
             body: JSON.stringify(body),
         });
