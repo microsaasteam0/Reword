@@ -4,6 +4,8 @@ export const runtime = "nodejs";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const SUPABASE_URL = "https://ldewwmfkymjmokopulys.supabase.co/functions/v1/submit-support";
+
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -25,29 +27,35 @@ export async function POST(req: Request) {
             );
         }
 
-        // Forward to Python backend
-        // Use NEXT_PUBLIC_BACKEND_URL or fallback to known production URL
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ||
-            process.env.NEXT_PUBLIC_API_URL ||
-            "https://reword-api.vercel.app";
+        // Forward Directly to Supabase Edge Function
+        // Using the secret from environment variables
+        const formSecret = process.env.NEXT_PUBLIC_ANON_KEY;
 
-        console.log(`Forwarding support ticket to: ${backendUrl}/support`);
+        console.log(`🚀 Forwarding support ticket directly to Supabase...`);
 
-        const res = await fetch(`${backendUrl.replace(/\/+$/, '')}/support`, {
+        const res = await fetch(SUPABASE_URL, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "x-form-secret": formSecret || ""
             },
             body: JSON.stringify(body),
         });
+
+        if (res.status === 429) {
+            return NextResponse.json(
+                { error: "Too many submissions. Try again later." },
+                { status: 429 }
+            );
+        }
 
         const data = await res.json();
         return NextResponse.json(data, { status: res.status });
 
     } catch (error: any) {
-        console.error("Support Proxy Error:", error);
+        console.error("🚨 Support Direct Proxy Exception:", error);
         return NextResponse.json(
-            { error: "Internal Server Error", detail: error?.message || "Unknown error" },
+            { error: "Internal Proxy Error", detail: error?.message || "Unknown error" },
             { status: 500 }
         );
     }

@@ -1,5 +1,11 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# 1. Load env as soon as possible - before any other project imports
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
 import time
 import asyncio
 from contextlib import asynccontextmanager
@@ -13,11 +19,6 @@ from routes import register_routes
 from database import create_tables, get_db
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from dotenv import load_dotenv
-
-# Load env from root directory
-env_path = Path(__file__).resolve().parent.parent / '.env'
-load_dotenv(dotenv_path=env_path)
 
 port = os.getenv("PORT", os.getenv("SNIPPETSTREAM_PORT", "8000"))
 
