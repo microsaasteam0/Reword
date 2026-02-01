@@ -23,13 +23,13 @@ def submit_support(payload: SupportRequest):
    if not form_secret:
        print("⚠️ Critical: FORM_SECRET is missing in backend environment variables.")
 
-   # Call Supabase exactly as per docs
    response = requests.post(
        SUPABASE_URL,
        headers={
            "Content-Type": "application/json",
-           "x-form-secret": form_secret or "",
-           "Authorization": f"Bearer {form_secret or ''}" # Key addition for standard Supabase auth
+           "apikey": form_secret or "",  # Critical for Supabase Gateway
+           "Authorization": f"Bearer {form_secret or ''}",
+           "x-form-secret": form_secret or ""
        },
        json=payload.dict()
    )
