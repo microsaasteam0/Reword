@@ -194,9 +194,17 @@ async def normalize_path_middleware(request: Request, call_next):
     return response
 
 # Configure CORS properly
+# Note: allow_origins cannot be ["*"] when allow_credentials is True
+allowed_origins = [
+    "https://reword.entrext.com",
+    "https://reword-alpha.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:8000"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

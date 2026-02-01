@@ -139,34 +139,43 @@ async def submit_ticket(payload: SupportTicket):
     """
     try:
         if not NEXT_PUBLIC_ANON_KEY:
-            # Fallback to local logging if secret is missing
-            print("⚠️ NEXT_PUBLIC_ANON_KEY not found in environment variables")
-            # You might want to still send it but Supabase might reject
+            print("❌ NEXT_PUBLIC_ANON_KEY is MISSING in environment variables")
+            raise HTTPException(status_code=500, detail="Support system configuration error")
             
+        print(f"📡 Forwarding support ticket to Supabase... (Secret length: {len(NEXT_PUBLIC_ANON_KEY) if NEXT_PUBLIC_ANON_KEY else 0})")
+        
         response = requests.post(
             SUPABASE_URL,
             headers={
                 "Content-Type": "application/json",
-                "x-form-secret": NEXT_PUBLIC_ANON_KEY or ""
+                "x-form-secret": NEXT_PUBLIC_ANON_KEY
             },
-            json=payload.dict()
+            json=payload.dict(),
+            timeout=10 # Add timeout
         )
 
-        if response.status_code == 429:
-            raise HTTPException(
-                status_code=429,
-                detail="Too many submissions. Try again later."
-            )
-
+        print(f"📥 Supabase Response Status: {response.status_code}")
+        
         if not response.ok:
+            print(f"❌ Supabase Error Details: {response.text}")
+            
+            if response.status_code == 429:
+                raise HTTPException(
+                    status_code=429,
+                    detail="Too many submissions. Try again later."
+                )
+            
             raise HTTPException(
                 status_code=response.status_code,
-                detail=response.text
+                detail=f"Support submission failed: {response.text[:100]}"
             )
 
         return response.json()
     except HTTPException:
         raise
+    except requests.exceptions.Timeout:
+        print("❌ Supabase request TIMED OUT")
+        raise HTTPException(status_code=504, detail="Support system timed out")
     except Exception as e:
         print(f"❌ Support submission error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to submit support ticket")
+        raise HTTPException(status_code=500, detail=str(e))
