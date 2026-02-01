@@ -2,6 +2,7 @@ import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { Metadata } from 'next'
 import './globals.css'
 import ClientProviders from '../components/ClientProviders'
+import Script from 'next/script'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -67,9 +68,13 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon-192.png',
   },
   manifest: '/site.webmanifest',
 }
@@ -152,8 +157,26 @@ export default function RootLayout({
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/icon-48.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className={`${inter.variable} ${plusJakarta.variable} font-sans`}>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0YNCEFQQ80"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-0YNCEFQQ80');
+          `}
+        </Script>
+
         {/* Structured Data for SEO/AI-SEO/AEO */}
         <script
           type="application/ld+json"
@@ -193,7 +216,10 @@ export default function RootLayout({
                 "@type": "Organization",
                 "name": "Entrext Labs",
                 "url": "https://entrext.in",
-                "logo": "https://reword.entrext.com/logo.png"
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://reword.entrext.com/logo.png"
+                }
               },
               "featureList": [
                 "Blog-to-Social Transformation",

@@ -61,6 +61,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
   }
 
   const formatTweetContent = (tweet: string) => {
+    if (!tweet) return ''
     // Split content and hashtags for better display
     const hashtagMatch = tweet.match(/(.*?)(#\w+(?:\s+#\w+)*)$/)
     if (hashtagMatch) {
@@ -148,7 +149,7 @@ export const XDisplay: React.FC<XDisplayProps> = ({ tweets, onCopy, copiedStates
       {/* Current Tweet Content */}
       <div className="p-4">
         <div className="text-white leading-relaxed text-[15px] mb-4">
-          {formatTweetContent(tweets[currentTweet])}
+          {tweets.length > 0 ? formatTweetContent(tweets[currentTweet]) : 'No content available'}
         </div>
 
         <div className="text-gray-400 text-sm mb-4">
@@ -295,6 +296,7 @@ interface LinkedInDisplayProps {
 export const LinkedInDisplay: React.FC<LinkedInDisplayProps> = ({ post, onCopy, copied, onSave }) => {
   // More aggressive formatting for LinkedIn posts
   const formatLinkedInPost = (text: string) => {
+    if (!text) return []
     // Simplify formatting to honor LLM spacing
     // We use whitespace-pre-wrap on the container, so we just need to handle highlighting
     const lines = text.split('\n');
@@ -478,6 +480,7 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
 
   // Parse the slide content - prioritize \n line breaks from backend
   const parseSlide = (text: string) => {
+    if (!text) return { title: 'No Content', description: '' }
     // First, try to split by \n (proper line breaks from backend)
     const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '')
 
@@ -599,7 +602,7 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
 
         {/* Current Slide */}
         <div className="h-full flex items-center justify-center p-6 text-center">
-          {(() => {
+          {slides.length > 0 ? (() => {
             const { title, description } = parseSlide(slides[currentSlide])
             return (
               <div className="space-y-3">
@@ -613,7 +616,9 @@ export const InstagramCarousel: React.FC<InstagramCarouselProps> = ({ slides, on
                 )}
               </div>
             )
-          })()}
+          })() : (
+            <div className="text-gray-500">No slides available</div>
+          )}
         </div>
 
         {/* Copy Button for Current Slide */}
