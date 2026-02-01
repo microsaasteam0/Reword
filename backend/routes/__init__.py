@@ -6,6 +6,7 @@ from .template_routes import router as template_router
 from .public_only_routes import public_router
 from .admin_routes import router as admin_router
 from .dev_routes import dev_router
+from .export_routes import export_router
 from .support_routes import router as support_router
 
 def register_routes(app):
