@@ -1,16 +1,19 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 import os
 from datetime import datetime
 import requests
 
-router = APIRouter(prefix="/api/v1/support", tags=["Support"])
+router = APIRouter(tags=["Support"])
+
+SUPABASE_URL = "https://ldewwmfkymjmokopulys.supabase.co/functions/v1/submit-support"
+NEXT_PUBLIC_ANON_KEY = os.getenv("NEXT_PUBLIC_ANON_KEY")
 
 class SupportTicket(BaseModel):
     product: str
     category: str
-    user_email: str
+    user_email: EmailStr
     message: str
     metadata: Optional[dict] = None
 
@@ -128,20 +131,42 @@ async def contact_support(request: ContactRequest, background_tasks: BackgroundT
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/submit-ticket")
-async def submit_ticket(payload: SupportTicket, background_tasks: BackgroundTasks):
+@router.post("/support")
+async def submit_ticket(payload: SupportTicket):
     """
-    Handle support tickets (Supabase-style format used by @entrext/support-client)
+    Handle support tickets by forwarding to Supabase Edge Function
+    The secret key is only stored in the backend to prevent spam.
     """
     try:
-        background_tasks.add_task(
-            send_support_email, 
-            email=payload.user_email, 
-            message=payload.message, 
-            category=payload.category, 
-            product=payload.product,
-            metadata=payload.metadata
+        if not NEXT_PUBLIC_ANON_KEY:
+            # Fallback to local logging if secret is missing
+            print("⚠️ NEXT_PUBLIC_ANON_KEY not found in environment variables")
+            # You might want to still send it but Supabase might reject
+            
+        response = requests.post(
+            SUPABASE_URL,
+            headers={
+                "Content-Type": "application/json",
+                "x-form-secret": NEXT_PUBLIC_ANON_KEY or ""
+            },
+            json=payload.dict()
         )
-        return {"success": True, "message": "Ticket submitted successfully"}
+
+        if response.status_code == 429:
+            raise HTTPException(
+                status_code=429,
+                detail="Too many submissions. Try again later."
+            )
+
+        if not response.ok:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=response.text
+            )
+
+        return response.json()
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ Support submission error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to submit support ticket")
