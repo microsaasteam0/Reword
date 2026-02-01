@@ -27,19 +27,16 @@ class RequestCache {
     // Check if data is in cache and still valid
     const cached = this.cache.get(key)
     if (cached && Date.now() - cached.timestamp < cached.ttl) {
-      console.log(`📦 Cache hit for key: ${key}`)
       return cached.data
     }
 
     // Check if request is already pending (deduplication)
     const pending = this.pendingRequests.get(key)
     if (pending) {
-      console.log(`⏳ Request already pending for key: ${key}`)
       return pending
     }
 
     // Execute the request
-    console.log(`🔄 Cache miss, executing request for key: ${key}`)
     const requestPromise = requestFn()
 
     // Store the pending request
@@ -47,7 +44,7 @@ class RequestCache {
 
     try {
       const data = await requestPromise
-      
+
       // Cache the result
       this.cache.set(key, {
         data,
@@ -55,7 +52,6 @@ class RequestCache {
         ttl
       })
 
-      console.log(`✅ Cached data for key: ${key}`)
       return data
     } catch (error) {
       console.error(`❌ Request failed for key: ${key}`, error)
@@ -84,7 +80,6 @@ class RequestCache {
    * @param key - Cache key to invalidate
    */
   invalidate(key: string): void {
-    console.log(`🗑️ Invalidating cache for key: ${key}`)
     this.cache.delete(key)
     this.pendingRequests.delete(key)
   }
@@ -93,7 +88,6 @@ class RequestCache {
    * Clear all cache entries
    */
   clear(): void {
-    console.log('🗑️ Clearing all cache entries')
     this.cache.clear()
     this.pendingRequests.clear()
   }

@@ -67,7 +67,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
       const stats = await requestCache.get(
         cacheKey,
         async () => {
-          console.log('🔄 Making fresh usage-stats API call')
           const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`)
           return response.data
         },
@@ -118,12 +117,10 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
       const cachedStats = requestCache.getCached<UsageStats>(cacheKey)
 
       if (cachedStats) {
-        console.log('📦 AuthenticatedNavbar: Using immediately available cached stats')
         setUsageStats(cachedStats)
       }
 
       // Always load fresh data on app start to ensure accuracy
-      console.log('🚀 AuthenticatedNavbar: Eager loading usage stats on app start')
       loadUsageStats()
     }
   }, [isAuthenticated, user, loadUsageStats, isProcessingPayment])
@@ -134,7 +131,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
     if (isProcessingPayment) return
 
     const handleSubscriptionChange = () => {
-      console.log('🔄 Subscription changed, invalidating cache and refreshing stats')
       const cacheKey = `usage-stats-${user?.id}`
       requestCache.invalidate(cacheKey)
       // Don't clear stats immediately, just refresh them to preserve premium status
@@ -142,7 +138,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
     }
 
     const handleUsageStatsUpdate = () => {
-      console.log('🔄 Usage stats updated event received in navbar, refreshing stats')
       const cacheKey = `usage-stats-${user?.id}`
       requestCache.invalidate(cacheKey)
 
@@ -166,7 +161,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
       const statsIsPremium = usageStats.subscription_tier === 'pro'
 
       if (userIsPremium !== statsIsPremium) {
-        console.log('🔄 Premium status changed, refreshing stats')
         loadUsageStats()
       }
     }

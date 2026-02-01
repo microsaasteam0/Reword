@@ -203,19 +203,12 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
     setIsUploading(true)
     try {
-      console.log('🔄 Starting image upload process...')
-      console.log('📁 File size:', selectedFile.size, 'bytes')
-      console.log('� File type:', selectedFile.type)
 
       const imageUrl = await uploadImage(imageData)
-      console.log('✅ Image converted to base64, length:', imageUrl.length)
 
       setEditedProfilePicture(imageUrl)
 
       // Immediately save the profile with the new image
-      console.log('🔄 Saving profile with new image...')
-      console.log('📝 Current username:', editedUsername)
-      console.log('� CuUrrent full name:', editedFullName)
 
       const profileData = {
         username: editedUsername.trim(),
@@ -223,10 +216,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         profile_picture: imageUrl
       }
 
-      console.log('📤 Sending profile data (image truncated for log):', {
-        ...profileData,
-        profile_picture: imageUrl.substring(0, 50) + '...'
-      })
 
       const response = await axios.put(`${API_URL}/api/v1/auth/profile`, profileData, {
         timeout: 30000, // 30 second timeout for large images
@@ -235,12 +224,9 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         }
       })
 
-      console.log('✅ Profile update response:', response.data)
 
       if (response.data) {
         // Update user context with new data
-        console.log('🔄 Updating user context...')
-        console.log('📸 New profile picture from response:', response.data.profile_picture?.substring(0, 50) + '...')
 
         const updatedUserData = {
           username: response.data.username,
@@ -248,10 +234,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
           profile_picture: response.data.profile_picture
         }
 
-        console.log('👤 Updating user with:', {
-          ...updatedUserData,
-          profile_picture: updatedUserData.profile_picture?.substring(0, 50) + '...'
-        })
 
         updateUser(updatedUserData)
 
@@ -265,7 +247,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         // Force a small delay to ensure state updates
         setTimeout(() => {
           toast.success('Profile picture updated successfully!')
-          console.log('✅ Profile picture update complete!')
 
           // Force a re-render by updating a dummy state
           setIsEditingProfile(false)
@@ -327,9 +308,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Load data when modal opens
   useEffect(() => {
     if (isOpen && user) {
-      console.log('🚀 Dashboard modal opened, loading initial data')
-      console.log('👤 Current user object:', user)
-      console.log('🖼️ User profile picture:', user.profile_picture)
       loadInitialDataFast()
 
       // Initialize profile editing state
@@ -339,21 +317,17 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
       // Immediately check cache and load section data in parallel
       if (user.is_premium) {
-        console.log('🚀 Immediately loading saved content for premium user')
         const contentCacheKey = `dashboard-saved-content-${user.id}`
         const cachedContent = requestCache.getCached(contentCacheKey)
         if (cachedContent && Array.isArray(cachedContent)) {
-          console.log('✅ Using cached saved content immediately')
           setSavedContent(cachedContent)
         }
         loadSectionData('content')
       }
 
-      console.log('🚀 Immediately loading content history for user')
       const historyCacheKey = `dashboard-content-history-${user.id}`
       const cachedHistory = requestCache.getCached(historyCacheKey)
       if (cachedHistory && Array.isArray(cachedHistory)) {
-        console.log('✅ Using cached content history immediately')
         setContentHistory(cachedHistory)
       }
       loadSectionData('history')
@@ -363,7 +337,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Preload data when user is available (even when modal is closed)
   useEffect(() => {
     if (user && !isOpen) {
-      console.log('🚀 Preloading dashboard data in background')
 
       // Preload usage stats
       const statsCacheKey = `dashboard-usage-stats-${user.id}`
@@ -419,7 +392,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     try {
       // If we have external usage stats, use them immediately
       if (externalUsageStats) {
-        console.log('📦 Using external usage stats from parent')
         setUsageStats(externalUsageStats)
         return
       }
@@ -429,7 +401,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       const stats = await requestCache.get(
         cacheKey,
         async () => {
-          console.log('🔄 DashboardModal: Making fresh usage-stats API call')
           const response = await axios.get(`${API_URL}/api/v1/auth/usage-stats`, {
             timeout: 5000 // Increased timeout
           })
@@ -439,7 +410,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
       )
 
       setUsageStats(stats)
-      console.log('✅ Loaded usage stats for dashboard:', stats)
     } catch (error: any) {
       console.error('Error in loadInitialDataFast:', error)
       // Set default stats if everything fails
@@ -456,7 +426,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
   // Load section-specific data when user navigates to that section
   const loadSectionData = async (section: string) => {
-    console.log(`🔄 Loading section data for: ${section}`)
 
     if (section === 'content') {
       const cacheKey = `dashboard-saved-content-${user?.id}`
@@ -467,36 +436,29 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         setIsLoadingContent(true)
       } else {
         // Use cached data immediately
-        console.log('✅ Using cached saved content:', cachedContent.length, 'items')
         setSavedContent(cachedContent)
       }
 
       try {
-        console.log(`🔍 Loading saved content with cache key: ${cacheKey}`)
 
         const content = await requestCache.get(
           cacheKey,
           async () => {
-            console.log('🔄 DashboardModal: Making fresh saved-content API call')
             const response = await axios.get(`${API_URL}/api/v1/content/saved`, {
               timeout: 10000 // Increased timeout
             })
-            console.log('📦 Saved content API response:', response.data)
             return response.data || []
           },
           30 * 60 * 1000 // 30 minute cache
         )
 
-        console.log('✅ Setting saved content:', content.length, 'items')
         setSavedContent(content)
       } catch (error: any) {
         console.error('Error loading saved content:', error)
         if (error.response?.status === 403) {
-          console.log('Premium features not available for this user')
         } else {
           // Retry once after a short delay
           setTimeout(() => {
-            console.log('🔄 Retrying saved content load...')
             loadSectionData('content')
           }, 1000)
         }
@@ -513,36 +475,29 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         setIsLoadingHistory(true)
       } else {
         // Use cached data immediately
-        console.log('✅ Using cached content history:', cachedHistory.length, 'items')
         setContentHistory(cachedHistory)
       }
 
       try {
-        console.log(`🔍 Loading content history with cache key: ${cacheKey}`)
 
         const history = await requestCache.get(
           cacheKey,
           async () => {
-            console.log('🔄 DashboardModal: Making fresh content-history API call')
             const response = await axios.get(`${API_URL}/api/v1/content/history`, {
               timeout: 10000 // Increased timeout
             })
-            console.log('📦 Content history API response:', response.data)
             return response.data || []
           },
           30 * 60 * 1000 // 30 minute cache
         )
 
-        console.log('✅ Setting content history:', history.length, 'items')
         setContentHistory(history)
       } catch (error: any) {
         console.error('Error loading content history:', error)
         if (error.response?.status === 403) {
-          console.log('Premium features not available for this user')
         } else {
           // Retry once after a short delay
           setTimeout(() => {
-            console.log('🔄 Retrying content history load...')
             loadSectionData('history')
           }, 1000)
         }
@@ -556,24 +511,19 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Load data when section changes
   useEffect(() => {
     if (isOpen && user && activeSection !== 'overview') {
-      console.log(`🔄 Section changed to: ${activeSection}, checking if data needs loading`)
 
       // Only load if we don't already have data for this section
       if (activeSection === 'content' && user.is_premium && savedContent.length === 0) {
-        console.log('🔄 Loading saved content for empty state')
         loadSectionData('content')
       } else if (activeSection === 'history' && contentHistory.length === 0) {
-        console.log('🔄 Loading content history for empty state')
         loadSectionData('history')
       } else {
-        console.log(`✅ Section ${activeSection} already has data, skipping load`)
       }
     }
   }, [activeSection, isOpen, user])
 
   // Force refresh data after content generation
   const refreshAfterGeneration = async () => {
-    console.log('🔄 Dashboard: Refreshing data after content generation')
 
     // Invalidate caches
     const contentCacheKey = `dashboard-saved-content-${user?.id}`
@@ -588,7 +538,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         const content = await requestCache.get(
           contentCacheKey,
           async () => {
-            console.log('🔄 DashboardModal: Refreshing saved-content after generation')
             const response = await axios.get(`${API_URL}/api/v1/content/saved`, {
               timeout: 2000
             })
@@ -608,7 +557,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
         const history = await requestCache.get(
           historyCacheKey,
           async () => {
-            console.log('🔄 DashboardModal: Refreshing content-history after generation')
             const response = await axios.get(`${API_URL}/api/v1/content/history`, {
               timeout: 2000
             })
@@ -629,7 +577,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
   // Listen for content-saved and content-generated events to refresh data
   useEffect(() => {
     const handleContentSaved = (event: CustomEvent) => {
-      console.log('🔄 Dashboard: Content saved event received')
 
       // Only refresh saved content, not history (history tracks generations, not saves)
       if (user?.is_premium && isOpen && savedContent.length > 0) {
@@ -647,7 +594,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
     }
 
     const handleContentGenerated = (event: CustomEvent) => {
-      console.log('🔄 Dashboard: Content generated event received')
 
       // Refresh both saved content and history after generation
       if (user?.is_premium && isOpen) {
@@ -1102,7 +1048,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         alt={user.username}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          console.log('❌ Mobile header profile picture failed to load:', user.profile_picture)
                           // Hide the image and show initials
                           const imgElement = e.currentTarget as HTMLImageElement
                           const container = imgElement.parentElement
@@ -1115,7 +1060,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                           }
                         }}
                         onLoad={(e) => {
-                          console.log('✅ Mobile header profile picture loaded successfully:', user.profile_picture)
                           // Hide initials when image loads
                           const imgElement = e.currentTarget as HTMLImageElement
                           const container = imgElement.parentElement
@@ -1270,7 +1214,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                       alt={user.username}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        console.log('❌ Sidebar profile picture failed to load:', user.profile_picture)
                         // Hide the image and show initials
                         const imgElement = e.currentTarget as HTMLImageElement
                         const container = imgElement.parentElement
@@ -1283,7 +1226,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                         }
                       }}
                       onLoad={(e) => {
-                        console.log('✅ Sidebar profile picture loaded successfully:', user.profile_picture)
                         // Hide initials when image loads
                         const imgElement = e.currentTarget as HTMLImageElement
                         const container = imgElement.parentElement
@@ -1346,7 +1288,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
                 <button
                   onClick={() => {
-                    console.log('🔄 Manually loading saved content')
                     setActiveSection('content')
                     // Load immediately without delay
                     loadSectionData('content')
@@ -1367,7 +1308,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
 
                 <button
                   onClick={() => {
-                    console.log('🔄 Manually loading content history')
                     setActiveSection('history')
                     // Load immediately without delay
                     loadSectionData('history')
@@ -1926,23 +1866,13 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                       <div className="flex items-center gap-6">
                         <div className="relative">
                           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                            {(() => {
-                              console.log('🖼️ Profile picture check:', {
-                                hasProfilePicture: !!user?.profile_picture,
-                                profilePictureLength: user?.profile_picture?.length,
-                                isValidUrl: user?.profile_picture ? isValidImageUrl(user.profile_picture) : false,
-                                profilePicturePreview: user?.profile_picture?.substring(0, 50) + '...'
-                              })
-                              return user?.profile_picture && isValidImageUrl(user.profile_picture)
-                            })() ? (
+                            {user?.profile_picture && isValidImageUrl(user.profile_picture) ? (
                               <>
                                 <img
                                   src={user.profile_picture}
                                   alt={user.username}
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
-                                    console.log('❌ Profile picture failed to load:', user.profile_picture?.substring(0, 100))
-                                    console.log('❌ Error details:', e)
                                     // Hide the image and show initials
                                     const imgElement = e.currentTarget as HTMLImageElement
                                     const container = imgElement.parentElement
@@ -1955,7 +1885,6 @@ export default function DashboardModal({ isOpen, onClose, externalUsageStats }: 
                                     }
                                   }}
                                   onLoad={(e) => {
-                                    console.log('✅ Profile picture loaded successfully in settings')
                                     // Hide initials when image loads
                                     const imgElement = e.currentTarget as HTMLImageElement
                                     const container = imgElement.parentElement

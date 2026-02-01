@@ -61,11 +61,9 @@ export const useFeatureGate = () => {
 
       try {
         const response = await axios.get(`${API_URL}/api/v1/auth/feature-limits`)
-        console.log('Feature limits API response:', response.data)
         setFeatureLimits(response.data)
       } catch (error) {
         console.error('Error fetching feature limits:', error)
-        console.log('User premium status from AuthContext:', user?.is_premium)
 
         // Fallback to basic limits based on user data
         // Be extra careful about the premium status
@@ -86,7 +84,6 @@ export const useFeatureGate = () => {
           max_content_length: isPremium ? 50000 : 10000
         })
 
-        console.log('Applied fallback limits:', { isPremium, remaining_generations: isPremium ? 20 : 2 })
       } finally {
         setLoading(false)
       }

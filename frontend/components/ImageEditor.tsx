@@ -19,7 +19,6 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
   const prevIsOpen = useRef(isOpen)
   useEffect(() => {
     if (prevIsOpen.current !== isOpen) {
-      console.log('🎨 ImageEditor state changed:', isOpen ? 'opened' : 'closed')
       prevIsOpen.current = isOpen
     }
   }, [isOpen])
@@ -40,14 +39,12 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
       return
     }
 
-    console.log('🔄 Loading image:', imageUrl.substring(0, 50) + '...')
     setIsLoading(true)
     setError(null)
 
     const img = new Image()
 
     img.onload = () => {
-      console.log('✅ Image loaded:', img.width, 'x', img.height)
       setImage(img)
 
       // Initialize canvas

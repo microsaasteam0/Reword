@@ -22,26 +22,25 @@ function PricingContent() {
 
   const handleSignUp = (plan: string) => {
     // Handle signup logic here
-    console.log('Sign up for plan:', plan)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Top Progress Bar - Only for page navigation */}
       <TopProgressBar isLoading={false} />
-      
+
       {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         initialMode={authModalMode}
       />
-      
+
       {/* Navigation */}
       {isAuthenticated ? (
         <AuthenticatedNavbar isLoading={false} />
       ) : (
-        <Navbar 
+        <Navbar
           isAuthenticated={isAuthenticated}
           user={user}
           activeMainTab="pricing"
@@ -65,9 +64,9 @@ function PricingContent() {
       <Footer />
 
       {/* Dashboard Modal */}
-      <DashboardModal 
-        isOpen={showDashboard} 
-        onClose={() => setShowDashboard(false)} 
+      <DashboardModal
+        isOpen={showDashboard}
+        onClose={() => setShowDashboard(false)}
       />
     </div>
   )

@@ -44,25 +44,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     setLoading(true)
 
     try {
-      console.log('🔄 Creating Dodo Payments checkout session...')
 
       const requestData = {
         plan_id: selectedPlan,
         billing_cycle: billingCycle
       }
 
-      console.log('📤 Sending checkout request:', requestData)
 
       const response = await axios.post(
         `${API_URL}/api/v1/payment/create-checkout`,
         requestData
       )
 
-      console.log('📥 Checkout response:', response.data)
 
       if (response.data && response.data.success) {
-        console.log('✅ Checkout session created!')
-        console.log('🔗 Redirecting to:', response.data.checkout_url)
 
         // Redirect to Dodo Payments checkout
         window.location.href = response.data.checkout_url
@@ -78,7 +73,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       let message = 'Failed to create checkout session. Please try again.'
 
       if (error.response?.data) {
-        console.log('Error response data:', error.response.data)
         if (typeof error.response.data === 'string') {
           message = error.response.data
         } else if (error.response.data.detail) {
@@ -90,7 +84,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         message = String(error.message)
       }
 
-      console.log('Final error message:', message)
 
       // Ensure message is always a string
       const safeMessage = typeof message === 'string' ? message : 'Failed to create checkout session. Please try again.'

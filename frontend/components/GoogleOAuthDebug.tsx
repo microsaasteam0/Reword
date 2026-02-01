@@ -20,12 +20,10 @@ export default function GoogleOAuthDebug() {
     
     try {
       if (typeof window !== 'undefined' && window.google) {
-        console.log('Initializing Google Auth with Client ID:', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
         
         window.google.accounts.id.initialize({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
           callback: (response: any) => {
-            console.log('Google Auth Response:', response)
             setTestResult('✅ Google Auth callback received!')
           },
           error_callback: (error: any) => {
@@ -36,7 +34,6 @@ export default function GoogleOAuthDebug() {
         
         // Try to prompt for sign-in
         window.google.accounts.id.prompt((notification: any) => {
-          console.log('Google Prompt Notification:', notification)
           if (notification.isNotDisplayed()) {
             setTestResult(`⚠️ Not displayed: ${notification.getNotDisplayedReason()}`)
           } else if (notification.isSkippedMoment()) {

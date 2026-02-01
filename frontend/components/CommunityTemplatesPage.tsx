@@ -55,11 +55,7 @@ const CommunityTemplatesPage: React.FC<CommunityTemplatesPageProps> = ({
   ]
 
   useEffect(() => {
-    console.log('CommunityTemplatesPage useEffect:', {
-      isAuthenticated,
-      user: !!user,
-      hasAuthToken: !!axios.defaults.headers.common['Authorization']
-    })
+
 
     // Check if we have any cached data first to show immediately
     const cacheKey = `community-templates-${selectedCategory}-${sortBy}`
@@ -68,13 +64,11 @@ const CommunityTemplatesPage: React.FC<CommunityTemplatesPageProps> = ({
     const cachedData = requestCache.getCached<CommunityTemplate[]>(cacheKey)
 
     if (cachedData && Array.isArray(cachedData) && cachedData.length > 0) {
-      console.log('📦 Showing cached data immediately')
       setTemplates(cachedData)
       setIsFromCache(true)
       setIsLoading(false)
     } else {
       // No cached data, start loading immediately
-      console.log('🔄 No cached data, loading fresh templates')
       setIsLoading(true)
       setIsFromCache(false)
     }
@@ -102,12 +96,10 @@ const CommunityTemplatesPage: React.FC<CommunityTemplatesPageProps> = ({
       const cacheKey = `community-templates-${selectedCategory}-${sortBy}`
 
       const url = `${API_URL}/api/v1/public/templates?${params.toString()}`
-      console.log('🔄 Loading community templates from API:', url)
 
       const response = await requestCache.get(
         cacheKey,
         async () => {
-          console.log('🔄 CommunityTemplatesPage: Making fresh public/templates API call')
           const res = await axios.get(url)
           return res.data
         },
@@ -128,7 +120,6 @@ const CommunityTemplatesPage: React.FC<CommunityTemplatesPageProps> = ({
       setTemplates(sortedTemplates)
       setIsFromCache(false)
 
-      console.log('✅ Loaded community templates:', sortedTemplates.length)
     } catch (error: any) {
       console.error('Error loading community templates:', error)
       console.error('Error response:', error.response)

@@ -39,7 +39,7 @@ function GoogleCallbackContent() {
           state = state || urlParams.get('state')
         }
 
-        console.log('🔄 Google OAuth processing:', { hasCode: !!code, hasState: !!state })
+
 
         // Mark as processed immediately to prevent duplicate calls
         hasProcessedRef.current = true

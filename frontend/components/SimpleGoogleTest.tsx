@@ -15,7 +15,6 @@ export default function SimpleGoogleTest() {
         window.google.accounts.id.initialize({
           client_id: '812229233766-ro0kem734rb7q9rn0h07fmcrouqdb6ft.apps.googleusercontent.com',
           callback: (response: any) => {
-            console.log('SUCCESS! Google token received:', response.credential)
             alert('Google Sign-In Success! Check console for token.')
           }
         })

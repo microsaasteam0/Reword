@@ -79,15 +79,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   }, [isOpen])
 
   const handleGoogleResponse = async (response: any) => {
-    console.log('🎯 Google Response received in AuthModal:', response)
     setIsGoogleLoading(true)
     try {
       if (response.credential) {
-        console.log('🔑 Google credential received, length:', response.credential.length)
         const success = await googleAuth(response.credential)
-        console.log('🔄 GoogleAuth result:', success)
         if (success) {
-          console.log('✅ Google Auth successful, closing modal')
           onClose()
           setFormData({ email: '', username: '', password: '', fullName: '' })
           setErrors({})
@@ -105,7 +101,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   }
 
   const handleGoogleSignIn = () => {
-    console.log('Google Sign-In clicked - redirecting to Google OAuth')
 
     // Create Google OAuth URL for redirect flow (not popup)
     const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
@@ -115,14 +110,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     // Generate a more robust state parameter
     const state = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
 
-    console.log('Generated state:', state)
 
     // Store the state in sessionStorage for verification
     sessionStorage.setItem('google_oauth_state', state)
 
     // Verify it was stored
     const storedState = sessionStorage.getItem('google_oauth_state')
-    console.log('Stored state:', storedState)
 
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${googleClientId}&` +
@@ -133,7 +126,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
       `access_type=offline&` +
       `prompt=consent`
 
-    console.log('Redirecting to Google OAuth URL:', googleAuthUrl)
 
     // Redirect to Google OAuth in the same tab
     window.location.href = googleAuthUrl
