@@ -22,10 +22,10 @@ export const metadata: Metadata = {
     : 'http://localhost:3000'
   ),
   title: {
-    default: 'Reword - AI Content Repurposing Tool for X, LinkedIn & Instagram',
+    default: 'Reword - AI Content Repurposing for Social Media',
     template: '%s | Reword'
   },
-  description: 'Reword is the ultimate AI content repurposing tool for creators and marketers. Automate the transformation of blogs, articles, and newsletters into platform-optimized social media posts for X (Twitter), LinkedIn, and Instagram in seconds.',
+  description: 'Automate content repurposing with AI. Transform blogs, articles, and newsletters into optimized posts for X (Twitter), LinkedIn, and Instagram in seconds.',
   keywords: ['AI content repurposing', 'content repurposing tool', 'social media automation', 'blog to twitter thread', 'newsletter to linkedin post', 'instagram carousel generator', 'AI writing assistant', 'content strategy', 'Reword AI'],
   authors: [{ name: 'Entrext Labs', url: 'https://entrext.in' }],
   creator: 'Entrext Labs',
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: '/',
     siteName: 'Reword',
-    title: 'Reword - AI Content Repurposing Tool for X, LinkedIn & Instagram',
-    description: 'Automate the transformation of blogs, articles, and newsletters into platform-optimized social media posts for X, LinkedIn, and Instagram in seconds.',
+    title: 'Reword - AI Content Repurposing for Social Media',
+    description: 'Automate content repurposing with AI. Transform blogs, articles, and newsletters into optimized posts for X (Twitter), LinkedIn, and Instagram in seconds.',
     images: [
       {
         url: '/og-image.png',
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Reword - AI Content Repurposing Tool for X, LinkedIn & Instagram',
-    description: 'Automate the transformation of blogs, articles, and newsletters into platform-optimized social media posts for X, LinkedIn, and Instagram in seconds.',
+    title: 'Reword - AI Content Repurposing for Social Media',
+    description: 'Automate content repurposing with AI. Transform blogs, articles, and newsletters into optimized posts for X (Twitter), LinkedIn, and Instagram in seconds.',
     creator: '@entrextlabs',
     images: ['/twitter-image.png'],
   },
@@ -154,9 +154,7 @@ export default function RootLayout({
           }}
         />
 
-        {/* Preconnect to external domains for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon-48.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icon-192.png" />

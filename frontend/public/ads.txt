@@ -1,0 +1,4 @@
+# No authorized digital sellers
+# If you monetize your website, add your publisher IDs here.
+# Example format:
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

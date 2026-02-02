@@ -86,7 +86,6 @@ export default function Navbar({
                 width={40}
                 height={40}
                 quality={100}
-                unoptimized
                 className="w-full h-full object-contain"
               />
             </div>

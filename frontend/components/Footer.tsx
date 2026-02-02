@@ -129,7 +129,7 @@ export default function Footer({ onSupportClick }: FooterProps) {
             <div className="flex flex-col space-y-6">
               <Link href="/" className="flex items-center group w-fit">
                 <div className="bg-white dark:bg-slate-800 p-2.5 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 transform transition-transform group-hover:rotate-6">
-                  <Image src="/logo.png" alt="Reword Logo" width={36} height={36} unoptimized />
+                  <Image src="/logo.png" alt="Reword Logo" width={36} height={36} />
                 </div>
                 <span className="ml-4 text-2xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Reword

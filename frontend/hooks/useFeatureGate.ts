@@ -62,8 +62,11 @@ export const useFeatureGate = () => {
       try {
         const response = await axios.get(`${API_URL}/api/v1/auth/feature-limits`)
         setFeatureLimits(response.data)
-      } catch (error) {
-        console.error('Error fetching feature limits:', error)
+      } catch (error: any) {
+        // Suppress 401 errors from console
+        if (error?.response?.status !== 401) {
+          console.error('Error fetching feature limits:', error)
+        }
 
         // Fallback to basic limits based on user data
         // Be extra careful about the premium status
@@ -96,8 +99,10 @@ export const useFeatureGate = () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/auth/upgrade-prompt/${feature}`)
       return response.data
-    } catch (error) {
-      console.error('Error fetching upgrade prompt:', error)
+    } catch (error: any) {
+      if (error?.response?.status !== 401) {
+        console.error('Error fetching upgrade prompt:', error)
+      }
       return {
         title: 'Upgrade to Pro',
         message: 'Unlock this feature and many more with Pro.',
@@ -112,8 +117,10 @@ export const useFeatureGate = () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/auth/feature-limits`)
       setFeatureLimits(response.data)
-    } catch (error) {
-      console.error('Error refreshing feature limits:', error)
+    } catch (error: any) {
+      if (error?.response?.status !== 401) {
+        console.error('Error refreshing feature limits:', error)
+      }
     }
   }, [isAuthenticated])
 
