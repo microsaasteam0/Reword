@@ -129,7 +129,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full p-2 transition-colors"
-            aria-label="Close payment modal"
           >
             <X className="w-5 h-5" />
           </button>

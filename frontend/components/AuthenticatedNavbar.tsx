@@ -291,7 +291,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
                     disabled={statsLoading}
                     className="flex items-center gap-1.5 px-2 py-1 bg-blue-500/10 hover:bg-blue-500/20 disabled:opacity-50 text-blue-600 dark:text-blue-400 rounded-full text-xs font-bold border border-blue-500/20 transition-all duration-200"
                     title="Click to refresh usage stats"
-                    aria-label="Refresh usage stats"
                   >
                     <Sparkles className={`w-3 h-3 ${statsLoading ? 'animate-spin' : ''}`} />
                     <span className="hidden sm:inline">
@@ -322,7 +321,6 @@ export default function AuthenticatedNavbar({ activeTab, isLoading = false }: Au
                 <button
                   onClick={() => setShowDashboard(true)}
                   className="flex items-center gap-2 px-3 py-2 bg-transparent hover:bg-gray-100/50 dark:hover:bg-gray-800/50 text-gray-900 dark:text-white rounded-lg transition-all duration-300 font-medium text-sm group"
-                  aria-label="Open user dashboard"
                 >
                   <div className="w-8 h-8 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/50 group-hover:scale-105 relative">
                     {user?.profile_picture && isValidImageUrl(user.profile_picture) ? (

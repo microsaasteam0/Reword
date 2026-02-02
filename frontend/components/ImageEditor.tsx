@@ -284,7 +284,6 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
               ? 'text-blue-400 hover:text-blue-300 hover:bg-blue-800/50'
               : 'text-blue-600 hover:text-blue-800 hover:bg-blue-100'
               }`}
-            aria-label="Close image editor"
           >
             <X className="w-5 h-5" />
           </button>
@@ -377,7 +376,6 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
                     : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
                     }`}
                   title="Zoom Out"
-                  aria-label="Zoom out"
                 >
                   <ZoomOut className="w-5 h-5" />
                 </button>
@@ -394,7 +392,6 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
                     : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
                     }`}
                   title="Zoom In"
-                  aria-label="Zoom in"
                 >
                   <ZoomIn className="w-5 h-5" />
                 </button>
@@ -408,7 +405,6 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
                   : 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-300'
                   }`}
                 title="Rotate 90°"
-                aria-label="Rotate 90 degrees"
               >
                 <RotateCw className="w-5 h-5" />
                 Rotate 90°

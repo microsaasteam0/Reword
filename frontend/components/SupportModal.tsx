@@ -104,7 +104,6 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                        aria-label="Close modal"
                     >
                         <X className="w-6 h-6 text-slate-400" />
                     </button>
