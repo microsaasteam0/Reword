@@ -277,6 +277,7 @@ Wrap up your content`
           <button
             onClick={onClose}
             className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors"
+            aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>

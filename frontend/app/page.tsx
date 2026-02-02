@@ -1494,21 +1494,21 @@ function HomeContent() {
                   <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4 border border-blue-500/20">
                     <Zap className="w-7 h-7 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Instant Results</h3>
+                  <h2 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Instant Results</h2>
                   <p className="text-sm text-slate-600 dark:text-slate-400">Transform content in under 30 seconds</p>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 border border-indigo-500/20">
                     <TrendingUp className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Multi-Platform</h3>
+                  <h2 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Multi-Platform</h2>
                   <p className="text-sm text-slate-600 dark:text-slate-400">Optimized for 3 major platforms</p>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-4 border border-purple-500/20">
                     <Shield className="w-7 h-7 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Privacy First</h3>
+                  <h2 className="font-bold text-slate-900 dark:text-white mb-2 text-lg">Privacy First</h2>
                   <p className="text-sm text-slate-600 dark:text-slate-400">Your content stays secure</p>
                 </div>
               </div>
@@ -3785,7 +3785,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
   const renderUpdatesTab = () => (
     <div className="space-y-12">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Platform Updates</h2>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Platform Updates</h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
           Recent improvements and upcoming features for Reword
         </p>
@@ -3838,10 +3838,10 @@ Start with one strategy, master it, then expand to others. Your bottom line will
 
       {/* Planned Features Section */}
       <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-2xl p-8">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center flex items-center justify-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center flex items-center justify-center">
           <Clock className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-2" />
           Planned Features
-        </h3>
+        </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-xl p-6">
             <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -3901,7 +3901,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
 
       {/* Platform Stats */}
       <div className="bg-gray-200 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-2xl p-8">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Platform Statistics</h3>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Platform Statistics</h2>
         <div className="grid md:grid-cols-3 gap-8 text-center">
           <div>
             <div className="text-3xl font-bold text-blue-500 dark:text-blue-400 mb-2">3</div>
@@ -3923,7 +3923,7 @@ Start with one strategy, master it, then expand to others. Your bottom line will
 
       {/* Feedback Section */}
       <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-2xl p-8 text-center">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Help Shape Reword</h3>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Help Shape Reword</h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           Your feedback helps us prioritize features and improvements. Let us know what you'd like to see next!
         </p>
@@ -3988,7 +3988,7 @@ Best regards`)
 
       {/* Changelog */}
       <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-2xl p-8">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Changelog</h3>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Changelog</h2>
         <div className="space-y-6">
           <div className="border-l-4 border-green-400 pl-6">
             <div className="flex items-center justify-between mb-2">
@@ -4042,7 +4042,7 @@ Best regards`)
           <div className="inline-block px-4 py-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-sm font-medium mb-4 border border-blue-500/20">
             ABOUT REWORD
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">About Reword</h2>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">About Reword</h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Empowering content creators with AI-powered social media optimization
           </p>

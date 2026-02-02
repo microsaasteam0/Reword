@@ -266,13 +266,13 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
     <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-[1200] ${isDark ? 'bg-black/90' : 'bg-white/90'
       }`}>
       <div className={`rounded-2xl border-2 max-w-2xl w-full shadow-2xl ${isDark
-          ? 'bg-gray-900 border-blue-600'
-          : 'bg-white border-blue-200'
+        ? 'bg-gray-900 border-blue-600'
+        : 'bg-white border-blue-200'
         }`}>
         {/* Header */}
         <div className={`flex items-center justify-between p-6 border-b-2 ${isDark
-            ? 'border-blue-700 bg-blue-900/20'
-            : 'border-blue-100 bg-blue-50'
+          ? 'border-blue-700 bg-blue-900/20'
+          : 'border-blue-100 bg-blue-50'
           }`}>
           <h3 className={`text-xl font-bold ${isDark ? 'text-blue-300' : 'text-blue-900'
             }`}>
@@ -281,9 +281,10 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
           <button
             onClick={onCancel}
             className={`p-2 rounded-lg transition-colors ${isDark
-                ? 'text-blue-400 hover:text-blue-300 hover:bg-blue-800/50'
-                : 'text-blue-600 hover:text-blue-800 hover:bg-blue-100'
+              ? 'text-blue-400 hover:text-blue-300 hover:bg-blue-800/50'
+              : 'text-blue-600 hover:text-blue-800 hover:bg-blue-100'
               }`}
+            aria-label="Close image editor"
           >
             <X className="w-5 h-5" />
           </button>
@@ -291,15 +292,15 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
 
         {/* Canvas Area */}
         <div className={`p-6 ${isDark
-            ? 'bg-gradient-to-br from-gray-800 to-blue-900/20'
-            : 'bg-gradient-to-br from-gray-50 to-blue-50'
+          ? 'bg-gradient-to-br from-gray-800 to-blue-900/20'
+          : 'bg-gradient-to-br from-gray-50 to-blue-50'
           }`}>
           {isLoading ? (
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
                 <div className={`w-8 h-8 border-4 rounded-full animate-spin mx-auto mb-4 ${isDark
-                    ? 'border-blue-700 border-t-blue-400'
-                    : 'border-blue-200 border-t-blue-600'
+                  ? 'border-blue-700 border-t-blue-400'
+                  : 'border-blue-200 border-t-blue-600'
                   }`}></div>
                 <p className={`font-medium ${isDark ? 'text-blue-300' : 'text-blue-800'
                   }`}>Loading image...</p>
@@ -309,8 +310,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
                 <div className={`w-16 h-16 border-2 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark
-                    ? 'bg-red-900/20 border-red-700'
-                    : 'bg-red-100 border-red-200'
+                  ? 'bg-red-900/20 border-red-700'
+                  : 'bg-red-100 border-red-200'
                   }`}>
                   <X className={`w-8 h-8 ${isDark ? 'text-red-400' : 'text-red-600'
                     }`} />
@@ -320,8 +321,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
                 <button
                   onClick={onCancel}
                   className={`px-6 py-3 rounded-lg transition-colors border ${isDark
-                      ? 'bg-red-900/20 hover:bg-red-900/40 text-red-400 border-red-700'
-                      : 'bg-red-100 hover:bg-red-200 text-red-700 border-red-300'
+                    ? 'bg-red-900/20 hover:bg-red-900/40 text-red-400 border-red-700'
+                    : 'bg-red-100 hover:bg-red-200 text-red-700 border-red-300'
                     }`}
                 >
                   Close
@@ -331,8 +332,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
           ) : (
             <div className="flex flex-col items-center gap-4">
               <div className={`relative border-4 rounded-2xl overflow-hidden shadow-lg p-2 ${isDark
-                  ? 'border-blue-600 bg-gray-800'
-                  : 'border-blue-300 bg-white'
+                ? 'border-blue-600 bg-gray-800'
+                : 'border-blue-300 bg-white'
                 }`}>
                 <canvas
                   ref={canvasRef}
@@ -345,8 +346,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
               </div>
 
               <div className={`text-center rounded-lg p-4 border shadow-sm ${isDark
-                  ? 'bg-gray-800 border-blue-700'
-                  : 'bg-white border-blue-200'
+                ? 'bg-gray-800 border-blue-700'
+                : 'bg-white border-blue-200'
                 }`}>
                 <p className={`text-sm font-medium ${isDark ? 'text-blue-300' : 'text-blue-700'
                   }`}>
@@ -360,38 +361,40 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
         {/* Controls */}
         {!isLoading && !error && (
           <div className={`p-6 border-t-2 ${isDark
-              ? 'border-blue-700 bg-gray-900'
-              : 'border-blue-100 bg-white'
+            ? 'border-blue-700 bg-gray-900'
+            : 'border-blue-100 bg-white'
             }`}>
             <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
               {/* Zoom Controls */}
               <div className={`flex items-center gap-2 rounded-xl p-2 border ${isDark
-                  ? 'bg-blue-900/20 border-blue-700'
-                  : 'bg-blue-50 border-blue-200'
+                ? 'bg-blue-900/20 border-blue-700'
+                : 'bg-blue-50 border-blue-200'
                 }`}>
                 <button
                   onClick={() => handleZoom(-0.1)}
                   className={`p-3 rounded-lg transition-colors shadow-sm border-2 font-bold ${isDark
-                      ? 'bg-gray-800 hover:bg-gray-700 text-blue-400 border-blue-600'
-                      : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
+                    ? 'bg-gray-800 hover:bg-gray-700 text-blue-400 border-blue-600'
+                    : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
                     }`}
                   title="Zoom Out"
+                  aria-label="Zoom out"
                 >
                   <ZoomOut className="w-5 h-5" />
                 </button>
                 <span className={`text-sm font-bold min-w-[70px] text-center px-3 py-2 rounded-lg border ${isDark
-                    ? 'text-blue-300 bg-gray-800 border-blue-700'
-                    : 'text-blue-800 bg-white border-blue-200'
+                  ? 'text-blue-300 bg-gray-800 border-blue-700'
+                  : 'text-blue-800 bg-white border-blue-200'
                   }`}>
                   {Math.round(scale * 100)}%
                 </span>
                 <button
                   onClick={() => handleZoom(0.1)}
                   className={`p-3 rounded-lg transition-colors shadow-sm border-2 font-bold ${isDark
-                      ? 'bg-gray-800 hover:bg-gray-700 text-blue-400 border-blue-600'
-                      : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
+                    ? 'bg-gray-800 hover:bg-gray-700 text-blue-400 border-blue-600'
+                    : 'bg-white hover:bg-blue-100 text-blue-700 border-blue-300'
                     }`}
                   title="Zoom In"
+                  aria-label="Zoom in"
                 >
                   <ZoomIn className="w-5 h-5" />
                 </button>
@@ -401,10 +404,11 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
               <button
                 onClick={handleRotate}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-colors border-2 font-bold shadow-sm ${isDark
-                    ? 'bg-blue-900/20 hover:bg-blue-900/40 text-blue-300 border-blue-600'
-                    : 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-300'
+                  ? 'bg-blue-900/20 hover:bg-blue-900/40 text-blue-300 border-blue-600'
+                  : 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-300'
                   }`}
                 title="Rotate 90°"
+                aria-label="Rotate 90 degrees"
               >
                 <RotateCw className="w-5 h-5" />
                 Rotate 90°
@@ -416,8 +420,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
               <button
                 onClick={onCancel}
                 className={`flex-1 px-6 py-3 rounded-xl font-bold transition-all duration-200 border-2 ${isDark
-                    ? 'text-gray-300 hover:text-gray-100 hover:bg-gray-800 border-gray-600 bg-gray-800/50'
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300 bg-gray-50'
+                  ? 'text-gray-300 hover:text-gray-100 hover:bg-gray-800 border-gray-600 bg-gray-800/50'
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300 bg-gray-50'
                   }`}
               >
                 Cancel
@@ -425,8 +429,8 @@ export default function ImageEditor({ imageUrl, onSave, onCancel, isOpen }: Imag
               <button
                 onClick={handleSave}
                 className={`flex-1 px-6 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg border-2 ${isDark
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-blue-500'
-                    : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-blue-500'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-blue-500'
+                  : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-blue-500'
                   }`}
               >
                 <Check className="w-5 h-5" />

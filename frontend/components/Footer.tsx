@@ -214,16 +214,21 @@ export default function Footer({ onSupportClick }: FooterProps) {
           <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 pt-4">
             {sections.map((section) => (
               <div key={section.title} className="space-y-6">
-                <div
+                <button
                   onClick={() => toggleSection(section.title)}
-                  className="flex items-center justify-between cursor-pointer md:cursor-default"
+                  className="flex items-center justify-between w-full cursor-pointer md:cursor-default"
+                  aria-expanded={openSection === section.title}
                 >
                   <h3 className="text-slate-950 dark:text-white font-black text-sm uppercase tracking-widest relative">
                     {section.title}
                     <span className="absolute -bottom-2 left-0 w-8 h-1.5 bg-blue-600 rounded-full"></span>
                   </h3>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 md:hidden transition-transform duration-300 ${openSection === section.title ? 'rotate-180 text-blue-600' : ''}`} />
-                </div>
+                  <h3 className="text-slate-950 dark:text-white font-black text-sm uppercase tracking-widest relative">
+                    {section.title}
+                    <span className="absolute -bottom-2 left-0 w-8 h-1.5 bg-blue-600 rounded-full"></span>
+                  </h3>
+                  <ChevronDown className={`w-5 h-5 text-slate-500 dark:text-slate-400 md:hidden transition-transform duration-300 ${openSection === section.title ? 'rotate-180 text-blue-600' : ''}`} />
+                </button>
 
                 <div className={`${openSection === section.title ? 'block' : 'hidden'} md:block`}>
                   <ul className="flex flex-col space-y-5">
@@ -234,7 +239,7 @@ export default function Footer({ onSupportClick }: FooterProps) {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold flex items-center gap-1 group"
+                            className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold flex items-center gap-1 group"
                           >
                             {link.name}
                             <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -242,14 +247,14 @@ export default function Footer({ onSupportClick }: FooterProps) {
                         ) : link.name === 'Support' ? (
                           <button
                             onClick={onSupportClick}
-                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold block text-left w-full"
+                            className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold block text-left w-full"
                           >
                             {link.name}
                           </button>
                         ) : (
                           <Link
                             href={link.href}
-                            className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold block"
+                            className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-base font-bold block"
                           >
                             {link.name}
                           </Link>
@@ -267,7 +272,7 @@ export default function Footer({ onSupportClick }: FooterProps) {
         <div className="mt-16 pt-10 border-t border-slate-200 dark:border-slate-800">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-sm">
             <div className="order-2 md:order-1 flex flex-col items-center md:items-start gap-1">
-              <p className="text-slate-500 dark:text-slate-400 font-bold">
+              <p className="text-slate-600 dark:text-slate-400 font-bold">
                 © 2026 Reword. All rights reserved.
               </p>
             </div>
