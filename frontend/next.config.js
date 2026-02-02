@@ -29,6 +29,21 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.reword.entrext.com",
+          },
+        ],
+        destination: "https://reword.entrext.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig
