@@ -13,7 +13,6 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   swcMinify: true,
   experimental: {
-    bundlePagesRouterDependencies: true,
     optimizePackageImports: ['lucide-react', 'framer-motion', 'axios'],
     parallelServerBuildTraces: true,
   },

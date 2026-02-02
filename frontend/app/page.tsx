@@ -401,6 +401,10 @@ function HomeContent() {
       }
     } catch (error: any) {
       // Don't show error to user as this is a background check
+      // Also suppress 401 errors from console
+      if (error?.response?.status !== 401) {
+        // console.error('Error checking pending payments:', error)
+      }
     }
   }
 
@@ -917,7 +921,10 @@ function HomeContent() {
       setTimeout(() => {
         analyticsCache.current.delete(cacheKey)
       }, 5 * 60 * 1000)
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response?.status !== 401) {
+        // console.error('Analytics error:', error)
+      }
     }
   }
   // Enhanced keyboard navigation and accessibility
