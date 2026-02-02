@@ -1459,7 +1459,7 @@ function HomeContent() {
               <Sparkles className="w-12 h-12 text-blue-500 dark:text-blue-400 mr-4 animate-pulse" />
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-400 rounded-full animate-ping"></div>
             </div>
-            <h1
+            <div
               className="text-4xl md:text-7xl font-black bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent cursor-pointer hover:scale-105 transition-transform duration-200 tracking-tight"
               onClick={() => window.location.reload()}
               role="button"
@@ -1472,16 +1472,16 @@ function HomeContent() {
               aria-label="Reword - Go to home page"
             >
               Reword
-            </h1>
+            </div>
           </div>
 
           <div className="max-w-5xl mx-auto mb-10">
-            <h2 className="text-4xl md:text-6xl text-slate-900 dark:text-white font-black font-display mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-4xl md:text-6xl text-slate-900 dark:text-white font-black font-display mb-8 leading-[1.1] tracking-tight">
               AI-Powered Content Repurposing for
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600"> X, LinkedIn & Instagram</span>
               <br />
               <div className="mt-4 text-2xl md:text-4xl text-indigo-600 dark:text-indigo-400 font-bold opacity-90">Transform Once, Post Everywhere ⚡</div>
-            </h2>
+            </h1>
             <p className="text-lg md:text-2xl text-slate-600 dark:text-slate-300 leading-relaxed mb-10 max-w-3xl mx-auto">
               Turn your <span className="text-slate-900 dark:text-white font-bold">blogs, articles, and newsletters</span> into platform-optimized social media posts with AI.
               Save hours of manual reformatting and <span className="text-indigo-600 dark:text-indigo-400 font-bold">maximize your reach</span>.
